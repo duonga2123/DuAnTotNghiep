@@ -197,7 +197,7 @@ app.post('/pay',async(req,res)=>{
     else{
       for (let i=0 ;i<payment.links.length  ;i++ ){
         if(payment.links[i].rel=== 'approval_url'){
-          res.redirect(payment.links[i].href);
+          res.status(500).json(payment.links[i].href);
         }
       }
     }
@@ -266,6 +266,6 @@ app.post('/register', async (req, res) => {
     }
   });
 
-app.listen(8080,()=>
-console.log("Server is running on port 8080...")
+app.listen(3000,()=>
+console.log("Server is running on port 3000...")
 );
