@@ -9,12 +9,26 @@ const Category=require('./models/CategoryModel')
 const multer=require('multer')
 const Manga=require('./models/MangaModel')
 const Chapter=require('./models/ChapterModel')
+const{allowInsecurePrototypeAccess}=require('@handlebars/allow-prototype-access');
+const Handelbars=require('handlebars');
+const hbs=require('express-handlebars');
+var app=express();
+
+app.engine(".hbs",hbs.engine({
+  extname:"hbs",
+  defaultLayout:false,
+  layoutsDir:"views/layouts/",
+  handlebars:allowInsecurePrototypeAccess(Handelbars)
+}));
+
+app.set("view engine",".hbs");
+app.set("views","./views");
 
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
-var app=express();
+
 const uri="mongodb+srv://totnghiepduan2023:MaNXmiIny7im1yjG@cluster0.tzx1qqh.mongodb.net/DuanTotNghiep?retryWrites=true&w=majority";
 mongoose.connect(uri,{
     useNewUrlParser: true,
@@ -31,11 +45,21 @@ app.get('/categorys', async (req, res) => {
   try {
     const category = await Category.find();
     res.json(category);
+    
   } catch (error) {
     console.error('Lỗi khi lấy danh sách thể loại:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
   }
 });
+
+app.get("/add", async (req, res) => {
+  res.render("add");
+});
+app.get("/", async (req, res) => {
+  const data = await Manga.find().lean();
+  res.render("home", { data });
+});
+
 
 app.post('/category', async (req, res) => {
   try {
@@ -49,17 +73,30 @@ app.post('/category', async (req, res) => {
   }
 });
 //api get, post truyện
+app.get('/mangass', async (req, res) => {
+  try {
+    const manga = await Manga.find();
+    res.json(manga);
+    res.render("home", { manga });
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
+  }
+});
 app.post('/mangas', upload.single('image'), async (req, res) => {
   try {
-    const { manganame, author, content, category } = req.body;
-    const image =req.file.originalname; 
+    const { manganame, author, content, category, view, like } = req.body;
+    const imageBuffer = req.file ? req.file.buffer : null;
     const categoryObject = await Category.findOne({ categoryname: category })
 
     if (!categoryObject) {
       return res.status(404).json({ message: 'thể loại không tồn tại.' });
     }
 
-    const manga = new Manga({ manganame, author, content, image, category});
+    const manga = new Manga({ manganame, author, content,category, view, like});
+    if (imageBuffer) {
+      manga.image = imageBuffer.toString('base64');
+    }
     await manga.save();
     res.status(201).json(manga);
   } catch (error) {
@@ -71,12 +108,12 @@ app.post('/mangas', upload.single('image'), async (req, res) => {
 app.put('/mangas/:_id', upload.single('image'), async (req, res) => {
   try {
     const mangaId = req.params._id;
-    const { manganame, author, content, category } = req.body;
-    const image = req.file.originalname; // Đường dẫn tới ảnh, sử dụng Multer để upload ảnh
+    const { manganame, author, content, category, view,like } = req.body;
+    const imageBuffer = req.file ? req.file.buffer : null; 
 
     const manga = await Manga.findByIdAndUpdate(mangaId, {
-      manganame, author, content, image, category
-    }, { new: true }); // Trả về bản ghi mới sau khi cập nhật
+      manganame, author, content, image:imageBuffer.toString('base64'), category, view, like
+    }, { new: true }); 
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
@@ -93,7 +130,7 @@ app.put('/mangas/:_id', upload.single('image'), async (req, res) => {
 app.post('/chapters', upload.array('image',30), async (req, res) => {
   try {
     const { mangaName, number, viporfree } = req.body;
-    const images = req.files.map((file) => file.originalname);
+    const images = req.files.map((file) => file.buffer.toString('base64'));
 
     const manga = await Manga.findOne({manganame:mangaName});
     if (!manga) {
@@ -117,7 +154,7 @@ app.put('/chapterput/:_id', upload.array('image'), async (req, res) => {
   try {
     const chapterId = req.params._id;
     const { mangaName, number, viporfree } = req.body;
-    const images = req.files.map((file) => file.originalname);
+    const images = req.files.map((file) => file.buffer.toString('base64'));
 
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
       mangaName, number, viporfree, images
@@ -266,6 +303,6 @@ app.post('/register', async (req, res) => {
     }
   });
 
-app.listen(3000,()=>
-console.log("Server is running on port 3000...")
+app.listen(8080,()=>
+console.log("Server is running on port 8080...")
 );

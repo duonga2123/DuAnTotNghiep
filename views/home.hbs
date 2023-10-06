@@ -1,0 +1,57 @@
+<!DOCTYPE>
+<html>
+<head>
+  <title>Products</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="jumbotron text-center">
+  <h1>Comic</h1>       
+  <form method="get" action="/add">
+    <button type="submit">thêm truyện</button>
+  </form> 
+  <hr>
+  <h2>Danh sách Truyện</h2> <br>
+</form>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>manganame</th>
+         <th>image</th>
+        <th>author</th>
+        <th>content</th>
+        <th>category </th>
+        <th>view</th>
+        <th>like</th>
+      </tr>
+    </thead>
+
+    <tbody>
+       {{#each data}}
+      <tr>
+        <td>{{this.manganame}}</td>
+        <td><img src="data:image/jpeg;base64,{{this.image}}" style="width: 100px;height: 100px;"></td>
+        <td>{{this.author}}</td>
+        <td>{{this.content}}</td>
+        <td>{{this.category}}</td>
+        <td>{{this.view}}</td>
+        <td>{{this.like}}</td>
+        <td>
+            {{!-- <form action="/edit/{{_id}}" method="get">
+        <button type="submit">Edit</button>
+      </form>
+      <form action="/delete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')" method="post">
+        <button type="submit">Delete</button>
+      </form> --}}
+     </td>
+      </tr>
+      {{/each}}
+    </tbody>
+
+  </table>
+</div>
+
+</body>
+</html>
