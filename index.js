@@ -12,6 +12,7 @@ const Chapter=require('./models/ChapterModel')
 const{allowInsecurePrototypeAccess}=require('@handlebars/allow-prototype-access');
 const Handelbars=require('handlebars');
 const hbs=require('express-handlebars');
+const sharp=require('sharp');
 var app=express();
 
 app.engine(".hbs",hbs.engine({
@@ -73,7 +74,15 @@ app.get("/add", async (req, res) => {
 app.get('/mangass', async (req, res) => {
   try {
     const manga = await Manga.find();
-    // res.json(manga);
+    res.json(manga);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
+  }
+});
+app.get('/home', async (req, res) => {
+  try {
+    const manga = await Manga.find();
     res.render("home", { manga });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
@@ -164,19 +173,31 @@ app.get('/viporfrees', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách giá trị enum' });
   }
 });
-app.post('/chapters', upload.array('image',30), async (req, res) => {
+app.post('/chapters', upload.array('image', 30), async (req, res) => {
   try {
     const { mangaName, number, viporfree } = req.body;
-    const images = req.files.map((file) => file.buffer.toString('base64'));
+    const images = [];
 
-    const manga = await Manga.findOne({manganame:mangaName});
+    for (const file of req.files) {
+      const imageBuffer = file.buffer;
+
+      // Sử dụng Sharp để nén ảnh trước khi lưu vào cơ sở dữ liệu
+      const resizedImageBuffer = await sharp(imageBuffer)
+        .resize({ width: 100, height: 100 }) // Thiết lập kích thước mới ở đây
+        .toBuffer();
+
+      images.push(resizedImageBuffer.toString('base64'));
+    }
+
+    const manga = await Manga.findOne({ manganame: mangaName });
+
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
     const chapter = new Chapter({ mangaName, number, viporfree, images });
     await chapter.save();
-   
+
     manga.chapters.push(chapter._id);
     await manga.save();
 

@@ -20,9 +20,9 @@
                     <option value>Chọn tên truyện</option>
                     <script>
                         $(document).ready(function () {
-                            $.get('/mangass', function (data) {
-                                if (data && data.length > 0) {
-                                    data.forEach(function (manga) {
+                            $.get('/mangass', function (manga) {
+                                if (manga && manga.length > 0) {
+                                    manga.forEach(function (manga) {
                                         $('#mangaName').append($('<option>', {
                                             value: manga.manganame,
                                             text: manga.manganame

@@ -34,7 +34,7 @@
         {{#each manga}}
         <tr>
           <td>{{this.manganame}}</td>
-          <td><img src="data:image/jpeg;base64,{{this.image}}" style="width: 100px;height: 100px;"></td>
+          <td><img src="data:image/jpeg;base64,{{this.image}}" style="width: 100px;height: 100px;" loading="lazy"></td>
           <td>{{this.author}}</td>
           <td>{{this.content}}</td>
           <td>{{this.category}}</td>
