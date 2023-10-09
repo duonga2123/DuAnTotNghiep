@@ -1,0 +1,63 @@
+<!DOCTYPE>
+<html>
+
+<head>
+    <title>Chapter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="jumbotron text-center">
+        <h1>Chapter</h1>
+        <form method="get" action="/addchap">
+            <button type="submit">thêm chap</button>
+        </form>
+        <hr>
+        <h2>Danh sách chap</h2> <br>
+        </form>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>manganame</th>
+                    <th>number</th>
+                    <th>viporfree</th>
+                    <th>image</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each data}}
+                <tr>
+                    <td>{{this.mangaName}}</td>
+                    <td>{{this.number}}</td>
+                    <td>{{this.viporfree}}</td>
+                    <td>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; ">
+                            {{#each this.images}}
+                            <div style=" width: calc(100% / 11);  margin: 5px;">
+                                <img src="data:image/jpeg;base64,{{this}}" style="width: 100px; height: 100px;" loading="lazy">
+                            </div>
+                            {{/each}}
+                        </div>
+                    </td>
+                    <td>
+                        {{!-- <form action="/edit/{{_id}}" method="get">
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form action="/delete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')"
+                            method="post">
+                            <button type="submit">Delete</button>
+                        </form> --}}
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+
+        </table>
+    </div>
+
+</body>
+
+</html>
