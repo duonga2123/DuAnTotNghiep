@@ -74,16 +74,16 @@ app.get("/add", async (req, res) => {
 app.get('/mangass', async (req, res) => {
   try {
     const manga = await Manga.find();
-    res.json(manga);
+    res.render("home", { manga });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
-app.get('/home', async (req, res) => {
+app.get('/getmanga', async (req, res) => {
   try {
     const manga = await Manga.find();
-    res.render("home", { manga });
+    res.json(manga);
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
