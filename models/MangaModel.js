@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const mangaSchema = new mongoose.Schema({
+
   manganame: { type: String, required: true},
   author: { type: String, required: true },
   content: { type: String, required: true },

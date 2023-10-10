@@ -24,6 +24,7 @@
                     <th>number</th>
                     <th>viporfree</th>
                     <th>image</th>
+                    <th>nút</th>
                 </tr>
             </thead>
 
@@ -45,11 +46,11 @@
                     <td>
                         {{!-- <form action="/edit/{{_id}}" method="get">
                             <button type="submit">Edit</button>
-                        </form>
-                        <form action="/delete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')"
-                            method="post">
-                            <button type="submit">Delete</button>
                         </form> --}}
+                        <form action="/chapterdelete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')"
+                            method="post" >
+                            <button type="submit" >Delete</button>
+                        </form>
                     </td>
                 </tr>
                 {{/each}}

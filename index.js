@@ -13,6 +13,8 @@ const{allowInsecurePrototypeAccess}=require('@handlebars/allow-prototype-access'
 const Handelbars=require('handlebars');
 const hbs=require('express-handlebars');
 const sharp=require('sharp');
+const methodOverride = require('method-override');
+
 var app=express();
 
 app.engine(".hbs",hbs.engine({
@@ -24,7 +26,7 @@ app.engine(".hbs",hbs.engine({
 
 app.set("view engine",".hbs");
 app.set("views","./views");
-
+app.use(methodOverride('_method'));
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
@@ -173,31 +175,20 @@ app.get('/viporfrees', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách giá trị enum' });
   }
 });
-app.post('/chapters', upload.array('image', 30), async (req, res) => {
+
+app.post('/chapters', upload.array('image',30), async (req, res) => {
   try {
     const { mangaName, number, viporfree } = req.body;
-    const images = [];
+    const images = req.files.map((file) => file.buffer.toString('base64'));
 
-    for (const file of req.files) {
-      const imageBuffer = file.buffer;
-
-      // Sử dụng Sharp để nén ảnh trước khi lưu vào cơ sở dữ liệu
-      const resizedImageBuffer = await sharp(imageBuffer)
-        .resize({ width: 100, height: 100 }) // Thiết lập kích thước mới ở đây
-        .toBuffer();
-
-      images.push(resizedImageBuffer.toString('base64'));
-    }
-
-    const manga = await Manga.findOne({ manganame: mangaName });
-
+    const manga = await Manga.findOne({manganame:mangaName});
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
     const chapter = new Chapter({ mangaName, number, viporfree, images });
     await chapter.save();
-
+   
     manga.chapters.push(chapter._id);
     await manga.save();
 
@@ -233,7 +224,7 @@ app.put('/chapterput/:_id', upload.array('image'), async (req, res) => {
   }
 });
 
-app.delete('/chapterdelete/:_id', async (req, res) => {
+app.post('/chapterdelete/:_id', async (req, res) => {
   try {
     const chapterId = req.params._id;
 
@@ -321,7 +312,7 @@ app.get('/cancel', (req, res) => {
   res.send('Thanh toán đã bị hủy.');
 });
 
-//api đăng kí
+
 app.post('/register', async (req, res) => {
     try {
       const { username, password, role } = req.body;
@@ -329,8 +320,24 @@ app.post('/register', async (req, res) => {
   
       const user = new User({ username, password: hashedPassword, role });
       await user.save();
+      
+      const responseData = {
+        success: user.success,
+        data: {
+          user: [
+            {
+              _id: user._id,
+              username: user.username,
+              password: user.password,
+              role: user.role,
+              __v: user.__v,
+            },
+          ],
+        },
+      };
   
-      res.status(201).json({ message: 'Tài khoản đã được tạo thành công.' });
+  
+      res.status(201).json(responseData);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Đã xảy ra lỗi.' });
@@ -352,9 +359,24 @@ app.post('/register', async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json({ message: 'Tên đăng nhập hoặc mật khẩu không đúng.' });
       }
+      const responseData = {
+        success: user.success,
+        data: {
+          user: [
+            {
+              _id: user._id,
+              username: user.username,
+              password: user.password,
+              role: user.role,
+              __v: user.__v,
+            },
+          ],
+        },
+      };
   
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
-      res.status(200).json({ token, role: user.role,message: 'đăng nhập thành công.' });
+      responseData.token = token;
+      res.status(200).json(responseData);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Đã xảy ra lỗi.' });
