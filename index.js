@@ -165,6 +165,15 @@ app.get("/getchap", async (req, res) => {
   const data = await Chapter.find().lean();
   res.render("chapter", { data });
 });
+app.get('/chap', async (req, res) => {
+  try {
+    const chap = await Chapter.find();
+    res.status(201).json(chap);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
+  }
+});
 app.get('/viporfrees', async (req, res) => {
   try {
     // Sử dụng mongoose để lấy danh sách các giá trị enum
@@ -198,8 +207,19 @@ app.post('/chapters', upload.array('image',30), async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo chương' });
   }
 });
+app.get("/chapterput/:_id",upload.array('image'), async (req, res) => {
+  const id = req.params._id;
+  Chapter.findById(id)
+    .then(data => {
+      res.render("editchap", { data });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send("Internal server error");
+    });
+});
 
-app.put('/chapterput/:_id', upload.array('image'), async (req, res) => {
+app.post('/chapterput/:_id', upload.array('image'), async (req, res) => {
   try {
     const chapterId = req.params._id;
     const { mangaName, number, viporfree } = req.body;
@@ -248,6 +268,12 @@ app.post('/chapterdelete/:_id', async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa chương.' });
   }
 });
+
+app.post('/search', async(req, res)=> {
+  const { mangaName } = req.body;
+  const data = await Chapter.find({ mangaName });
+  res.render('chapter', { data });
+  });
 
 //api thanh toán
 paypal.configure({

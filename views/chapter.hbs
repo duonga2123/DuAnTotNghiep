@@ -16,6 +16,9 @@
         </form>
         <hr>
         <h2>Danh sách chap</h2> <br>
+        <form method="post" action="/search">
+  <input type="text" name="mangaName" placeholder="Tìm kiếm theo tên truyện">
+  <button type="submit">Search</button>
         </form>
         <table class="table table-bordered">
             <thead>
@@ -44,9 +47,9 @@
                         </div>
                     </td>
                     <td>
-                        {{!-- <form action="/edit/{{_id}}" method="get">
+                        <form action="/chapterput/{{_id}}" method="get">
                             <button type="submit">Edit</button>
-                        </form> --}}
+                        </form>
                         <form action="/chapterdelete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')"
                             method="post" >
                             <button type="submit" >Delete</button>
