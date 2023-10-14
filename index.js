@@ -68,6 +68,46 @@ app.post('/category', async (req, res) => {
   }
 });
 
+
+app.post('/categoryput/:id', async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const { categoryname } = req.body;
+
+    const category = await Category.findByIdAndUpdate(
+      categoryId,
+      { categoryname },
+      { new: true }
+    );
+
+    if (!category) {
+      return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
+    }
+
+    res.json(category);
+  } catch (error) {
+    console.error('Lỗi khi cập nhật thể loại:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thể loại.' });
+  }
+});
+
+app.post('/categorydelete/:_id', async (req, res) => {
+  try {
+    const categoryId = req.params._id;
+
+   
+    const deletedCategory = await Category.findByIdAndRemove(categoryId);
+
+    if (!deletedCategory) {
+      return res.status(404).json({ message: 'thể loại không tồn tại.' });
+    }
+    res.json({ message: 'thể loại đã được xóa thành công.' });
+  } catch (error) {
+    console.error('Lỗi khi xóa thể loại:', error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa thể loại.' });
+  }
+});
+
 //api get, post truyện
 app.get("/add", async (req, res) => {
   res.render("add");
@@ -82,6 +122,7 @@ app.get('/mangass', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
+
 app.get('/getmanga', async (req, res) => {
   try {
     const manga = await Manga.find();
@@ -92,39 +133,42 @@ app.get('/getmanga', async (req, res) => {
   }
 });
 
-app.get('/mangas/:mangaId/chapters', async (req, res) => {
+app.get('/mangas', async (req, res) => {
   try {
-    const mangaName = req.params.mangaId;
-
-    // Thực hiện truy vấn cơ sở dữ liệu để lấy danh sách các chương của manga với tên tương ứng.
-    const chapters = await Chapter.find({ mangaName: { $regex: mangaName, $options: 'i' } });
-
-    if (!chapters || chapters.length === 0) {
-      return res.status(404).json({ message: 'Không tìm thấy danh sách chương cho manga này.' });
-    }
-
-    res.json(chapters);
+    const mangaList = await Manga.find().select('manganame image category chapters').populate('chapters', 'number').exec();
+    const formattedMangaList = mangaList.map(manga => ({
+      id: manga._id,
+      manganame: manga.manganame,
+      image: manga.image,
+      category:manga.category,
+      totalChapters: manga.chapters.length
+    }));
+    res.json(formattedMangaList);
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách chương:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách chương.' });
+    console.error('Lỗi khi lấy danh sách truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
 
-app.post('/mangas', upload.single('image'), async (req, res) => {
+app.post('/mangapost', upload.single('image'), async (req, res) => {
   try {
     const { manganame, author, content, category, view, like } = req.body;
     const imageBuffer = req.file ? req.file.buffer : null;
-    const categoryObject = await Category.findOne({ categoryname: category })
+    const categoryObject = await Category.findOne({ categoryname: category });
 
     if (!categoryObject) {
-      return res.status(404).json({ message: 'thể loại không tồn tại.' });
+      return res.status(404).json({ message: 'Thể loại không tồn tại.' });
     }
 
-    const manga = new Manga({ manganame, author, content,category, view, like});
+    const manga = new Manga({ manganame, author, content, category, view, like });
     if (imageBuffer) {
       manga.image = imageBuffer.toString('base64');
     }
     await manga.save();
+
+    categoryObject.manga.push(manga._id);
+    await categoryObject.save();
+
     res.status(201).json(manga);
   } catch (error) {
     console.error('Lỗi khi tạo truyện:', error);
@@ -132,23 +176,44 @@ app.post('/mangas', upload.single('image'), async (req, res) => {
   }
 });
 
-app.put('/mangas/:_id', upload.single('image'), async (req, res) => {
+app.post('/mangaput/:_id', upload.single('image'), async (req, res) => {
   try {
     const mangaId = req.params._id;
-    const { manganame, author, content, category, view,like } = req.body;
+    const { manganame, author, content, category, view, like } = req.body;
     const imageBuffer = req.file ? req.file.buffer : null; 
 
-    const manga = await Manga.findByIdAndUpdate(mangaId, {
-      manganame, author, content, category, view, like
-    }, { new: true }); 
-    if (imageBuffer) {
-      manga.image = imageBuffer.toString('base64');
-    }
+    const manga = await Manga.findById(mangaId);
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
     }
-    await Chapter.updateMany({ mangaName: manga.manganame }, { $set: { mangaName: manga.manganame } });
+
+    if (manga.category !== category) {
+      const oldCategory = await Category.findOne({ categoryname: manga.category });
+      if (oldCategory) {
+        oldCategory.manga = oldCategory.manga.filter((id) => id.toString() !== mangaId);
+        await oldCategory.save();
+      }
+
+      const newCategory = await Category.findOne({ categoryname: category });
+      if (newCategory) {
+        newCategory.manga.push(mangaId);
+        await newCategory.save();
+      }
+    }
+
+    manga.manganame = manganame;
+    manga.author = author;
+    manga.content = content;
+    manga.category = category;
+    manga.view = view;
+    manga.like = like;
+
+    if (imageBuffer) {
+      manga.image = imageBuffer.toString('base64');
+    }
+
+    await manga.save();
 
     res.json(manga);
   } catch (error) {
@@ -156,15 +221,100 @@ app.put('/mangas/:_id', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật truyện' });
   }
 });
+app.post('/mangadelete/:_id', async (req, res) => {
+  try {
+    const mangaId = req.params._id;
+
+   
+    const deletedManga = await Manga.findByIdAndRemove(mangaId);
+
+    if (!deletedManga) {
+      return res.status(404).json({ message: 'truyện không tồn tại.' });
+    }
+
+   
+    const category = await Category.findOne({ manga: mangaId });
+    if (category) {
+      category.manga = category.manga.filter((id) => id.toString() !== mangaId);
+      await category.save();
+    }
+
+    res.json({ message: 'truyện đã được xóa thành công.' });
+  } catch (error) {
+    console.error('Lỗi khi xóa truyện:', error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa truyện.' });
+  }
+});
+
+app.get('/mangachitiet/:mangaId', async (req, res) => {
+  try {
+    const mangaId = req.params.mangaId;
+    const manga = await Manga.findById(mangaId);
+
+    if (!manga) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
+    }
+
+    const { manganame, author, content, image, category, view, like, chapters } = manga;
+
+    const response = {
+      manganame: manganame,
+      author: author,
+      content: content,
+      image: image,
+      category: category,
+      view: view,
+      like: like,
+      totalChapters: chapters.length
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
+  }
+});
+
+app.get('/mangas/category/:categoryName', async (req, res) => {
+  try {
+    const categoryName = req.params.categoryName;
+    const category = await Category.findOne({ categoryname: categoryName });
+
+    if (!category) {
+      return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
+    }
+
+    const mangaList = await Manga.find({ category: categoryName });
+
+    if (mangaList.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện trong thể loại này.' });
+    }
+
+    const formattedMangaList = mangaList.map(manga => ({
+      id: manga._id,
+      manganame: manga.manganame,
+      image: manga.image,
+      category: manga.category,
+      totalChapters: manga.chapters.length
+    }));
+
+    res.json(formattedMangaList);
+  } catch (error) {
+    console.error('Lỗi khi lấy truyện theo thể loại:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy truyện theo thể loại.' });
+  }
+});
 
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
   res.render("addchap");
 });
+
 app.get("/getchap", async (req, res) => {
   const data = await Chapter.find().lean();
   res.render("chapter", { data });
 });
+
 app.get('/chap', async (req, res) => {
   try {
     const chap = await Chapter.find();
@@ -174,6 +324,7 @@ app.get('/chap', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
+
 app.get('/viporfrees', async (req, res) => {
   try {
     // Sử dụng mongoose để lấy danh sách các giá trị enum
@@ -207,6 +358,7 @@ app.post('/chapters', upload.array('image',30), async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo chương' });
   }
 });
+
 app.get("/chapterput/:_id",upload.array('image'), async (req, res) => {
   const id = req.params._id;
   Chapter.findById(id)
@@ -227,7 +379,7 @@ app.post('/chapterput/:_id', upload.array('image'), async (req, res) => {
 
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
       mangaName, number, viporfree, images
-    }, { new: true }); // Trả về bản ghi mới sau khi cập nhật
+    }, { new: true });
 
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chương' });
@@ -248,14 +400,14 @@ app.post('/chapterdelete/:_id', async (req, res) => {
   try {
     const chapterId = req.params._id;
 
-    // Xóa chương từ cơ sở dữ liệu
+   
     const deletedChapter = await Chapter.findByIdAndRemove(chapterId);
 
     if (!deletedChapter) {
       return res.status(404).json({ message: 'Chương không tồn tại.' });
     }
 
-    // Cập nhật danh sách chương của manga
+   
     const manga = await Manga.findOne({ chapters: chapterId });
     if (manga) {
       manga.chapters = manga.chapters.filter((id) => id.toString() !== chapterId);
@@ -266,6 +418,42 @@ app.post('/chapterdelete/:_id', async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi xóa chương:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa chương.' });
+  }
+});
+
+app.get('/mangas/:manganame/chapters', async (req, res) => {
+  try {
+    const mangaName = req.params.manganame; 
+    const chapters = await Chapter.find({ mangaName: { $regex: mangaName, $options: 'i' } }).select('number viporfree -_id');
+
+    if (!chapters || chapters.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy danh sách chương cho manga này.' });
+    }
+
+    res.json(chapters);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách chương:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách chương.' });
+  }
+});
+
+app.get('/mangas/:manganame/chapters/:chapterNumber/images', async (req, res) => {
+  try {
+    const mangaName = req.params.manganame;
+    const chapterNumber = req.params.chapterNumber;
+
+    // Tìm chương dựa trên tên manga và số chương
+    const chapter = await Chapter.findOne({ mangaName, number: chapterNumber });
+
+    if (!chapter) {
+      return res.status(404).json({ message: 'Không tìm thấy chương.' });
+    }
+
+    // Trả về danh sách ảnh của chương
+    res.json(chapter.images);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách ảnh chương:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chương.' });
   }
 });
 
