@@ -601,7 +601,7 @@ app.post('/register', async (req, res) => {
       const userId = req.params._id;
   
      
-      const deletedUser = await Category.findByIdAndRemove(userId);
+      const deletedUser = await User.findByIdAndRemove(userId);
   
       if (!deletedUser) {
         return res.status(404).json({ message: 'user không tồn tại.' });
