@@ -596,6 +596,45 @@ app.post('/register', async (req, res) => {
     }
   });
 
+  app.post('/userdelete/:_id', async (req, res) => {
+    try {
+      const userId = req.params._id;
+  
+     
+      const deletedUser = await Category.findByIdAndRemove(userId);
+  
+      if (!deletedUser) {
+        return res.status(404).json({ message: 'user không tồn tại.' });
+      }
+      res.json({ message: 'user đã được xóa thành công.' });
+    } catch (error) {
+      console.error('Lỗi khi xóa user:', error);
+      res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa user.' });
+    }
+  });
+  
+  app.post('/userput/:id', async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const { username,password } = req.body;
+  
+      const category = await Category.findByIdAndUpdate(
+        userId,
+        { username,password },
+        { new: true }
+      );
+  
+      if (!category) {
+        return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
+      }
+  
+      res.json(category);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật thể loại:', error);
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thể loại.' });
+    }
+  });
+
 app.listen(8080,()=>
 console.log("Server is running on port 8080...")
 );
