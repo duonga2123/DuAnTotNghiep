@@ -617,18 +617,19 @@ app.post('/register', async (req, res) => {
     try {
       const userId = req.params.id;
       const { username,password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
   
-      const category = await Category.findByIdAndUpdate(
+      const user= await User.findByIdAndUpdate(
         userId,
         { username,password },
         { new: true }
       );
   
-      if (!category) {
+      if (!user) {
         return res.status(404).json({ message: 'Không tìm thấy user.' });
       }
   
-      res.json(category);
+      res.json(user);
     } catch (error) {
       console.error('Lỗi khi cập nhật user:', error);
       res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
