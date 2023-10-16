@@ -621,7 +621,8 @@ app.post('/register', async (req, res) => {
   
       const user= await User.findByIdAndUpdate(
         userId,
-        { username,password },
+        { username,
+          password:hashedPassword },
         { new: true }
       );
   
