@@ -596,7 +596,7 @@ app.post('/register', async (req, res) => {
     }
   });
 
-  app.post('/userdelete/:_id', async (req, res) => {
+  app.delete('/userdelete/:_id', async (req, res) => {
     try {
       const userId = req.params._id;
   
