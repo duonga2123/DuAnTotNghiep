@@ -612,7 +612,7 @@ app.post('/register', async (req, res) => {
       res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa user.' });
     }
   });
-  
+
   app.post('/userput/:id', async (req, res) => {
     try {
       const userId = req.params.id;
@@ -625,13 +625,13 @@ app.post('/register', async (req, res) => {
       );
   
       if (!category) {
-        return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
+        return res.status(404).json({ message: 'Không tìm thấy user.' });
       }
   
       res.json(category);
     } catch (error) {
-      console.error('Lỗi khi cập nhật thể loại:', error);
-      res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thể loại.' });
+      console.error('Lỗi khi cập nhật user:', error);
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
     }
   });
 
