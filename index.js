@@ -12,7 +12,6 @@ const Chapter=require('./models/ChapterModel')
 const{allowInsecurePrototypeAccess}=require('@handlebars/allow-prototype-access');
 const Handelbars=require('handlebars');
 const hbs=require('express-handlebars');
-const sharp=require('sharp');
 const methodOverride = require('method-override');
 
 var app=express();
