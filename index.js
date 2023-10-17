@@ -444,17 +444,17 @@ app.get('/chapter/:_id/images', async (req, res) => {
   try {
     const chapterid = req.params._id;
     
-    const chapter = await Chapter.findOne({ chapterid });
+    const chapter = await Chapter.findById(chapterid);
 
     if (!chapter) {
-      return res.status(404).json({ message: 'Không tìm thấy chương.' });
+      return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
 
     // Trả về danh sách ảnh của chương
     res.json(chapter.images);
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách ảnh chương:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chương.' });
+    console.error('Lỗi khi lấy danh sách ảnh chap:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
   }
 });
 
