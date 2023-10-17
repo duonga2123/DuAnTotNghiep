@@ -440,13 +440,11 @@ app.get('/mangas/:manganame/chapters', async (req, res) => {
   }
 });
 
-app.get('/mangas/:manganame/chapters/:chapterNumber/images', async (req, res) => {
+app.get('/chapter/:_id/images', async (req, res) => {
   try {
-    const mangaName = req.params.manganame;
-    const chapterNumber = req.params.chapterNumber;
-
-    // Tìm chương dựa trên tên manga và số chương
-    const chapter = await Chapter.findOne({ mangaName, number: chapterNumber });
+    const chapterid = req.params._id;
+    
+    const chapter = await Chapter.findOne({ chapterid });
 
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chương.' });
