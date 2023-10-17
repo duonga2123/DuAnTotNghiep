@@ -267,7 +267,8 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
       totalChapters: chapters.length,
       chapters: chapters.map(chapter => ({
         idchap: chapter._id,
-        namechap: chapter.number
+        namechap: chapter.number,
+        viporfree:chapter.viporfree
       }))
     };
 
