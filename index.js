@@ -248,7 +248,7 @@ app.post('/mangadelete/:_id', async (req, res) => {
 app.get('/mangachitiet/:mangaId', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
-    const manga = await Manga.findById(mangaId);
+    const manga = await Manga.findById(mangaId).populate('chapters', 'number');
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
@@ -265,9 +265,9 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
       view: view,
       like: like,
       totalChapters: chapters.length,
-      chapters:chapters.map(chapter=>({
-        idchap:chapter._id,
-        namechap:chapter.number
+      chapters: chapters.map(chapter => ({
+        idchap: chapter._id,
+        namechap: chapter.number
       }))
     };
 
