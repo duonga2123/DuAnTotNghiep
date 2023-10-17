@@ -264,7 +264,11 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
       category: category,
       view: view,
       like: like,
-      totalChapters: chapters.length
+      totalChapters: chapters.length,
+      chapters:chapters.map(chapter=>({
+        idchap:chapter._id,
+        namechap:chapter.number
+      }))
     };
 
     res.json(response);
