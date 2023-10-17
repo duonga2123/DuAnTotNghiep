@@ -248,7 +248,7 @@ app.post('/mangadelete/:_id', async (req, res) => {
 app.get('/mangachitiet/:mangaId', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
-    const manga = await Manga.findById(mangaId).populate('chapters', 'number','viporfree');
+    const manga = await Manga.findById(mangaId).populate('chapters', 'number viporfree');
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
