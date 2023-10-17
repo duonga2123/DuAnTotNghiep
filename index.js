@@ -24,7 +24,7 @@ app.engine(".hbs",hbs.engine({
 }));
 
 app.set("view engine",".hbs");
-app.set("views","./views");
+app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride('_method'));
 const storage = multer.memoryStorage();
 
