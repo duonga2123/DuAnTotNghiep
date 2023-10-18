@@ -532,7 +532,7 @@ app.get('/success', async(req, res) => {
 
     const payerId = req.query.PayerID
     const paymentId = req.query.paymentId
-   let success="thanh toán thành công"
+    let success="thanh toán thành công"
     
   
     const executePaymentJson = {
@@ -549,7 +549,7 @@ app.get('/success', async(req, res) => {
         throw error;
       } else { 
         res.send('Thanh toán thành công!');
-        const updatePayment = await Payment.findOneAndUpdate({ paymentId: paymentId }, { success: success });
+        const updatePayment = await Payment.findOneAndUpdate({ paymentId: paymentId }, { success:success },{new:true});
         if (!updatePayment) {
           res.status(404).json({ message: 'Không tìm thấy thanh toán.' });
         }  
