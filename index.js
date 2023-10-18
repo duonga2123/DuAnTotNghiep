@@ -551,6 +551,19 @@ app.get('/success/:id', async(req, res) => {
         throw error;
       } else { 
         res.send('Thanh toán thành công!');
+        const paymentData = await Payment.findOne({ _id: id });
+        const totalAmount = paymentData.totalAmount;
+        const userId = paymentData.userID;
+
+        const user = await User.findById(userId);
+        const updatedCoin = totalAmount * 10 + (user.coin || 0);
+
+        await User.findOneAndUpdate(
+          { _id: userId },
+          { coin: updatedCoin, $push: { payment: id } },
+          { new: true }
+        );
+
         const updatePayment = await Payment.findOneAndUpdate({ _id: id}, { success:success },{new:true});
         if (!updatePayment) {
           res.status(404).json({ message: 'Không tìm thấy thanh toán.' });
