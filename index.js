@@ -533,9 +533,9 @@ app.get('/success', async(req, res) => {
         const { userID } = req.params; 
         const { total, currency } = req.query;
           const paymentData = new Payment({
-            userID,
-            currency,
-            totalAmount:total,
+            userID:userID,
+            currency:currency,
+            totalAmount:parseFloat(total),
             coin:0,
             date: new Date()
           });
