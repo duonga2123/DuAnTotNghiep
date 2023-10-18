@@ -475,10 +475,10 @@ paypal.configure({
 });
 
 app.post('/pay/:_userId',async(req,res)=>{
-  const{totalAmount,currency,success}=req.body
+  const{totalAmount,currency}=req.body
   const userId=req.params._userId
-  const coin=totalAmount*10
-  success="đợi thanh toán"
+  let coin=totalAmount*10
+  const success="đợi thanh toán"
   const createPaymentJson={
     intent:'sale',
     payer:{
@@ -532,7 +532,7 @@ app.get('/success', async(req, res) => {
 
     const payerId = req.query.PayerID
     const paymentId = req.query.paymentId
-   const success="thanh toán thành công"
+   let success="thanh toán thành công"
     
   
     const executePaymentJson = {
