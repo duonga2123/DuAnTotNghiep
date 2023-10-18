@@ -533,6 +533,7 @@ app.get('/success', async(req, res) => {
 
     const payerId = req.query.PayerID
     const paymentId = req.query.paymentId
+    const id=req.query._id
     let success="thanh toán thành công"
     
   
@@ -543,14 +544,14 @@ app.get('/success', async(req, res) => {
     paypal.payment.execute(paymentId, executePaymentJson, async(error, payment) => {
       if (error) {
         console.error(error.response);
-        const deletePayment=await Payment.findByIdAndDelete({_id:myId})
+        const deletePayment=await Payment.findByIdAndDelete({_id:id})
         if(!deletePayment){
           res.json(500).status("ko tìm thấy đơn hàng")
         }
         throw error;
       } else { 
         res.send('Thanh toán thành công!');
-        const updatePayment = await Payment.findOneAndUpdate({ _id: myId}, { success:success },{new:true});
+        const updatePayment = await Payment.findOneAndUpdate({ _id: id}, { success:success },{new:true});
         if (!updatePayment) {
           res.status(404).json({ message: 'Không tìm thấy thanh toán.' });
         }  
