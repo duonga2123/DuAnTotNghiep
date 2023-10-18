@@ -475,8 +475,10 @@ paypal.configure({
 });
 
 app.post('/pay/:_userId',async(req,res)=>{
-  const{totalAmount,currency}=req.query
+  const{totalAmount,currency,success}=req.body
   const userId=req.params._userId
+  const coin=totalAmount*10
+  success="đợi thanh toán"
   const createPaymentJson={
     intent:'sale',
     payer:{
@@ -496,7 +498,7 @@ app.post('/pay/:_userId',async(req,res)=>{
     }
   };
   const user=User.findById(userId)
-  paypal.payment.create(createPaymentJson,(error,payment)=>{
+  paypal.payment.create(createPaymentJson, async(error,payment)=>{
     if(error){
       throw error;
     }
@@ -506,7 +508,17 @@ app.post('/pay/:_userId',async(req,res)=>{
           res.status(500).json("không tìm thấy người dùng")
         }
         else{
+          
           if(payment.links[i].rel=== 'approval_url'){
+            const paymentData = new Payment({
+              userID:userId,
+              currency:currency,
+              totalAmount:totalAmount,
+              coin:coin,
+              date: new Date(),
+              success:success
+            });
+            await paymentData.save();
             res.status(500).json(payment.links[i].href);
           }
         }  
@@ -517,8 +529,11 @@ app.post('/pay/:_userId',async(req,res)=>{
 
 app.get('/success', async(req, res) => {
   try{
-    const payerId = req.query.PayerID;
-    const paymentId = req.query.paymentId;
+
+    const payerId = req.query.PayerID
+    const paymentId = req.query.paymentId
+   const success="thanh toán thành công"
+    
   
     const executePaymentJson = {
       payer_id: payerId,
@@ -527,27 +542,17 @@ app.get('/success', async(req, res) => {
     paypal.payment.execute(paymentId, executePaymentJson, async(error, payment) => {
       if (error) {
         console.error(error.response);
+        const deletePayment=await Payment.findByIdAndDelete({paymentId:paymentId})
+        if(!deletePayment){
+          res.json(500).status("ko tìm thấy đơn hàng")
+        }
         throw error;
-      } else {
+      } else { 
         res.send('Thanh toán thành công!');
-        const { userID } = req.params; 
-        const totalAmount=req.query.total
-        const currency=req.query.currency
-          const paymentData = new Payment({
-            userID:userID,
-            currency:currency,
-            totalAmount:totalAmount,
-            coin:0,
-            date: new Date()
-          });
-          await paymentData.save();
-          const user = await User.findById(userID);
-          if (user) {
-            user.payment.push(paymentData._id); 
-            await user.save();
-          } else {
-            res.status(404).json({ message: 'Không tìm thấy người dùng.' });
-          }
+        const updatePayment = await Payment.findOneAndUpdate({ paymentId: paymentId }, { success: success });
+        if (!updatePayment) {
+          res.status(404).json({ message: 'Không tìm thấy thanh toán.' });
+        }  
       }
     });
   }

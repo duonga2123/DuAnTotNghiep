@@ -5,7 +5,8 @@ const PaymentSchema = new mongoose.Schema({
     currency:String,
     totalAmount:String,
     coin:Number,
-    date:Date
+    date:Date,
+    success:String
 });
 const Payment = mongoose.model('payment', PaymentSchema);
 module.exports = Payment;
