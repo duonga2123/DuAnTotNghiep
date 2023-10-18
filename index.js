@@ -510,7 +510,6 @@ app.post('/pay/:_userId',async(req,res)=>{
  
   paypal.payment.create(createPaymentJson, async(error,payment)=>{
     if(error){
-      clearTimeout(paymentTimeout);
       throw error;
     }
     else{
@@ -528,9 +527,9 @@ app.post('/pay/:_userId',async(req,res)=>{
       }
     }
   });
-  req.connection.on('close', async () => {
-    await Payment.findOneAndDelete({ _id: paymentData._id }); // Xóa paymentData khi trang bị tắt
-  });
+  // req.connection.on('close', async () => {
+  //   await Payment.findOneAndDelete({ _id: paymentData._id }); // Xóa paymentData khi trang bị tắt
+  // });
 });
 
 app.get('/success/:id', async(req, res) => {
