@@ -530,11 +530,12 @@ app.get('/success', async(req, res) => {
         throw error;
       } else {
         res.send('Thanh toán thành công!');
-        const { userID, totalAmount, currency, coin } = req.body; 
+        const { userID } = req.params; 
+        const { total, currency } = req.query;
           const paymentData = new Payment({
             userID,
             currency,
-            total: totalAmount,
+            totalAmount:total,
             coin,
             date: new Date()
           });
