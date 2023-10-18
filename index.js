@@ -477,6 +477,14 @@ paypal.configure({
 
 app.post('/pay/:_userId',async(req,res)=>{
   const{totalAmount,currency}=req.body
+  const paymentData = new Payment({
+    userID:userId,
+    currency:currency,
+    totalAmount:totalAmount,
+    coin:coin,
+    date: new Date(),
+    success:success
+  });
   const userId=req.params._userId
   let coin=totalAmount*10
   const success="đợi thanh toán"
@@ -494,8 +502,8 @@ app.post('/pay/:_userId',async(req,res)=>{
       }
     ],
     redirect_urls:{
-      return_url: 'http://du-an-2023.vercel.app/success', 
-      cancel_url: 'http://du-an-2023.vercel.app/cancel', 
+      return_url: `http://du-an-2023.vercel.app/success/${paymentData._id}`, 
+      cancel_url: `http://du-an-2023.vercel.app/cancel`, 
     }
   };
   const user=User.findById(userId)
@@ -528,12 +536,12 @@ app.post('/pay/:_userId',async(req,res)=>{
   });
 });
 
-app.get('/success', async(req, res) => {
+app.get('/success/:id', async(req, res) => {
   try{
 
     const payerId = req.query.PayerID
     const paymentId = req.query.paymentId
-    const id=req.body._id
+    const id=req.params.id
     let success="thanh toán thành công"
     
   
