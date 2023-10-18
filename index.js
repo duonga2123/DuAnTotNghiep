@@ -488,6 +488,7 @@ app.post('/pay/:_userId',async(req,res)=>{
     date: new Date(),
     success:success
   });
+  let paymentid=paymentData._id
   const createPaymentJson={
     intent:'sale',
     payer:{
@@ -507,9 +508,7 @@ app.post('/pay/:_userId',async(req,res)=>{
     }
   };
   const user= await User.findById(userId)
-  let paymentTimeout = setTimeout(async () => {
-    await Payment.findOneAndDelete({ _id: paymentData._id });
-  }, 60000);
+ 
   paypal.payment.create(createPaymentJson, async(error,payment)=>{
     if(error){
       clearTimeout(paymentTimeout);
@@ -524,12 +523,18 @@ app.post('/pay/:_userId',async(req,res)=>{
           
           if(payment.links[i].rel=== 'approval_url'){
             await paymentData.save();
-            res.status(500).json(payment.links[i].href);
+            res.status(500).json({paymentid,paymentUrl: payment.links[i].href});
           }
         }  
       }
     }
   });
+  const handleUnload = async () => {
+    if (paymentid) {
+      await Payment.findOneAndDelete({ _id: paymentid });
+    }
+  };
+  window.addEventListener('beforeunload', handleUnload);
 });
 
 app.get('/success/:id', async(req, res) => {
