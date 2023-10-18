@@ -533,7 +533,7 @@ app.get('/success', async(req, res) => {
 
     const payerId = req.query.PayerID
     const paymentId = req.query.paymentId
-    const id=req.query._id
+    const id=req.body._id
     let success="thanh toán thành công"
     
   
