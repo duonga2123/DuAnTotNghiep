@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['admin', 'user','nhomdich'], default: 'user' },
+  payment:[{ type: mongoose.Schema.Types.ObjectId, ref: 'payment' }]
 });
 
 const User = mongoose.model('user', userSchema);

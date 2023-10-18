@@ -9,6 +9,7 @@ const Category=require('./models/CategoryModel')
 const multer=require('multer')
 const Manga=require('./models/MangaModel')
 const Chapter=require('./models/ChapterModel')
+const Payment=require('./models/PaymentModel')
 const{allowInsecurePrototypeAccess}=require('@handlebars/allow-prototype-access');
 const Handelbars=require('handlebars');
 const hbs=require('express-handlebars');
@@ -473,8 +474,9 @@ paypal.configure({
   client_secret:'EIfHAcScipust8EIlkT0ZMe9Ujag6KRz864VT2NTeQkOaCH1kED73c_GYeNyIoEj__w8PbuTJKKIp6Rz'
 });
 
-app.post('/pay',async(req,res)=>{
+app.post('/pay/:_userId',async(req,res)=>{
   const{totalAmount,currency}=req.body
+  const userId=req.params._userId
   const createPaymentJson={
     intent:'sale',
     payer:{
@@ -493,36 +495,65 @@ app.post('/pay',async(req,res)=>{
       cancel_url: 'http://localhost:8080/cancel', 
     }
   };
+  const user=User.findById(userId)
   paypal.payment.create(createPaymentJson,(error,payment)=>{
     if(error){
       throw error;
     }
     else{
       for (let i=0 ;i<payment.links.length  ;i++ ){
-        if(payment.links[i].rel=== 'approval_url'){
-          res.status(500).json(payment.links[i].href);
+        if(!user){
+          res.status(500).json("không tìm thấy người dùng")
         }
+        else{
+          if(payment.links[i].rel=== 'approval_url'){
+            res.status(500).json(payment.links[i].href);
+          }
+        }  
       }
     }
   });
 });
 
-app.get('/success', (req, res) => {
-  const payerId = req.query.PayerID;
-  const paymentId = req.query.paymentId;
-
-  const executePaymentJson = {
-    payer_id: payerId,
-  };
-
-  paypal.payment.execute(paymentId, executePaymentJson, (error, payment) => {
-    if (error) {
-      console.error(error.response);
-      throw error;
-    } else {
-      res.send('Thanh toán thành công!');
+app.get('/success', async(req, res) => {
+  try{
+    const payerId = req.query.PayerID;
+    const paymentId = req.query.paymentId;
+  
+    const executePaymentJson = {
+      payer_id: payerId,
+    };
+  
+    paypal.payment.execute(paymentId, executePaymentJson, async(error, payment) => {
+      if (error) {
+        console.error(error.response);
+        throw error;
+      } else {
+        res.send('Thanh toán thành công!');
+        const { userID, totalAmount, currency, coin } = req.body; 
+          const paymentData = new Payment({
+            userID,
+            currency,
+            total: totalAmount,
+            coin,
+            date: new Date()
+          });
+          await paymentData.save();
+          const user = await User.findById(userID);
+          if (user) {
+            user.payment.push(paymentData._id); 
+            await user.save();
+          } else {
+            res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+          }
+      }
+    });
+  }
+    catch(error){
+      console.error('Lỗi khi xử lý thanh toán:', error);
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi xử lý thanh toán.' });
     }
-  });
+  
 });
 
 app.get('/cancel', (req, res) => {
