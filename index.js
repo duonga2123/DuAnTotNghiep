@@ -519,14 +519,6 @@ app.post('/pay/:_userId',async(req,res)=>{
         else{
           
           if(payment.links[i].rel=== 'approval_url'){
-            const paymentData = new Payment({
-              userID:userId,
-              currency:currency,
-              totalAmount:totalAmount,
-              coin:coin,
-              date: new Date(),
-              success:success
-            });
             await paymentData.save();
             res.status(500).json(payment.links[i].href);
           }
