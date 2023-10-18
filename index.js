@@ -491,8 +491,8 @@ app.post('/pay/:_userId',async(req,res)=>{
       }
     ],
     redirect_urls:{
-      return_url: 'http://localhost:8080/success', 
-      cancel_url: 'http://localhost:8080/cancel', 
+      return_url: 'http://du-an-2023.vercel.app/success', 
+      cancel_url: 'http://du-an-2023.vercel.app/cancel', 
     }
   };
   const user=User.findById(userId)
