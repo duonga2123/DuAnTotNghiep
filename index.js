@@ -550,7 +550,7 @@ app.get('/success/:id', async(req, res) => {
         console.error(error.response);
         throw error;
       } else { 
-        res.send('Thanh toán thành công!');
+        
         const updatePayment = await Payment.findOneAndUpdate({ _id: id}, { success:success },{new:true});
         
         if (!updatePayment) {
@@ -569,7 +569,7 @@ app.get('/success/:id', async(req, res) => {
           { new: true }
         );
 
-        
+        res.send(totalAmount,'Thanh toán thành công!');
       }
     });
   }
