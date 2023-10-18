@@ -521,15 +521,14 @@ app.post('/pay/:_userId',async(req,res)=>{
           
           if(payment.links[i].rel=== 'approval_url'){
             await paymentData.save();
+            user.payment.push(paymentData._id)
             res.status(500).json(payment.links[i].href);
           }
         }  
       }
     }
   });
-  // req.connection.on('close', async () => {
-  //   await Payment.findOneAndDelete({ _id: paymentData._id }); // Xóa paymentData khi trang bị tắt
-  // });
+
 });
 
 app.get('/success/:id', async(req, res) => {
