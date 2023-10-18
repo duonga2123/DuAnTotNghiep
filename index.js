@@ -15,6 +15,7 @@ const Handelbars=require('handlebars');
 const hbs=require('express-handlebars');
 const methodOverride = require('method-override');
 const path=require('path')
+const myId = new mongoose.Types.ObjectId();
 
 var app=express();
 
@@ -542,14 +543,14 @@ app.get('/success', async(req, res) => {
     paypal.payment.execute(paymentId, executePaymentJson, async(error, payment) => {
       if (error) {
         console.error(error.response);
-        const deletePayment=await Payment.findByIdAndDelete({_id:mongoose.Types.ObjectId(paymentId)})
+        const deletePayment=await Payment.findByIdAndDelete({_id:myId})
         if(!deletePayment){
           res.json(500).status("ko tìm thấy đơn hàng")
         }
         throw error;
       } else { 
         res.send('Thanh toán thành công!');
-        const updatePayment = await Payment.findOneAndUpdate({ _id: mongoose.Types.ObjectId(paymentId) }, { success:success },{new:true});
+        const updatePayment = await Payment.findOneAndUpdate({ _id: myId}, { success:success },{new:true});
         if (!updatePayment) {
           res.status(404).json({ message: 'Không tìm thấy thanh toán.' });
         }  
