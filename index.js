@@ -522,6 +522,7 @@ app.post('/pay/:_userId',async(req,res)=>{
           if(payment.links[i].rel=== 'approval_url'){
             await paymentData.save();
             user.payment.push(paymentData._id)
+            await user.save()
             res.status(500).json(payment.links[i].href);
           }
         }  
