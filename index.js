@@ -531,7 +531,7 @@ app.get('/success', async(req, res) => {
       } else {
         res.send('Thanh toán thành công!');
         const { userID } = req.params; 
-        const totalAmount=parseFloat(req.query.total)
+        const totalAmount=req.query.total
         const currency=req.query.currency
         if(isNaN(totalAmount)){
           throw new Error("total ko hợp lệ")
