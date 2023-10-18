@@ -531,11 +531,15 @@ app.get('/success', async(req, res) => {
       } else {
         res.send('Thanh toán thành công!');
         const { userID } = req.params; 
-        const { total, currency } = req.query;
+        const totalAmount=parseFloat(req.query.total)
+        const currency=req.query.currency
+        if(isNaN(totalAmount)){
+          throw new Error("total ko hợp lệ")
+        }
           const paymentData = new Payment({
             userID:userID,
             currency:currency,
-            totalAmount:parseFloat(total),
+            totalAmount:totalAmount,
             coin:0,
             date: new Date()
           });
