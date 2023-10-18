@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const PaymentSchema = new mongoose.Schema({
     userID: String,
     currency:String,
-    totalAmount:Number,
+    totalAmount:String,
     coin:Number,
     date:Date
 });

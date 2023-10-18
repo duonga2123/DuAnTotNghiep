@@ -533,9 +533,6 @@ app.get('/success', async(req, res) => {
         const { userID } = req.params; 
         const totalAmount=req.query.total
         const currency=req.query.currency
-        if(isNaN(totalAmount)){
-          throw new Error("total ko hợp lệ")
-        }
           const paymentData = new Payment({
             userID:userID,
             currency:currency,
