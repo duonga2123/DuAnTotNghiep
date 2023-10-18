@@ -475,7 +475,7 @@ paypal.configure({
 });
 
 app.post('/pay/:_userId',async(req,res)=>{
-  const{totalAmount,currency}=req.body
+  const{totalAmount,currency}=req.query
   const userId=req.params._userId
   const createPaymentJson={
     intent:'sale',
