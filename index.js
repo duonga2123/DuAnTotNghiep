@@ -536,7 +536,7 @@ app.get('/success', async(req, res) => {
             userID,
             currency,
             totalAmount:total,
-            coin,
+            coin:0,
             date: new Date()
           });
           await paymentData.save();
