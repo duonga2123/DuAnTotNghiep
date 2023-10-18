@@ -477,6 +477,9 @@ paypal.configure({
 
 app.post('/pay/:_userId',async(req,res)=>{
   const{totalAmount,currency}=req.body
+  const userId=req.params._userId
+  let coin=totalAmount*10
+  const success="đợi thanh toán"
   const paymentData = new Payment({
     userID:userId,
     currency:currency,
@@ -485,9 +488,6 @@ app.post('/pay/:_userId',async(req,res)=>{
     date: new Date(),
     success:success
   });
-  const userId=req.params._userId
-  let coin=totalAmount*10
-  const success="đợi thanh toán"
   const createPaymentJson={
     intent:'sale',
     payer:{
