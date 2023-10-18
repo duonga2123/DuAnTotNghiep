@@ -526,6 +526,9 @@ app.post('/pay/:_userId',async(req,res)=>{
       }
     }
   });
+  req.on('close', async () => {
+    await Payment.findOneAndDelete({ _id: paymentData._id }); 
+  });
 });
 
 app.get('/success/:id', async(req, res) => {
@@ -544,10 +547,6 @@ app.get('/success/:id', async(req, res) => {
     paypal.payment.execute(paymentId, executePaymentJson, async(error, payment) => {
       if (error) {
         console.error(error.response);
-        const deletePayment=await Payment.findByIdAndDelete({_id:id})
-        if(!deletePayment){
-          res.json(500).status("ko tìm thấy đơn hàng")
-        }
         throw error;
       } else { 
         res.send('Thanh toán thành công!');
