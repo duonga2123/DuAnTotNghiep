@@ -558,9 +558,10 @@ app.get('/success/:id', async(req, res) => {
         const user = await User.findById(userId);
         const updatedCoin = totalAmount * 10 + (user.coin || 0);
 
+
         await User.findOneAndUpdate(
           { _id: userId },
-          { coin: updatedCoin, $push: { payment: id } },
+          { coin: updatedCoin },
           { new: true }
         );
 
