@@ -506,9 +506,13 @@ app.post('/pay/:_userId',async(req,res)=>{
       cancel_url: `http://du-an-2023.vercel.app/cancel`, 
     }
   };
-  const user=User.findById(userId)
+  const user= await User.findById(userId)
+  let paymentTimeout = setTimeout(async () => {
+    await Payment.findOneAndDelete({ _id: paymentData._id });
+  }, 60000);
   paypal.payment.create(createPaymentJson, async(error,payment)=>{
     if(error){
+      clearTimeout(paymentTimeout);
       throw error;
     }
     else{
@@ -525,9 +529,6 @@ app.post('/pay/:_userId',async(req,res)=>{
         }  
       }
     }
-  });
-  req.on('close', async () => {
-    await Payment.findOneAndDelete({ _id: paymentData._id }); 
   });
 });
 
