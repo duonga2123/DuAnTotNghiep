@@ -45,6 +45,10 @@ mongoose.connect(uri,{
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/admin", async (req, res) => {
+  res.render("admin");
+});
+
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
