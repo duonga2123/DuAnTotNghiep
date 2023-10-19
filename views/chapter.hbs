@@ -26,7 +26,6 @@
                     <th>manganame</th>
                     <th>number</th>
                     <th>viporfree</th>
-                    <th>image</th>
                     <th>nút</th>
                 </tr>
             </thead>
@@ -54,7 +53,25 @@
                             method="post" >
                             <button type="submit" >Delete</button>
                         </form>
-                        <button class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
+                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{this._id}}">Chi tiết</button>
+                        <!-- Modal -->
+                        <div id="imageModal{{this._id}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Ảnh chap</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Nơi hiển thị ảnh của chương -->
+                                        {{#each this.images}}
+                                        <img src="data:image/jpeg;base64,{{this}}" style="width: 100px; height: 100px;" loading="lazy">
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 {{/each}}
@@ -62,24 +79,6 @@
 
         </table>
     </div>
-    <script>
-    // Đoạn mã sẽ gửi yêu cầu lấy danh sách ảnh của chương theo ID khi nút "Chi tiết" được nhấn.
-    document.querySelectorAll('.detail-button').forEach(button => {
-        button.addEventListener('click', async () => {
-            const chapterId = button.getAttribute('data-chapter-id');
-            const response = await fetch(`/chapter/${chapterId}/images`);
-            const data = await response.json();
-
-            if (data.length > 0) {
-                const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join('');
-                // Hiển thị ảnh chap trong một cửa sổ hoặc modal
-                alert(imagesHtml); // Sử dụng alert() chỉ để minh họa, bạn có thể sử dụng cửa sổ modal hoặc thay đổi cách hiển thị ảnh theo mong muốn.
-            } else {
-                alert('Chưa có ảnh cho chương này.');
-            }
-        });
-    });
-</script>
 </body>
 
 </html>
