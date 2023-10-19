@@ -17,8 +17,8 @@
         <hr>
         <h2>Danh sách chap</h2> <br>
         <form method="post" action="/search">
-  <input type="text" name="mangaName" placeholder="Tìm kiếm theo tên truyện">
-  <button type="submit">Search</button>
+            <input type="text" name="mangaName" placeholder="Tìm kiếm theo tên truyện">
+            <button type="submit">Search</button>
         </form>
         <table class="table table-bordered">
             <thead>
@@ -40,7 +40,8 @@
                         <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; ">
                             {{#each this.images}}
                             <div style=" width: calc(100% / 11);  margin: 5px;">
-                                <img src="data:image/jpeg;base64,{{this}}" style="width: 100px; height: 100px;" loading="lazy">
+                                <img src="data:image/jpeg;base64,{{this}}" style="width: 100px; height: 100px;"
+                                    loading="lazy">
                             </div>
                             {{/each}}
                         </div>
@@ -50,24 +51,22 @@
                             <button type="submit">Edit</button>
                         </form>
                         <form action="/chapterdelete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')"
-                            method="post" >
-                            <button type="submit" >Delete</button>
+                            method="post">
+                            <button type="submit">Delete</button>
                         </form>
-                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{this._id}}">Chi tiết</button>
-                        <!-- Modal -->
-                        <div id="imageModal{{this._id}}" class="modal fade" role="dialog">
+                        <button class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
+                        <div id="image-modal" class="modal fade" role="dialog">
                             <div class="modal-dialog">
-                                <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Ảnh chap</h4>
+                                        <h4 class="modal-title">Danh sách ảnh chương</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <!-- Nơi hiển thị ảnh của chương -->
-                                        {{#each this.images}}
-                                        <img src="data:image/jpeg;base64,{{this}}" style="width: 100px; height: 100px;" loading="lazy">
-                                        {{/each}}
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                                     </div>
                                 </div>
                             </div>
@@ -79,6 +78,32 @@
 
         </table>
     </div>
+    <script>
+        $(document).ready(function () {
+            $(".detail-button").on("click", function () {
+                var chapterId = $(this).data("chapter-id");
+                $.ajax({
+                    type: "GET",
+                    url: "/chapter/" + chapterId + "/images",
+                    success: function (data) {
+                        if (data.length > 0) {
+                            var imagesHtml = data.map(function (image) {
+                                return '<img src="data:image/jpeg;base64,' + image + '" style="width: 100px; height: 100px;" loading="lazy">';
+                            }).join('');
+                            $("#image-modal .modal-body").html(imagesHtml);
+                            $("#image-modal").modal("show");
+                        } else {
+                            alert("Chưa có ảnh cho chương này.");
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Lỗi khi lấy dữ liệu ảnh:", error);
+                        alert("Đã xảy ra lỗi khi lấy dữ liệu ảnh.");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
