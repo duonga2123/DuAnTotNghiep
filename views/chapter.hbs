@@ -37,7 +37,7 @@
                     <td>{{this.mangaName}}</td>
                     <td>{{this.number}}</td>
                     <td>{{this.viporfree}}</td>
-                    <td>
+                    {{!-- <td>
                         <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; ">
                             {{#each this.images}}
                             <div style=" width: calc(100% / 11);  margin: 5px;">
@@ -45,7 +45,7 @@
                             </div>
                             {{/each}}
                         </div>
-                    </td>
+                    </td> --}}
                     <td>
                         <form action="/chapterput/{{_id}}" method="get">
                             <button type="submit">Edit</button>
@@ -54,6 +54,7 @@
                             method="post" >
                             <button type="submit" >Delete</button>
                         </form>
+                        <button class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
                     </td>
                 </tr>
                 {{/each}}
@@ -61,7 +62,24 @@
 
         </table>
     </div>
+    <script>
+    // Đoạn mã sẽ gửi yêu cầu lấy danh sách ảnh của chương theo ID khi nút "Chi tiết" được nhấn.
+    document.querySelectorAll('.detail-button').forEach(button => {
+        button.addEventListener('click', async () => {
+            const chapterId = button.getAttribute('data-chapter-id');
+            const response = await fetch(`/chapter/${chapterId}/images`);
+            const data = await response.json();
 
+            if (data.length > 0) {
+                const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join('');
+                // Hiển thị ảnh chap trong một cửa sổ hoặc modal
+                alert(imagesHtml); // Sử dụng alert() chỉ để minh họa, bạn có thể sử dụng cửa sổ modal hoặc thay đổi cách hiển thị ảnh theo mong muốn.
+            } else {
+                alert('Chưa có ảnh cho chương này.');
+            }
+        });
+    });
+</script>
 </body>
 
 </html>
