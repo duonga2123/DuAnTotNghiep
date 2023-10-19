@@ -23,6 +23,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>id</th>
                     <th>manganame</th>
                     <th>number</th>
                     <th>viporfree</th>
@@ -33,19 +34,10 @@
             <tbody>
                 {{#each data}}
                 <tr>
+                    <td>{{this._id}}</td>
                     <td>{{this.mangaName}}</td>
                     <td>{{this.number}}</td>
                     <td>{{this.viporfree}}</td>
-                    {{!-- <td>
-                        <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; ">
-                            {{#each this.images}}
-                            <div style=" width: calc(100% / 11);  margin: 5px;">
-                                <img src="data:image/jpeg;base64,{{this}}" style="width: 100px; height: 100px;"
-                                    loading="lazy">
-                            </div>
-                            {{/each}}
-                        </div>
-                    </td> --}}
                     <td>
                         <form action="/chapterput/{{_id}}" method="get">
                             <button type="submit">Edit</button>
