@@ -919,47 +919,18 @@
 
 		const chapterManagerLink = document.getElementById('chapterManagerLink');
 
-		const registerClickEvent = () => {
-			const chapterDetailButtons = document.querySelectorAll('.detail-button');
-
-			chapterDetailButtons.forEach(button => {
-				button.addEventListener('click', function (event) {
-					const chapterId = this.getAttribute('data-chapter-id');
-					fetch(`/chapter/${chapterId}/images`)
-						.then(response => response.json())
-						.then(data => {
-							if (data.length > 0) {
-								const modalBody = document.querySelector('#image-modal .modal-body');
-								const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join('');
-								modalBody.innerHTML = imagesHtml;
-								$('#image-modal').modal('show');
-							} else {
-								alert('Chưa có ảnh cho chương này.');
-							}
-						})
-						.catch(error => {
-							console.error('Lỗi khi lấy dữ liệu ảnh:', error);
-							alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
-						});
-				});
-			});
-		};
-
-		const loadChapterContent = () => {
+		chapterManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
-					registerClickEvent();
+					 setupChapterPage();
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
-		};
-
-		chapterManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
-			loadChapterContent();
 		});
+
 	</script>
 </body>
 
