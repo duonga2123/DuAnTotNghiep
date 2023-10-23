@@ -920,7 +920,7 @@
 		const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
