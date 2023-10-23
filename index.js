@@ -316,6 +316,19 @@ app.get('/mangas/category/:categoryName', async (req, res) => {
   }
 });
 
+app.get('/top10manga', async (req, res) => {
+  try {
+    const topManga = await Manga.aggregate([
+      { $sort: { view: -1 } }, // Sắp xếp theo lượt xem giảm dần
+      { $limit: 10 } // Lấy 10 bản ghi đầu tiên
+    ]);
+    res.json(topManga);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách top 10 truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách top 10 truyện' });
+  }
+});
+
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
   res.render("addchap");

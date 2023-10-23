@@ -702,52 +702,14 @@ body {
 					<table>
 						<thead>
 							<tr>
-								<th>User</th>
-								<th>Date Order</th>
-								<th>Status</th>
+								<th>Image</th>
+								<th>Manganame</th>
+								<th>Author</th>
+								<th>View</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status process">Process</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
+						<tbody id="manga-list" >
+							
 						</tbody>
 					</table>
 				</div>
@@ -846,6 +808,29 @@ switchMode.addEventListener('change', function () {
 		document.body.classList.remove('dark');
 	}
 })
+
+ fetch('/top10manga')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('manga-list');
+
+            // Xóa dữ liệu cũ trong tbody
+            tbody.innerHTML = '';
+
+            // Thêm dữ liệu mới từ API vào tbody
+            data.forEach(manga => {
+                const row = `<tr>
+                                <td>
+                                    <img src="${manga.image}" alt="Manga Image">
+                                </td>
+                                <td>${manga.name}</td>
+                                <td>${manga.author}</td>
+                                <td>${manga.view}</td>
+                            </tr>`;
+                tbody.innerHTML += row;
+            });
+        })
+        .catch(error => console.error('Đã xảy ra lỗi:', error));
     </script>
 </body>
 </html>
