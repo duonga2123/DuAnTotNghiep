@@ -907,7 +907,7 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			 event.preventDefault(); 
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
@@ -917,20 +917,18 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		const chapterManagerLink = document.getElementById('chapterManagerLink');
+			const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
-			
+			 event.preventDefault(); 
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
-					 setupChapterPage();
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-
 	</script>
 </body>
 
