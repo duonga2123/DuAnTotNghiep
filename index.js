@@ -316,11 +316,11 @@ app.get('/mangas/category/:categoryName', async (req, res) => {
   }
 });
 
-app.get('/top10manga', async (req, res) => {
+app.get('/top5manga', async (req, res) => {
   try {
     const topManga = await Manga.aggregate([
       { $sort: { view: -1 } }, // Sắp xếp theo lượt xem giảm dần
-      { $limit: 10 } // Lấy 10 bản ghi đầu tiên
+      { $limit: 5 } // Lấy 5 bản ghi đầu tiên
     ]);
     res.json(topManga);
   } catch (error) {

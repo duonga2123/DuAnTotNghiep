@@ -809,7 +809,7 @@ switchMode.addEventListener('change', function () {
 	}
 })
 
- fetch('/top10manga')
+ fetch('/top5manga')
         .then(response => response.json())
         .then(data => {
             const tbody = document.getElementById('manga-list');
