@@ -667,7 +667,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/getchap">
+				<a id="chapterManagerLink" href="#">
 					<i class='bx bx bxs-file'></i>
 					<span class="text">Chapter Manager</span>
 				</a>
@@ -909,6 +909,19 @@
 		mangaManagerLink.addEventListener("click", function (event) {
 			 event.preventDefault(); 
 			fetch('/mangass')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+
+			const chapterManagerLink = document.getElementById('chapterManagerLink');
+
+		chapterManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
+			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
