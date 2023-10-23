@@ -96,7 +96,12 @@
                 });
             });
         }
-        document.addEventListener('DOMContentLoaded', setupChapterPage);
+            document.addEventListener('DOMContentLoaded', function () {
+        setupChapterPage();
+        $('.detail-button').on('click', function () {
+            $('#image-modal').modal('show');
+        });
+    })
     </script>
 </body>
 
