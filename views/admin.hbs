@@ -661,7 +661,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/mangass">
+				<a id="mangaManagerLink" href="#">
 					<i class='bx bxs-book-bookmark'></i>
 					<span class="text">Manga Manager</span>
 				</a>
@@ -904,9 +904,10 @@
 			})
 			.catch(error => console.error('Đã xảy ra lỗi:', error));
 
-		const mangaManagerLink = document.querySelectorAll("#sidebar .side-menu.top li")[1].querySelector("a");
+		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
-		mangaManagerLink.addEventListener("click", function () {
+		mangaManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
