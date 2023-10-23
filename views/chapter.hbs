@@ -671,14 +671,14 @@
                             <td>{{this.number}}</td>
                             <td>{{this.viporfree}}</td>
                             <td>
-                                <form action="/chapterput/{{_id}}" method="get">
+                                <form style="margin-top: 10dp;" action="/chapterput/{{_id}}" method="get">
                                     <button type="submit">Edit</button>
                                 </form>
-                                <form action="/chapterdelete/{{this._id}}"
+                                <form style="margin-top: 10dp;" action="/chapterdelete/{{this._id}}"
                                     onclick="return confirm('ban co muon xoa khong ?')" method="post">
                                     <button style="width: 100dp; height:30dp;  margin-top: 5dp; background-color:#FF0000 ;" type="submit">Delete</button>
                                 </form>
-                                <button class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
+                                <button style="margin-top: 10dp;width: 100dp; height:30dp; background-color:#FF0000 ;" class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
                                 <div id="image-modal" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
