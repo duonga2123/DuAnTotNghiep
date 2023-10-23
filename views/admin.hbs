@@ -821,7 +821,7 @@ switchMode.addEventListener('change', function () {
             data.forEach(manga => {
                 const row = `<tr>
                                 <td>
-                                    <img src="${manga.image}" alt="Manga Image">
+                                    <img src="data:image/jpeg;base64,${manga.image}" alt="Manga Image">
                                 </td>
                                 <td>${manga.name}</td>
                                 <td>${manga.author}</td>
