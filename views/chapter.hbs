@@ -14,8 +14,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            
-           
+
+
         }
 
         a {
@@ -659,7 +659,7 @@
                             <th style="text-align: center;">manganame</th>
                             <th style="text-align: center;">number</th>
                             <th style="text-align: center;">viporfree</th>
-                             <th style="text-align: center;">price</th>
+                            <th style="text-align: center;">price</th>
                             <th style="text-align: center;">nút</th>
                         </tr>
                     </thead>
@@ -674,13 +674,19 @@
                             <td>{{this.price}}</td>
                             <td>
                                 <form style="margin-top: 10px;" action="/chapterput/{{_id}}" method="get">
-                                    <button style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;" type="submit">Edit</button>
+                                    <button
+                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
+                                        type="submit">Edit</button>
                                 </form>
                                 <form style="margin-top: 10dp;" action="/chapterdelete/{{this._id}}"
                                     onclick="return confirm('ban co muon xoa khong ?')" method="post">
-                                    <button style="width: 100px; height:30px;  margin-top: 5px; background-color:#FF0000 ; border: none; border-radius: 5px; color: white;" type="submit">Delete</button>
+                                    <button
+                                        style="width: 100px; height:30px;  margin-top: 5px; background-color:#FF0000 ; border: none; border-radius: 5px; color: white;"
+                                        type="submit">Delete</button>
                                 </form>
-                                <button style="margin-top: 10px;width: 100px; height:30px; background-color:#ecb305 ; border: none; border-radius: 5px; color: white;" class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
+                                <button
+                                    style="margin-top: 10px;width: 100px; height:30px; background-color:#ecb305 ; border: none; border-radius: 5px; color: white;"
+                                    class="detail-button" data-chapter-id="{{this._id}}">Chi tiết</button>
                                 <div id="image-modal" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -719,7 +725,16 @@
                         .then(data => {
                             if (data.length > 0) {
                                 const modalBody = document.querySelector('#image-modal .modal-body');
-                                const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join('');
+                                { { !-- const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --} }
+                                data.forEach(image => {
+                                    const imgElement = document.createElement('img');
+                                    imgElement.src = image;
+                                    imgElement.style.width = '100px';
+                                    imgElement.style.height = '100px';
+                                    imgElement.style.margin = '5px';
+                                    imgElement.style.objectFit = 'cover';
+                                    modalBody.appendChild(imgElement);
+                                });
                                 modalBody.innerHTML = imagesHtml;
                                 $('#image-modal').modal('show');
                             } else {
