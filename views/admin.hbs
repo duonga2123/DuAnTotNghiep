@@ -895,7 +895,7 @@
 				data.forEach(manga => {
 					const row = `<tr>
                                 <td>
-                                    <img src="${manga.image}" alt="Manga Image">
+                                <img src="${manga.image}" alt="Manga Image">
                                 </td>
                                 <td>${manga.manganame}</td>
                                 <td>${manga.author}</td>
@@ -939,6 +939,7 @@
 
         chapterDetailButtons.forEach(button => {
             button.addEventListener('click', function (event) {
+				event.preventDefault();
                 const chapterId = this.getAttribute('data-chapter-id');
                 fetch(`/chapter/${chapterId}/images`)
                     .then(response => response.json())
