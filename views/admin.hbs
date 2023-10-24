@@ -940,7 +940,7 @@
         chapterDetailButtons.forEach(button => {
             button.addEventListener('click', function (event) {
                 const chapterId = this.getAttribute('data-chapter-id');
-                fetch(`/chapter/${chapterId}`)
+                fetch(`/chapterchitiet/${chapterId}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.length > 0) {

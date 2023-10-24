@@ -521,7 +521,7 @@ app.get('/mangas/:manganame/chapters', async (req, res) => {
   }
 });
 
-app.get('/chapter/:_id', async (req, res) => {
+app.get('/chapterchitiet/:_id', async (req, res) => {
   try {
     const chapterid = req.params._id;
 
