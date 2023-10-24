@@ -946,7 +946,6 @@
                     .then(data => {
                         if (data.length > 0) {
                             const modalBody = document.querySelector('#image-modal .modal-body');
-                            {{!-- const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --}}
                             modalBody.innerHTML = '';
 							  data.forEach(image => {
                                     const imgElement = document.createElement('img');
