@@ -67,19 +67,7 @@
             <div class="row">
                 <span class="col-lg-2"></span>
                 <label class="col-lg-2">image: </label>
-                <input class="col-lg-4" required type="file" id="image" name="image" accept="image/*" value="" multiple>
-                {{!-- <br>
-                {{#if data.images}}
-                 <td >
-                        <div  style="display: flex; flex-wrap: wrap; justify-content: flex-start; ">
-                            {{#each data.images}}
-                            <div style=" width: calc(100% / 11);  margin: 10px;">
-                                <img src="data:image/jpeg;base64,{{this}}" style="width: 50px; height: 50px;" loading="lazy">
-                            </div>
-                            {{/each}}
-                        </div>
-                    </td>
-                    {{/if}} --}}
+               <textarea class="col-lg-4"  required id="images" name="images" placeholder="Nhập các liên kết ảnh, mỗi liên kết trên một dòng" rows="10" cols="30">{{data.images}}</textarea>
             </div><br>
             
             <div class="row">

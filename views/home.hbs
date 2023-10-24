@@ -665,7 +665,7 @@
         {{#each manga}}
         <tr>
           <td>{{this.manganame}}</td>
-          <td><img src="data:image/jpeg;base64,{{this.image}}" style="width: 100px;height: 100px;" loading="lazy"></td>
+          <td><img src="{{this.image}}" style="width: 100px;height: 100px;" loading="lazy"></td>
           <td>{{this.author}}</td>
           <td>{{this.content}}</td>
           <td>{{this.category}}</td>
@@ -675,12 +675,12 @@
             <button class="btn btn-info" onclick="showChapters('{{this.manganame}}')">Chi tiết</button>
           </td> --}}
           <td>
-            {{!-- <form action="/edit/{{_id}}" method="get">
-              <button type="submit">Edit</button>
+            <form style="margin-top: 10px;" action="/mangaput/{{this._id}}" method="get">
+              <button style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;" type="submit">Edit</button>
             </form>
-            <form action="/delete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')" method="post">
-              <button type="submit">Delete</button>
-            </form> --}}
+            <form style="margin-top: 10px;" action="/mangadelete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')" method="post">
+              <button style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;" type="submit">Delete</button>
+            </form>
           </td>
         </tr>
         {{/each}}

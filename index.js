@@ -156,20 +156,16 @@ app.get('/mangas', async (req, res) => {
   }
 });
 
-app.post('/mangapost', upload.single('image'), async (req, res) => {
+app.post('/mangapost', async (req, res) => {
   try {
-    const { manganame, author, content, category, view, like } = req.body;
-    const imageBuffer = req.file ? req.file.buffer : null;
+    const { manganame, author, content, category, view, like, image } = req.body;
     const categoryObject = await Category.findOne({ categoryname: category });
 
     if (!categoryObject) {
       return res.status(404).json({ message: 'Thể loại không tồn tại.' });
     }
 
-    const manga = new Manga({ manganame, author, content, category, view, like });
-    if (imageBuffer) {
-      manga.image = imageBuffer.toString('base64');
-    }
+    const manga = new Manga({ manganame, author, content, category, view, like, image });
     await manga.save();
 
     categoryObject.manga.push(manga._id);
@@ -185,8 +181,7 @@ app.post('/mangapost', upload.single('image'), async (req, res) => {
 app.post('/mangaput/:_id', upload.single('image'), async (req, res) => {
   try {
     const mangaId = req.params._id;
-    const { manganame, author, content, category, view, like } = req.body;
-    const imageBuffer = req.file ? req.file.buffer : null;
+    const { manganame, author, content, category, view, like, image } = req.body;
 
     const manga = await Manga.findById(mangaId);
 
@@ -214,10 +209,7 @@ app.post('/mangaput/:_id', upload.single('image'), async (req, res) => {
     manga.category = category;
     manga.view = view;
     manga.like = like;
-
-    if (imageBuffer) {
-      manga.image = imageBuffer.toString('base64');
-    }
+    manga.image=image;
 
     await manga.save();
 
