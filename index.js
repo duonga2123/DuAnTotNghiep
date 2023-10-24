@@ -267,6 +267,8 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
 
     manga.chapters.forEach(chapter => {
       chapterSet.add(chapter._id);
+      chapterSet.add(chapter.number);
+      chapterSet.add(chapter.viporfree);
     });
 
     const uniqueChapters = [...chapterSet];
