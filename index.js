@@ -443,14 +443,14 @@ app.get("/chapterput/:_id", upload.array('image'), async (req, res) => {
     });
 });
 
-app.post('/chapterput/:_id', upload.array('image'), async (req, res) => {
+app.post('/chapterput/:_id', async (req, res) => {
   try {
     const chapterId = req.params._id;
-    const { mangaName, number, viporfree, price } = req.body;
-    const images = req.files.map((file) => file.buffer.toString('base64'));
+    const { mangaName, number, viporfree, price,images } = req.body;
+    const imageArray=images.split('\n')
 
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, price, images
+      mangaName, number, viporfree, price, images:imageArray
     }, { new: true });
 
     if (!chapter) {
