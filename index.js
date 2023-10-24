@@ -360,6 +360,50 @@ app.get('/viporfrees', async (req, res) => {
   }
 });
 
+app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
+  try {
+    const { userId, chapterId } = req.params;
+
+    // Kiểm tra người dùng và chương có tồn tại hay không
+    const user = await User.findById(userId);
+    const chapter = await Chapter.findById(chapterId);
+
+    if (!user || !chapter) {
+      return res.status(404).json({ message: 'Người dùng hoặc chương không tồn tại' });
+    }
+
+    
+    const chapterPurchased = user.purchasedChapters.includes(chapterId);
+
+    if (chapterPurchased) {
+      return res.status(400).json({ message: 'Chương đã được mua trước đó' });
+    }
+
+    const chapterPrice = chapter.price;
+
+    if (user.coin < chapterPrice) {
+      return res.status(400).json({ message: 'Không đủ coin để mua chương' });
+    }
+
+    user.coin -= chapterPrice;
+    await user.save();
+
+    if (chapter.viporfree === 'vip' && user.role !== 'admin') {
+      chapter.viporfree = 'free';
+      await chapter.save();
+    }
+
+  
+    user.purchasedChapters.push(chapterId);
+    await user.save();
+
+    res.status(200).json({ message: 'Mua chương thành công và cập nhật trạng thái chương' });
+  } catch (error) {
+    console.error('Lỗi khi mua chương:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi mua chương' });
+  }
+});
+
 app.post('/chapters', upload.array('image',30), async (req, res) => {
   try {
     const { mangaName, number, viporfree } = req.body;
@@ -398,11 +442,11 @@ app.get("/chapterput/:_id",upload.array('image'), async (req, res) => {
 app.post('/chapterput/:_id', upload.array('image'), async (req, res) => {
   try {
     const chapterId = req.params._id;
-    const { mangaName, number, viporfree } = req.body;
+    const { mangaName, number, viporfree,price } = req.body;
     const images = req.files.map((file) => file.buffer.toString('base64'));
 
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, images
+      mangaName, number, viporfree, price ,images
     }, { new: true });
 
     if (!chapter) {
