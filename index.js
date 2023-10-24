@@ -442,11 +442,11 @@ app.get("/chapterput/:_id",upload.array('image'), async (req, res) => {
 app.post('/chapterput/:_id', upload.array('image'), async (req, res) => {
   try {
     const chapterId = req.params._id;
-    const { mangaName, number, viporfree,price } = req.body;
-    const images = req.files.map((file) => file.buffer.toString('base64'));
+    const { price } = req.body;
+    
 
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, price ,images
+      price 
     }, { new: true });
 
     if (!chapter) {
@@ -736,13 +736,13 @@ app.post('/register', async (req, res) => {
   app.post('/userput/:id', async (req, res) => {
     try {
       const userId = req.params.id;
-      const { username,password,purchasedChapters } = req.body;
+      const { username,password} = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
   
       const user= await User.findByIdAndUpdate(
         userId,
         { username,
-          password:hashedPassword, purchasedChapters },
+          password:hashedPassword },
         { new: true }
       );
   
