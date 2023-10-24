@@ -469,7 +469,7 @@ app.post('/chapterput/:_id', async (req, res) => {
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chương' });
     }
-    const manga = await Manga.findOne(chapter.mangaName);
+    const manga = await Manga.findOne({ mangaName: mangaName });
     if (manga) {
       manga.chapters.push(chapterId);
       await manga.save();
