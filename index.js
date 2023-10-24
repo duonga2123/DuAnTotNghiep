@@ -538,6 +538,7 @@ app.get('/chapter/:_id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
   }
 });
+
 app.get('/chapter/:_id/images', async (req, res) => {
   try {
     const chapterid = req.params._id;
