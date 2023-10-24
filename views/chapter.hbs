@@ -3,6 +3,7 @@
 
 <head>
     <title>Chapter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
@@ -695,7 +696,6 @@
                                                 <h4 class="modal-title">Danh sách ảnh chương</h4>
                                             </div>
                                             <div class="modal-body">
-                                                
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default"
@@ -724,6 +724,7 @@
                         .then(data => {
                             if (data.length > 0) {
                                 const modalBody = document.querySelector('#image-modal .modal-body');
+                                { { !-- const imagesHtml = data.map(image => `<img src="data:image/jpeg;base64,${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --} }
                                 modalBody.innerHTML = '';
                                 data.forEach(image => {
                                     const imgElement = document.createElement('img');
