@@ -470,10 +470,12 @@ app.post('/chapterput/:_id', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy chương' });
     }
     const manga = await Manga.findOne({ manganame: mangaName });
-    if (manga) {
-      manga.chapters.push(chapterId);
-      await manga.save();
+    if (!manga) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
+      manga.chapters.push(chapter._id);
+      await manga.save();
+
     res.json({ message: 'update thành công' });
   } catch (error) {
     console.error('Lỗi khi cập nhật chương:', error);
