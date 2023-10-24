@@ -418,7 +418,7 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 app.post('/chapters', async (req, res) => {
   try {
     const { mangaName, number, viporfree, image } = req.body;
-    const images = image.split('\n');
+    const images=image.split('\n')
     
 
     const manga = await Manga.findOne({ manganame: mangaName });
