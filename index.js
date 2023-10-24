@@ -178,7 +178,19 @@ app.post('/mangapost', async (req, res) => {
   }
 });
 
-app.post('/mangaput/:_id', upload.single('image'), async (req, res) => {
+app.get("/mangaput/:_id", async (req, res) => {
+  const id = req.params._id;
+  Manga.findById(id)
+    .then(manga => {
+      res.render("editmanga", { manga });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send("Internal server error");
+    });
+});
+
+app.post('/mangaput/:_id', async (req, res) => {
   try {
     const mangaId = req.params._id;
     const { manganame, author, content, category, view, like, image } = req.body;
@@ -431,7 +443,7 @@ app.post('/chapters', async (req, res) => {
   }
 });
 
-app.get("/chapterput/:_id", upload.array('image'), async (req, res) => {
+app.get("/chapterput/:_id", async (req, res) => {
   const id = req.params._id;
   Chapter.findById(id)
     .then(data => {
