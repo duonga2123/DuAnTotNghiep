@@ -531,8 +531,18 @@ app.get('/chapter/:_id/images', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
 
-    // Trả về danh sách ảnh của chương
-    res.json(chapter.images);
+    const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
+    const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterId);
+    const nextChapter = currentChapterIndex < chapters.length - 1 ? chapters[currentChapterIndex + 1]._id : null;
+    const prevChapter = currentChapterIndex > 0 ? chapters[currentChapterIndex - 1]._id : null;
+
+    const responseData = {
+      images: chapter.images,
+      nextchap: nextChapter,
+      prevchap: prevChapter
+    };
+
+    res.json(responseData);
   } catch (error) {
     console.error('Lỗi khi lấy danh sách ảnh chap:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
