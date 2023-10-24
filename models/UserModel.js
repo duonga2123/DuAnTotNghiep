@@ -7,7 +7,10 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin', 'user','nhomdich'], default: 'user' },
   payment:[{ type: mongoose.Schema.Types.ObjectId, ref: 'payment' }],
   coin:Number,
-  purchasedChapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'chapter' }]
+  purchasedChapters: [{
+    chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'chapter' },
+    isChapterFree: Boolean, 
+  }]
 });
 
 const User = mongoose.model('user', userSchema);
