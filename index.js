@@ -419,20 +419,24 @@ app.post('/chapters', async (req, res) => {
   try {
     const { mangaName, number, viporfree, images } = req.body;
    
-    const imageArray=images.split('\n')
-
-    const manga = await Manga.findOne({ manganame: mangaName });
-    if (!manga) {
-      return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
+    if(images){
+      const imageArray=images.split('\n')
+      const manga = await Manga.findOne({ manganame: mangaName });
+      if (!manga) {
+        return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
+      }
+  
+      const chapter = new Chapter({ mangaName, number, viporfree, images:imageArray });
+      await chapter.save();
+  
+      manga.chapters.push(chapter._id);
+      await manga.save();
+  
+      res.status(201).json(chapter);
     }
-
-    const chapter = new Chapter({ mangaName, number, viporfree, images:imageArray });
-    await chapter.save();
-
-    manga.chapters.push(chapter._id);
-    await manga.save();
-
-    res.status(201).json(chapter);
+    else{
+      res.status(404).json({message:'lỗi '})
+    }
   } catch (error) {
     console.error('Lỗi khi tạo chương:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo chương' });
