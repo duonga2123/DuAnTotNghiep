@@ -497,8 +497,7 @@ app.post('/chapterdelete/:_id', async (req, res) => {
       manga.chapters = manga.chapters.filter((id) => id.toString() !== chapterId);
       await manga.save();
     }
-
-    res.json({ message: 'Chương đã được xóa thành công.' });
+console.log('xóa thành công')
   } catch (error) {
     console.error('Lỗi khi xóa chương:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa chương.' });
