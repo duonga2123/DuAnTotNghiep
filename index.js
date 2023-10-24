@@ -417,7 +417,8 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 
 app.post('/chapters', async (req, res) => {
   try {
-    const { mangaName, number, viporfree, images } = req.body;
+    const { mangaName, number, viporfree, image } = req.body;
+    const images = image.split('\n');
     
 
     const manga = await Manga.findOne({ manganame: mangaName });
@@ -425,7 +426,7 @@ app.post('/chapters', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
-    const chapter = new Chapter({ mangaName, number, viporfree, images:[images] });
+    const chapter = new Chapter({ mangaName, number, viporfree, images });
     await chapter.save();
 
     manga.chapters.push(chapter._id);
