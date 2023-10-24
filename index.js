@@ -532,7 +532,7 @@ app.get('/chapter/:_id/images', async (req, res) => {
     }
 
     const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
-    const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterId);
+    const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
     const nextChapter = currentChapterIndex < chapters.length - 1 ? chapters[currentChapterIndex + 1]._id : null;
     const prevChapter = currentChapterIndex > 0 ? chapters[currentChapterIndex - 1]._id : null;
 
