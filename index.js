@@ -264,14 +264,15 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
     const { manganame, author, content, image, category, view, like, chapters } = manga;
 
     const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
-
+    const uniqueChapters = [];
+    
     manga.chapters.forEach(chapter => {
-      chapterSet.add(chapter._id);
-      chapterSet.add(chapter.number);
-      chapterSet.add(chapter.viporfree);
+      if (!chapterSet.has(chapter._id)) {
+        chapterSet.add(chapter._id);
+        uniqueChapters.push(chapter);
+      }
     });
-
-    const uniqueChapters = [...chapterSet];
+    
 
     const response = {
       manganame: manganame,
@@ -281,7 +282,7 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
       category: category,
       view: view,
       like: like,
-      totalChapters: chapters.length,
+      totalChapters: uniqueChapters.length,
       chapters: uniqueChapters.map(chapter => ({
         idchap: chapter._id,
         namechap: chapter.number,
