@@ -736,13 +736,13 @@ app.post('/register', async (req, res) => {
   app.post('/userput/:id', async (req, res) => {
     try {
       const userId = req.params.id;
-      const { username,password } = req.body;
+      const { username,password,purchasedChapters } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
   
       const user= await User.findByIdAndUpdate(
         userId,
         { username,
-          password:hashedPassword },
+          password:hashedPassword, purchasedChapters },
         { new: true }
       );
   
