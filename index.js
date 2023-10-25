@@ -344,6 +344,31 @@ app.get('/top5manga', async (req, res) => {
   }
 });
 
+app.post('/user/addFavoriteManga/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { mangaId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
+    // Kiểm tra xem truyện đã tồn tại trong danh sách yêu thích hay chưa
+    if (user.favoriteManga.includes(mangaId)) {
+      return res.status(400).json({ message: 'Truyện đã có trong danh sách yêu thích.' });
+    }
+
+    // Thêm truyện vào danh sách yêu thích
+    user.favoriteManga.push(mangaId);
+    await user.save();
+
+    res.json({ message: 'Truyện đã được thêm vào danh sách yêu thích.' });
+  } catch (error) {
+    console.error('Lỗi khi thêm truyện yêu thích:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi thêm truyện yêu thích.' });
+  }
+});
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
   res.render("addchap");

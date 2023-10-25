@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
   purchasedChapters: [{
     chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'chapter' },
     isChapterFree: Boolean, 
-  }]
+  }],
+  favoriteManga:[{ type: mongoose.Schema.Types.ObjectId, ref: 'manga' }]
 });
 
 const User = mongoose.model('user', userSchema);
