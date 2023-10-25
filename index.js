@@ -395,6 +395,32 @@ app.get('/user/favoriteManga/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện yêu thích.' });
   }
 });
+
+app.post('/user/removeFavoriteManga/:userId/:mangaId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const mangaId = req.params.mangaId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
+    if (!user.favoriteManga.includes(mangaId)) {
+      return res.status(400).json({ message: 'Truyện không tồn tại trong danh sách yêu thích.' });
+    }
+
+    user.favoriteManga.pull(mangaId); // Xóa truyện yêu thích khỏi danh sách
+
+    await user.save();
+
+    res.json({ message: 'Truyện đã được xóa khỏi danh sách yêu thích.' });
+  } catch (error) {
+    console.error('Lỗi khi xóa truyện yêu thích:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa truyện yêu thích.' });
+  }
+});
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
   res.render("addchap");
