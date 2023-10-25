@@ -458,10 +458,9 @@ app.get("/chapterput/:_id", async (req, res) => {
 app.post('/chapterput/:_id', async (req, res) => {
   try {
     const chapterId = req.params._id;
-    const { mangaName, number, viporfree, price,images } = req.body;
+    let { mangaName, number, viporfree, price,images } = req.body;
     const imageArray=images.split('\n')
     number=parseInt(number)
-
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
       mangaName, number, viporfree, price, images:imageArray
     }, { new: true });
