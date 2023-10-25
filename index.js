@@ -468,9 +468,9 @@ app.post('/chapterput/:_id', async (req, res) => {
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chương' });
     }
-    const manga = await Manga.findOne({ chapters: chapterId });
+    const manga = await Manga.findOne({ manganame: mangaName });
     if (manga) {
-      manga.chapters = manga.chapters.filter((id) => id.toString() !== chapterId);
+      manga.chapters.push(chapter._id);
       await manga.save();
     }
     res.json({ message: 'update thành công' });
@@ -551,8 +551,22 @@ app.get('/chapter/:_id/images', async (req, res) => {
 
     const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
     const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
-    const nextChapter = currentChapterIndex < chapters.length - 1 ? chapters[currentChapterIndex + 1]._id : null;
-    const prevChapter = currentChapterIndex > 0 ? chapters[currentChapterIndex - 1]._id : null;
+    let nextChapter = null;
+    let prevChapter = null;
+
+    if (currentChapterIndex < chapters.length - 1) {
+      nextChapter = {
+        _id: chapters[currentChapterIndex + 1]._id,
+        images: chapters[currentChapterIndex + 1].images
+      };
+    }
+
+    if (currentChapterIndex > 0) {
+      prevChapter = {
+        _id: chapters[currentChapterIndex - 1]._id,
+        images: chapters[currentChapterIndex - 1].images
+      };
+    }
 
     const responseData = {
       images: chapter.images,
