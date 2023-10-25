@@ -354,12 +354,10 @@ app.post('/user/addFavoriteManga/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    // Kiểm tra xem truyện đã tồn tại trong danh sách yêu thích hay chưa
     if (user.favoriteManga.includes(mangaId)) {
       return res.status(400).json({ message: 'Truyện đã có trong danh sách yêu thích.' });
     }
 
-    // Thêm truyện vào danh sách yêu thích
     user.favoriteManga.push(mangaId);
     await user.save();
 
@@ -367,6 +365,31 @@ app.post('/user/addFavoriteManga/:userId', async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi thêm truyện yêu thích:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi thêm truyện yêu thích.' });
+  }
+});
+
+app.get('/user/favoriteManga/:userId/:mangaId', async (req, res) => {
+  try {
+    const { userId, mangaId } = req.params;
+
+    const user = await User.findById(userId).populate({
+      path: 'favoriteManga',
+      match: { _id: mangaId },
+      select: 'manganame author image -_id' 
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
+    if (!user.favoriteManga || user.favoriteManga.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện yêu thích.' });
+    }
+
+    res.json(user.favoriteManga[0]);
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết truyện yêu thích:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện yêu thích.' });
   }
 });
 //api get, post chapter
