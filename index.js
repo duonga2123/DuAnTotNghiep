@@ -344,10 +344,10 @@ app.get('/top5manga', async (req, res) => {
   }
 });
 
-app.post('/user/addFavoriteManga/:userId', async (req, res) => {
+app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
   try {
     const userId = req.params.userId;
-    const { mangaId } = req.body;
+    const { mangaId } = req.params.mangaId;
 
     const user = await User.findById(userId);
     if (!user) {
