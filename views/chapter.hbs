@@ -646,10 +646,12 @@
         </form>
         <hr>
         <h2>Danh sách chap</h2> <br>
-        <form method="post" action="/search">
-            <input type="text" name="mangaName" placeholder="Tìm kiếm theo tên truyện">
-            <button type="submit">Search</button>
-        </form>
+       <form method="post" action="/search">
+				<div class="form-input">
+					<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+				</div>
+			</form>
         <div class="table-data">
             <div class="order">
                 <table>
