@@ -460,7 +460,7 @@ app.post('/chapterput/:_id', async (req, res) => {
     const chapterId = req.params._id;
     let { mangaName, number, viporfree, price,images } = req.body;
     const imageArray=images.split('\n')
-    number=parseInt(number)
+    number=number.toString();
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
       mangaName, number, viporfree, price, images:imageArray
     }, { new: true });
@@ -545,6 +545,7 @@ app.get('/chapter/:_id/images', async (req, res) => {
     const chapterid = req.params._id;
 
     const chapter = await Chapter.findById(chapterid);
+    chapter.number = parseInt(chapter.number);
 
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
