@@ -375,7 +375,7 @@ app.get('/user/favoriteManga/:userId/:mangaId', async (req, res) => {
     const user = await User.findById(userId).populate({
       path: 'favoriteManga',
       match: { _id: mangaId },
-      select: 'manganame author image -_id' 
+      select: '_id manganame image category chapters'
     });
 
     if (!user) {
@@ -386,7 +386,15 @@ app.get('/user/favoriteManga/:userId/:mangaId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện yêu thích.' });
     }
 
-    res.json(user.favoriteManga[0]);
+    const manga = user.favoriteManga[0];
+
+    res.json({
+      id: manga._id,
+      manganame: manga.manganame,
+      image: manga.image,
+      category: manga.category,
+      totalChapters: manga.chapters.length
+    });
   } catch (error) {
     console.error('Lỗi khi lấy chi tiết truyện yêu thích:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện yêu thích.' });
