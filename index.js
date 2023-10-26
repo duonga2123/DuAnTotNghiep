@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
+const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
 const Manga = require('./models/MangaModel')
@@ -44,19 +45,22 @@ mongoose.connect(uri, {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+  secret: 'mysecretkey',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 const checkAuth = (req, res, next) => {
-  const token = localStorage.getItem('token');
-
-  if (!token) {
+  if (!req.session.token) {
     return res.redirect('/loginadmin');
   }
-
   try {
-    const decoded = jwt.verify(token, 'mysecretkey');
+    const decoded = jwt.verify(req.session.token, 'mysecretkey');
     req.userData = decoded;
     next();
   } catch (error) {
+    console.error(error);
     return res.redirect('/loginadmin');
   }
 };
@@ -899,9 +903,9 @@ app.post('/loginadmin', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+    req.session.token = token;
     res.status(200).send(`
     <script>
-      localStorage.setItem('token', '${token}');
       window.location.href = '/admin'; 
     </script>
   `);
