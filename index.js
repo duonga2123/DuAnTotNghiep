@@ -46,7 +46,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const checkAuth = (req, res, next) => {
-  const token = req.headers.authorization;
+  const token = localStorage.getItem('token');
 
   if (!token) {
     return res.redirect('/loginadmin');
