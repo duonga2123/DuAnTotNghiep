@@ -68,7 +68,7 @@ const checkAuth = (req, res, next) => {
 app.get("/admin",checkAuth, async (req, res) => {
   res.render("admin");
 });
-app.post("/logout", async (req, res) => {
+app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
 });
 
