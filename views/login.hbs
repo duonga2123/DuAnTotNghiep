@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
         /* Your CSS styles here */
         body {
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
         }
+
         .login-container {
             width: 300px;
             margin: 0 auto;
@@ -15,22 +20,29 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center; /* Align the content in the center */
+            text-align: center;
+            /* Align the content in the center */
         }
+
         .logo {
-            margin-bottom: 20px; /* Adjust the margin as needed */
+            margin-bottom: 20px;
+            /* Adjust the margin as needed */
         }
+
         .logo img {
             max-width: 50%;
             height: auto;
         }
-        input[type="text"], input[type="password"] {
+
+        input[type="text"],
+        input[type="password"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         input[type="submit"] {
             width: 100%;
             padding: 10px;
@@ -40,6 +52,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         input[type="submit"]:hover {
             background: #2c707f;
         }
@@ -53,22 +66,36 @@
                 x.type = "password";
             }
         }
+        function showErrorDialog() {
+            var roleError = "{{RoleError}}";
+            if (roleError) {
+                alert(roleError);
+            }
+        }
     </script>
 </head>
-<body>
 
-<div class="login-container">
-    <div class="logo">
-        <img src="hh1.jpg" alt="Your App Logo">
+<body onload="showErrorDialog()">
+
+    <div class="login-container">
+        <div class="logo">
+            <img src="hh1.jpg" alt="Your App Logo">
+        </div>
+        <h2>Login</h2>
+        <form name="loginForm" action="/loginadmin" method="post">
+            <input type="text" placeholder="Username" id="username" name="username" required><br>
+            {{#if UserError}}
+            <p class="alert alert-danger">{{UserError}}</p>
+            {{/if}}
+            <input type="password" placeholder="Password" id="password" name="password" required><br>
+            {{#if PassError}}
+            <p class="alert alert-danger">{{PassError}}</p>
+            {{/if}}
+            <input type="checkbox" onclick="togglePassword()"> Hiển thị mật khẩu<br><br>
+            <input type="submit" value="Login">
+        </form>
     </div>
-    <h2>Login</h2>
-    <form name="loginForm">
-        <input type="text" placeholder="Username" name="uname" required><br>
-        <input type="password" placeholder="Password" id="password" name="psw" required><br>
-        <input type="checkbox" onclick="togglePassword()"> Hiển thị mật khẩu<br><br>
-        <input type="submit" value="Login">
-    </form>
-</div>
 
 </body>
+
 </html>

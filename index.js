@@ -480,13 +480,12 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
     user.coin -= chapterPrice;
     await user.save();
 
-    if (chapter.viporfree === 'vip' && user.role !== 'admin') {
-      chapter.viporfree = 'free';
-      await chapter.save();
-    }
+    const purchasedChapter = {
+      chapterId: chapterId,
+      isChapterFree: true 
+    };
 
-
-    user.purchasedChapters.push(chapterId);
+    user.purchasedChapters.push(purchasedChapter);
     await user.save();
 
     res.status(200).json({ message: 'Mua chương thành công và cập nhật trạng thái chương' });
@@ -784,7 +783,7 @@ app.get('/cancel', (req, res) => {
   res.send('Thanh toán đã bị hủy.');
 });
 
-
+//api đăng kí
 app.post('/register', async (req, res) => {
   try {
     const { username, password, role } = req.body;
@@ -808,7 +807,6 @@ app.post('/register', async (req, res) => {
       },
     };
 
-
     res.status(201).json(responseData);
   } catch (error) {
     console.error(error);
@@ -831,6 +829,7 @@ app.post('/login', async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Tên đăng nhập hoặc mật khẩu không đúng.' });
     }
+
     const responseData = {
       success: user.success,
       data: {
@@ -849,6 +848,47 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
     responseData.token = token;
     res.status(200).json(responseData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi.' });
+  }
+});
+
+app.get("/loginadmin", async (req, res) => {
+  res.render("loginadmin");
+});
+app.post('/loginadmin', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.render('login',{
+        UserError:'tên đăng nhập không đúng'
+        });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.render('login',{
+        PassError:'mật khẩu không đúng'
+        });
+    }
+
+    if (user.role !== 'admin') {
+      return res.render('login',{
+        RoleError:'bạn không có quyền truy cập trang web'
+        });
+    }
+
+    const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+    res.status(200).send(`
+    <script>
+      localStorage.setItem('token', '${token}');
+      window.location.href = '/admin'; 
+    </script>
+  `);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
@@ -897,6 +937,7 @@ app.post('/userput/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
   }
 });
+
 
 app.listen(8080, () =>
   console.log("Server is running on port 8080...")
