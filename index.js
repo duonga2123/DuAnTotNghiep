@@ -49,7 +49,7 @@ const checkAuth = (req, res, next) => {
   const token = req.headers.authorization;
 
   if (!token) {
-    return res.redirect('/login');
+    return res.redirect('/loginadmin');
   }
 
   try {
@@ -57,7 +57,7 @@ const checkAuth = (req, res, next) => {
     req.userData = decoded;
     next();
   } catch (error) {
-    return res.redirect('/login');
+    return res.redirect('/loginadmin');
   }
 };
 
