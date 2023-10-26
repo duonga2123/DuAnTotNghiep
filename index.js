@@ -45,7 +45,23 @@ mongoose.connect(uri, {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/admin", async (req, res) => {
+const checkAuth = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'mysecretkey');
+    req.userData = decoded;
+    next();
+  } catch (error) {
+    return res.redirect('/login');
+  }
+};
+
+app.get("/admin",checkAuth, async (req, res) => {
   res.render("admin");
 });
 
