@@ -855,7 +855,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.get("/loginadmin", async (req, res) => {
-  res.render("loginadmin");
+  res.render("login");
 });
 app.post('/loginadmin', async (req, res) => {
   try {
