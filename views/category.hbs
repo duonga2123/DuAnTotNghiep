@@ -639,10 +639,9 @@
 <body>
     <div class="jumbotron text-center">
         <h1>Category</h1>
-        <form method="" action="">
+      
             <button type="button" id="addCategoryButton" data-toggle="modal" data-target="#addCategoryModal">Thêm thể
                 loại</button>
-        </form>
         <hr>
         <h2>Danh sách thể loại</h2>
         <div class="table-data">
@@ -663,7 +662,7 @@
                             <td>{{this._id}}</td>
                             <td>{{this.categoryname}}</td>
                             <td>
-                                <form style="margin-top: 10px;" action="/categoryput/{{this._id}}" method="get">
+                                <form style="margin-top: 10px;" action="/categoryput/{{this._id}}" method="post">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
                                         type="submit">Edit</button>
