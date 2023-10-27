@@ -973,16 +973,45 @@
 	const revenueManagerLink = document.getElementById('revenueManagerLink');
 
 		revenueManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
-			fetch('/revenue')
-				.then(response => response.text())
-				.then(data => {
-					const mainContent = document.querySelector("#content main");
-					mainContent.innerHTML = data;
+    event.preventDefault();
+    fetch('/getrevenue')
+        .then(response => response.json())
+        .then(data => {
+            const mainContent = document.querySelector("#main-content");
+            const revenueChartDiv = document.createElement('div');
+            revenueChartDiv.classList.add('revenue-chart');
+            revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
+            mainContent.innerHTML = '';
+            mainContent.appendChild(revenueChartDiv);
+            const dates = data.map(item => item.date);
+            const amounts = data.map(item => item.totalAmount);
+            createRevenueChart(dates, amounts);
+        })
+        .catch(error => console.error('Đã xảy ra lỗi:', error));
+});
 
-				})
-				.catch(error => console.error('Đã xảy ra lỗi:', error));
-		});
+const createRevenueChart = (dates, amounts) => {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Doanh thu',
+                data: amounts,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+};
 	</script>
 </body>
 
