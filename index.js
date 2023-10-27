@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
+const cheerio = require('cheerio');
 const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
