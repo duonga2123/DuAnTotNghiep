@@ -818,6 +818,16 @@ app.get('/success/:id', async (req, res) => {
 
 });
 
+app.get('/getrevenue', async (req, res) => {
+  try {
+    const payments = await Payment.find({});
+    res.json(payments);
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi.' });
+  }
+});
+
 app.get('/cancel', (req, res) => {
   res.send('Thanh toán đã bị hủy.');
 });
