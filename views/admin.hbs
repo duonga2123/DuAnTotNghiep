@@ -675,7 +675,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/getchap">
+				<a href="#" id="revenueManagerLink">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
 				</a>
@@ -909,7 +909,7 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
@@ -919,10 +919,10 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-			const chapterManagerLink = document.getElementById('chapterManagerLink');
+		const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
@@ -933,41 +933,84 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		
-    function setupChapterPage() {
-        const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
-        chapterDetailButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
-                const chapterId = this.getAttribute('data-chapter-id');
-                fetch(`/chapterchitiet/${chapterId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            const modalBody = document.querySelector('#image-modal .modal-body');
-                            {{!-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --}}
-                            modalBody.innerHTML = '';
-							  data.forEach(image => {
-                                    const imgElement = document.createElement('img');
-                                    imgElement.src = image;
-                                    imgElement.style.width = '100px';
-                                    imgElement.style.height = '100px';
-                                    imgElement.style.margin = '5px';
-                                    imgElement.style.objectFit = 'cover';
-                                    modalBody.appendChild(imgElement);
-                                });
-                            $('#image-modal').modal('show');
-                        } else {
-                            alert('Chưa có ảnh cho chương này.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi lấy dữ liệu ảnh:', error);
-                        alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
-                    });
-            });
-        });
-    }
+		function setupChapterPage() {
+			const chapterDetailButtons = document.querySelectorAll('.detail-button');
+
+			chapterDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const chapterId = this.getAttribute('data-chapter-id');
+					fetch(`/chapterchitiet/${chapterId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data.length > 0) {
+								const modalBody = document.querySelector('#image-modal .modal-body');
+								{ { !-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --} }
+								modalBody.innerHTML = '';
+								data.forEach(image => {
+									const imgElement = document.createElement('img');
+									imgElement.src = image;
+									imgElement.style.width = '100px';
+									imgElement.style.height = '100px';
+									imgElement.style.margin = '5px';
+									imgElement.style.objectFit = 'cover';
+									modalBody.appendChild(imgElement);
+								});
+								$('#image-modal').modal('show');
+							} else {
+								alert('Chưa có ảnh cho chương này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy dữ liệu ảnh:', error);
+							alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
+						});
+				});
+			});
+		}
+
+		const createRevenueChart = (dates, amounts) => {
+			const ctx = document.getElementById('revenueChart').getContext('2d');
+			const revenueChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dates,
+					datasets: [{
+						label: 'Doanh thu',
+						data: amounts,
+						borderColor: 'rgb(75, 192, 192)',
+						tension: 0.1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
+		};
+
+		const revenueManagerLink = document.getElementById('revenueManagerLink');
+
+revenueManagerLink.addEventListener('click', function (event) {
+  event.preventDefault();
+  fetch('/getrevenue')
+    .then(response => response.json())
+    .then(data => {
+      const mainContent = document.querySelector("#content main");
+      mainContent.innerHTML = `
+        <div class="revenue-chart">
+          <canvas id="revenueChart" width="800" height="400"></canvas>
+        </div>
+      `;
+      const dates = data.map(item => item.date);
+      const amounts = data.map(item => item.totalAmount);
+      createRevenueChart(dates, amounts);
+    })
+    .catch(error => console.error('Đã xảy ra lỗi:', error));
+});
 	</script>
 </body>
 
