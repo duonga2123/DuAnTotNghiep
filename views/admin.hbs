@@ -658,7 +658,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/mangass">
+				<a href="#" id="categoryManagerLink">
 					<i class='bx bxs-category'></i>
 					<span class="text">Category Manager</span>
 				</a>
@@ -1012,6 +1012,19 @@ const createRevenueChart = (dates, amounts) => {
         }
     });
 };
+
+	const categoryManagerLink = document.getElementById('categoryManagerLink');
+
+		categoryManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
+			fetch('/categoryscreen')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
 	</script>
 </body>
 
