@@ -9,7 +9,7 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<!-- My CSS -->
 	<title>AdminMangaLand</title>
 	<style>
@@ -676,7 +676,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/getchap">
+				<a href="#" id="revenue">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
 				</a>
@@ -704,9 +704,6 @@
 	<!-- CONTENT -->
 	<section id="content">
 		<!-- NAVBAR -->
-		<div class="revenue-chart">
-			<canvas id="revenueChart" width="800" height="400"></canvas>
-		</div>
 		<nav>
 			<i class='bx bx-menu'></i>
 			<a href="#" class="nav-link">Manager</a>
@@ -996,15 +993,25 @@
 			});
 		};
 
-		fetch('/getrevenue')
-			.then(response => response.json())
-			.then(data => {
-				const dates = data.map(item => item.date);
-				const amounts = data.map(item => item.totalAmount);
+		const revenue = document.getElementById('revenue');
 
-				createRevenueChart(dates, amounts);
-			})
-			.catch(error => console.error('Đã xảy ra lỗi:', error));
+		revenue.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/getrevenue')
+				.then(response => response.json())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = `
+        <div class="revenue-chart">
+          <canvas id="revenueChart" width="800" height="400"></canvas>
+        </div>
+      `;
+					const dates = data.map(item => item.date);
+					const amounts = data.map(item => item.totalAmount);
+					createRevenueChart(dates, amounts);
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
 	</script>
 </body>
 
