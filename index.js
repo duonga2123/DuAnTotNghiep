@@ -818,6 +818,7 @@ app.get('/success/:id', async (req, res) => {
 
 });
 
+
 app.get('/getrevenue', async (req, res) => {
   try {
     const payments = await Payment.find({});
@@ -826,6 +827,9 @@ app.get('/getrevenue', async (req, res) => {
     console.error('Đã xảy ra lỗi:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
   }
+});
+app.get("/revenue",async (req, res) => {
+  res.render("revenue");
 });
 
 app.get('/cancel', (req, res) => {
