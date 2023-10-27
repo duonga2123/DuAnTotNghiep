@@ -1022,9 +1022,35 @@ const createRevenueChart = (dates, amounts) => {
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
+					setcategory();
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
+
+		function setcategory(){
+			  $(document).ready(function () {
+            // Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
+
+            // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
+            $(".editCategoryButton").click(function () {
+                // Lấy thông tin thể loại từ hàng bảng
+                var categoryId = $(this).closest("tr").find("td:first").text();
+                var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+
+                // Hiển thị thông tin thể loại trong modal sửa thể loại
+                $("#editCategoryname").val(categoryname);
+
+                // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
+                $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
+
+                $("#editCategoryModal").modal("show");
+            });
+
+        });
+		}
 	</script>
 </body>
 
