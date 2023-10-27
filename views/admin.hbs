@@ -974,10 +974,20 @@
 
 		revenueManagerLink.addEventListener("click", function (event) {
 			event.preventDefault();
+			fetch('/revenue')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					GetRevenue()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		function GetRevenue() {
 			fetch('/getrevenue')
 				.then(response => response.json())
 				.then(data => {
-					const mainContent = document.querySelector("#main-content");
+					const mainContent = document.querySelector("#content");
 					const revenueChartDiv = document.createElement('div');
 					revenueChartDiv.classList.add('revenue-chart');
 					revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
@@ -988,7 +998,8 @@
 					createRevenueChart(dates, amounts);
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
-		});
+		}
+
 
 		const createRevenueChart = (dates, amounts) => {
 			const ctx = document.getElementById('revenueChart').getContext('2d');
