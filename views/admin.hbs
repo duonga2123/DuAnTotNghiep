@@ -995,21 +995,33 @@
 
 		const revenueManagerLink = document.getElementById('revenueManagerLink');
 
-	revenueManagerLink.addEventListener('click', function (event) {
+revenueManagerLink.addEventListener('click', function (event) {
   event.preventDefault();
   fetch('/getrevenue')
     .then(response => response.json())
     .then(data => {
       const mainContent = document.querySelector("#content main");
-      mainContent.innerHTML = `
+
+      // Tạo một phần tử div mới
+      const newContent = document.createElement('div');
+      newContent.innerHTML = `
         <div class="revenue-chart">
           <canvas id="revenueChart" width="800" height="400"></canvas>
         </div>
       `;
+
+      // Xóa nội dung cũ
+      while (mainContent.firstChild) {
+        mainContent.removeChild(mainContent.firstChild);
+      }
+
+      // Thêm nội dung mới
+      mainContent.appendChild(newContent);
+
       const dates = data.map(item => item.date);
       const amounts = data.map(item => item.totalAmount);
       createRevenueChart(dates, amounts);
-      
+
       // Thêm mã script sau khi đã thay đổi nội dung
       const scriptElement = document.createElement('script');
       scriptElement.innerHTML = `
