@@ -630,9 +630,15 @@ app.get('/chapterchitiet/:_id', async (req, res) => {
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
+    const imageLinks = [];
+    const $ = cheerio.load(chapter.images); 
 
-    // Trả về danh sách ảnh của chương
-    res.json(chapter.images);
+    $('img').each((index, element) => {
+      const src = $(element).attr('src');
+      imageLinks.push(src);
+    });
+
+    res.json(imageLinks);
   } catch (error) {
     console.error('Lỗi khi lấy danh sách ảnh chap:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
