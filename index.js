@@ -84,7 +84,15 @@ app.get('/categorys', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
   }
 });
-
+app.get('/categoryscreen', async (req, res) => {
+  try {
+    const category = await Category.find();
+    res.render("category", { category });
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách thể loại:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
+  }
+});
 
 app.post('/category', async (req, res) => {
   try {
