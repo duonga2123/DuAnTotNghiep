@@ -639,8 +639,9 @@
 <body>
     <div class="jumbotron text-center">
         <h1>Category</h1>
-        <form method="post" action="/category">
-            <button type="submit">thêm thể loại</button>
+        <form method="" action="">
+            <button type="button" id="addCategoryButton" data-toggle="modal" data-target="#addCategoryModal">Thêm thể
+                loại</button>
         </form>
         <hr>
         <h2>Danh sách thể loại</h2>
@@ -682,39 +683,57 @@
             </div>
         </div>
 
-        <!-- Modal thêm thể loại -->
-        <div id="addCategoryModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
+        <!-- Modal Thêm thể loại -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
+            aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Thêm thể loại</h4>
+                        <h5 class="modal-title" id="addCategoryModalLabel">Thêm Thể loại</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
+                        <!-- Form thêm thể loại -->
                         <form id="addCategoryForm" method="post" action="/category">
-                            <input type="text" name="categoryname" placeholder="Tên thể loại" required>
-                            <button type="submit" class="btn btn-primary">Thêm</button>
+                            <div class="form-group">
+                                <label for="categoryname">Tên thể loại:</label>
+                                <input type="text" class="form-control" id="categoryname" name="categoryname">
+                            </div>
                         </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" id="saveCategoryButton">Lưu</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal sửa thể loại -->
-        <div id="editCategoryModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
+        <!-- Modal Sửa thể loại -->
+        <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog"
+            aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Sửa thể loại</h4>
+                        <h5 class="modal-title" id="editCategoryModalLabel">Sửa Thể loại</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <form id="editCategoryForm" method="post" action="/categoryput/:id">
-                            <input type="text" name="categoryname" placeholder="Tên thể loại" required>
-                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <!-- Form sửa thể loại -->
+                        <form id="editCategoryForm" method="post">
+                            <div class="form-group">
+                                <label for="editCategoryname">Tên thể loại:</label>
+                                <input type="text" class="form-control" id="editCategoryname" name="editCategoryname">
+                            </div>
                         </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" id="updateCategoryButton">Cập nhật</button>
                     </div>
                 </div>
             </div>
@@ -723,20 +742,24 @@
     </div>
     <script>
         $(document).ready(function () {
-            // Hiển thị modal thêm thể loại
-            $("button[type='submit']").click(function (e) {
-                e.preventDefault();
-                if ($(this).parent().attr("action") === "/category") {
-                    $("#addCategoryModal").modal("show");
-                } else if ($(this).parent().attr("action").includes("/categoryput")) {
-                    $("#editCategoryModal").modal("show");
-                    // Đặt giá trị vào ô input khi sửa
-                    let categoryName = $(this).closest("tr").find("td:nth-child(2)").text();
-                    $("#editCategoryForm input[name='categoryname']").val(categoryName);
-                    // Thay đổi action của form để phù hợp với id
-                    let categoryId = $(this).closest("form").attr("action").split("/")[2];
-                    $("#editCategoryForm").attr("action", `/categoryput/${categoryId}`);
-                }
+            // Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
+
+            // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
+            $(".editCategoryButton").click(function () {
+                // Lấy thông tin thể loại từ hàng bảng
+                var categoryId = $(this).data("_id")
+                var categoryname = $(this).data("categoryname");
+
+                // Hiển thị thông tin thể loại trong modal sửa thể loại
+                $("#editCategoryname").val(categoryname);
+
+                // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
+                $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
+
+                $("#editCategoryModal").modal("show");
             });
         });
     </script>
