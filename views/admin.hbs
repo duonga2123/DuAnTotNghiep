@@ -995,23 +995,31 @@
 
 		const revenueManagerLink = document.getElementById('revenueManagerLink');
 
-revenueManagerLink.addEventListener('click', function (event) {
+	revenueManagerLink.addEventListener('click', function (event) {
   event.preventDefault();
   fetch('/getrevenue')
     .then(response => response.json())
     .then(data => {
       const mainContent = document.querySelector("#content main");
-      const revenueChartDiv = document.createElement('div');
-      revenueChartDiv.classList.add('revenue-chart');
-      revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-      mainContent.innerHTML = '';
-      mainContent.appendChild(revenueChartDiv);
+      mainContent.innerHTML = `
+        <div class="revenue-chart">
+          <canvas id="revenueChart" width="800" height="400"></canvas>
+        </div>
+      `;
       const dates = data.map(item => item.date);
       const amounts = data.map(item => item.totalAmount);
       createRevenueChart(dates, amounts);
+      
+      // Thêm mã script sau khi đã thay đổi nội dung
+      const scriptElement = document.createElement('script');
+      scriptElement.innerHTML = `
+        const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
+        // Các mã script khác ở đây...
+      `;
+      mainContent.appendChild(scriptElement);
     })
     .catch(error => console.error('Đã xảy ra lỗi:', error));
-}); 
+});
 	</script>
 </body>
 
