@@ -720,7 +720,7 @@
 				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
-				<img src="img/people.png">
+				<img src="https://lmhoptacxatthue.com.vn/wp-content/uploads/2023/05/anh-con-cho-ngao-10.jpg">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -910,7 +910,7 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
@@ -920,10 +920,10 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-			const chapterManagerLink = document.getElementById('chapterManagerLink');
+		const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
@@ -934,84 +934,84 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		
-    function setupChapterPage() {
-        const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
-        chapterDetailButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
-                const chapterId = this.getAttribute('data-chapter-id');
-                fetch(`/chapterchitiet/${chapterId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            const modalBody = document.querySelector('#image-modal .modal-body');
-                            {{!-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --}}
-                            modalBody.innerHTML = '';
-							  data.forEach(image => {
-                                    const imgElement = document.createElement('img');
-                                    imgElement.src = image;
-                                    imgElement.style.width = '100px';
-                                    imgElement.style.height = '100px';
-                                    imgElement.style.margin = '5px';
-                                    imgElement.style.objectFit = 'cover';
-                                    modalBody.appendChild(imgElement);
-                                });
-                            $('#image-modal').modal('show');
-                        } else {
-                            alert('Chưa có ảnh cho chương này.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi lấy dữ liệu ảnh:', error);
-                        alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
-                    });
-            });
-        });
-    }
+		function setupChapterPage() {
+			const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
-	const revenueManagerLink = document.getElementById('revenueManagerLink');
+			chapterDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const chapterId = this.getAttribute('data-chapter-id');
+					fetch(`/chapterchitiet/${chapterId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data.length > 0) {
+								const modalBody = document.querySelector('#image-modal .modal-body');
+								{ { !-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --} }
+								modalBody.innerHTML = '';
+								data.forEach(image => {
+									const imgElement = document.createElement('img');
+									imgElement.src = image;
+									imgElement.style.width = '100px';
+									imgElement.style.height = '100px';
+									imgElement.style.margin = '5px';
+									imgElement.style.objectFit = 'cover';
+									modalBody.appendChild(imgElement);
+								});
+								$('#image-modal').modal('show');
+							} else {
+								alert('Chưa có ảnh cho chương này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy dữ liệu ảnh:', error);
+							alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
+						});
+				});
+			});
+		}
 
-revenueManagerLink.addEventListener("click", function (event) {
-    event.preventDefault();
-    fetch('/getrevenue')
-        .then(response => response.json())
-        .then(data => {
-            const mainContent = document.querySelector("#main-content");
-            const revenueChartDiv = document.createElement('div');
-            revenueChartDiv.classList.add('revenue-chart');
-            revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-            mainContent.innerHTML = '';
-            mainContent.appendChild(revenueChartDiv);
-            const dates = data.map(item => item.date);
-            const amounts = data.map(item => item.totalAmount);
-            createRevenueChart(dates, amounts);
-        })
-        .catch(error => console.error('Đã xảy ra lỗi:', error));
-});
+		const revenueManagerLink = document.getElementById('revenueManagerLink');
 
-const createRevenueChart = (dates, amounts) => {
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Doanh thu',
-                data: amounts,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-};
+		revenueManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/getrevenue')
+				.then(response => response.json())
+				.then(data => {
+					const mainContent = document.querySelector("#main-content");
+					const revenueChartDiv = document.createElement('div');
+					revenueChartDiv.classList.add('revenue-chart');
+					revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
+					mainContent.innerHTML = '';
+					mainContent.appendChild(revenueChartDiv);
+					const dates = data.map(item => item.date);
+					const amounts = data.map(item => item.totalAmount);
+					createRevenueChart(dates, amounts);
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+
+		const createRevenueChart = (dates, amounts) => {
+			const ctx = document.getElementById('revenueChart').getContext('2d');
+			const revenueChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dates,
+					datasets: [{
+						label: 'Doanh thu',
+						data: amounts,
+						borderColor: 'rgb(75, 192, 192)',
+						tension: 0.1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
+		};
 	</script>
 </body>
 
