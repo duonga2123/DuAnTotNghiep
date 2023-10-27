@@ -639,9 +639,8 @@
 <body>
     <div class="jumbotron text-center">
         <h1>Category</h1>
-      
-            <button type="button" id="addCategoryButton" data-toggle="modal" data-target="#addCategoryModal">Thêm thể
-                loại</button>
+
+        <button type="button" id="addCategoryButton" data-toggle="modal" data-target="#addCategoryModal">Thêm thể loại</button>
         <hr>
         <h2>Danh sách thể loại</h2>
         <div class="table-data">
@@ -662,9 +661,12 @@
                             <td>{{this._id}}</td>
                             <td>{{this.categoryname}}</td>
                             <td>
+                                <form style="margin-top: 10px;" action="/categoryput/{{this._id}}" method="post">
                                     <button id="editCategoryButton"
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
-                                        type="submit">Edit</button>
+                                        type="button"
+                                        onclick="showEditCategoryDialog('{{this._id}}', '{{this.categoryname}}')">Edit</button>
+                                </form>
                                 <form style="margin-top: 10px;" action="/categorydelete/{{this._id}}"
                                     onclick="return confirm('ban co muon xoa khong ?')" method="post">
                                     <button
@@ -682,7 +684,7 @@
 
         <!-- Modal Thêm thể loại -->
         <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
-            aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+            aria-labelledby="addCategoryModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
