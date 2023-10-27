@@ -631,7 +631,7 @@ app.get('/chapterchitiet/:_id', async (req, res) => {
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
-    const htmlToParse = '<html><head>...</head><body>' + chapter.images + '</body></html>';
+    const htmlToParse = '<html><head>...</head>' + chapter.images + '</html>';
 
     // Kiểm tra dữ liệu trước khi sử dụng cheerio
     console.log('Raw HTML data:', chapter.images);
