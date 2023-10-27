@@ -676,7 +676,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" id="revenue">
+				<a href="" id="revenue">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
 				</a>
@@ -1002,10 +1002,10 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = `
-        <div class="revenue-chart">
-          <canvas id="revenueChart" width="800" height="400"></canvas>
-        </div>
-      `;
+                    <div class="revenue-chart">
+                     <canvas id="revenueChart" width="800" height="400"></canvas>
+                     </div>
+                    `;
 					const dates = data.map(item => item.date);
 					const amounts = data.map(item => item.totalAmount);
 					createRevenueChart(dates, amounts);
