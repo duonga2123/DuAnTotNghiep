@@ -386,11 +386,13 @@ app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    if (user.favoriteManga.includes(mangaId)) {
-      return res.status(400).json({ message: 'Truyện đã có trong danh sách yêu thích.' });
-    }
+    const mangaIndex =user.favoriteManga.findIndex(manga => manga.mangaId === mangaId);
 
-    user.favoriteManga.push(mangaId);
+    if (mangaIndex === -1) {
+      user.favoriteManga.push({ mangaId, isLiked: true });
+    } else {
+      user.favoriteManga[mangaIndex].isLiked = true;
+    }
     await user.save();
 
     res.json({ message: 'Truyện đã được thêm vào danh sách yêu thích.' });
