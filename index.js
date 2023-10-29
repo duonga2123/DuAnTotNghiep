@@ -483,7 +483,7 @@ app.get('/user/favoriteManga/:userId', async (req, res) => {
       const chapters = mangaId && mangaId.chapters ? mangaId.chapters.length : 0;
 
       return {
-        id: manga._id,
+        id: mangaId,
         manganame: manganame,
         image: image,
         category: category,
