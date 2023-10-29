@@ -448,7 +448,7 @@ app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    const mangaIndex =user.favoriteManga.findIndex(manga => manga.mangaId === mangaId);
+    const mangaIndex =user.favoriteManga.findIndex(manga => manga._id === mangaId);
 
     if (mangaIndex === -1) {
       user.favoriteManga.push({ mangaId, isLiked: true });
