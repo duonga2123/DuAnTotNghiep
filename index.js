@@ -469,19 +469,25 @@ app.get('/user/favoriteManga/:userId', async (req, res) => {
     const userId = req.params.userId;
 
     // Tìm người dùng dựa trên userId
-    const user = await User.findById(userId).populate('favoriteManga');
+    const user = await User.findById(userId).populate('favoriteManga.mangaId');
 
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
     const favoriteMangaList = user.favoriteManga.map(manga => {
+      const mangaId = manga.mangaId;
+      const manganame = mangaId ? mangaId.manganame : null;
+      const image = mangaId ? mangaId.image : null;
+      const category = mangaId ? mangaId.category : null;
+      const chapters = mangaId && mangaId.chapters ? mangaId.chapters.length : 0;
+
       return {
         id: manga._id,
-        manganame: manga.manganame,
-        image: manga.image,
-        category: manga.category,
-        totalChapters: manga.chapters.length
+        manganame: manganame,
+        image: image,
+        category: category,
+        totalChapters: chapters
       };
     });
 
