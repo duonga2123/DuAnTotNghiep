@@ -332,6 +332,68 @@ app.get('/mangachitiet/:mangaId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
   }
 });
+app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
+  try {
+    const mangaId = req.params.mangaId;
+    const userId = req.params.userId;
+    const manga = await Manga.findById(mangaId).populate('chapters', 'number viporfree');
+
+    if (!manga) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
+    }
+
+    const { manganame, author, content, image, category, view, like, chapters } = manga;
+
+    const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
+    const uniqueChapters = [];
+    
+    manga.chapters.forEach(chapter => {
+      if (!chapterSet.has(chapter._id)) {
+        chapterSet.add(chapter._id);
+        uniqueChapters.push(chapter);
+      }
+    });
+
+    const mangaSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
+    const uniqueManga = [];
+    
+    const user=await User.findById(userId)
+    if(user){
+      user.favoriteManga.forEach(user => {
+        if (!mangaSet.has(user._id)) {
+          mangaSet.add(user._id);
+          uniqueManga.push(user);
+        }
+      });
+  
+    }
+
+    const response = {
+      manganame: manganame,
+      author: author,
+      content: content,
+      image: image,
+      category: category,
+      view: view,
+      like: like,
+      totalChapters: uniqueChapters.length,
+      chapters: uniqueChapters.map(chapter => ({
+        idchap: chapter._id,
+        namechap: chapter.number,
+        viporfree: chapter.viporfree
+      })),
+      favoriteManga:uniqueManga.map(manga=>({
+        mangaId:manga.mangaId,
+        isLiked:manga.isLiked
+      }))
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
+  }
+});
 
 app.get('/mangas/category/:categoryName', async (req, res) => {
   try {
@@ -391,7 +453,7 @@ app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
     if (mangaIndex === -1) {
       user.favoriteManga.push({ mangaId, isLiked: true });
     } else {
-      user.favoriteManga[mangaIndex].isLiked = true;
+      user.fa[mangaIndex].isLiked = true;
     }
     await user.save();
 
