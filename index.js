@@ -453,7 +453,7 @@ app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
     if (mangaIndex === -1) {
       user.favoriteManga.push({ mangaId, isLiked: true });
     } else {
-      user.fa[mangaIndex].isLiked = true;
+      user.favoriteManga[mangaIndex].isLiked = true;
     }
     await user.save();
 
