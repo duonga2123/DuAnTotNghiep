@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     isChapterFree: Boolean, 
   }],
   favoriteManga:[{
+    _id:false,
     mangaId: { type: mongoose.Schema.Types.ObjectId, ref: 'manga' },
     isLiked: { type: Boolean, default: false },
   }]
