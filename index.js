@@ -491,7 +491,7 @@ app.get('/user/favoriteManga/:userId', async (req, res) => {
       };
     });
 
-    res.json(favoriteMangaList);
+    res.json({data: favoriteMangaList});
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện yêu thích:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện yêu thích.' });
