@@ -483,7 +483,7 @@ app.get('/user/favoriteManga/:userId', async (req, res) => {
 
     const favoriteMangaList = user.favoriteManga.map(manga => {
       return {
-        id: manga.mangaId,
+        id: manga.mangaId._id,
         manganame: manga.mangaId.manganame,
         image: manga.mangaId.image,
         category: manga.mangaId.category,
