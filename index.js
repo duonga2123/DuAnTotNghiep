@@ -76,14 +76,28 @@ app.get("/logout", async (req, res) => {
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
-    const category = await Category.find().populate('manga');
-    res.json(category);
-
+    const categories = await Category.find().populate('manga');
+    const result = categories.map(category => {
+      return {
+        categoryid: category._id,
+        manga: category.manga.map(manga => {
+          return {
+            id: manga._id,
+            manganame: manga.manganame,
+            image: manga.image,
+            category: category.categoryname,
+            totalChapters: manga.chapters.length
+          };
+        })
+      };
+    });
+    res.json(result);
   } catch (error) {
     console.error('Lỗi khi lấy danh sách thể loại:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
   }
 });
+
 app.get('/categoryscreen', async (req, res) => {
   try {
     const category = await Category.find();
