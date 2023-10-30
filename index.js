@@ -387,7 +387,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       chapters: uniqueChapters.map(chapter => ({
         idchap: chapter._id,
         namechap: chapter.number,
-        viporfree: viporfree
+        viporfree: chapter.viporfree
       })),
      isLiked:isLiked
     };
