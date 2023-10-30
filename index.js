@@ -357,16 +357,15 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
     const mangaSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
     const uniqueManga = [];
     
-    const user=await User.findById(userId)
-    if(user){
-      user.favoriteManga.forEach(user => {
-        if (!mangaSet.has(user._id)) {
-          mangaSet.add(user._id);
-          uniqueManga.push(user);
-        }
-      });
-  
-    }
+    user.favoriteManga.forEach(favorite => {
+      if (!mangaSet.has(favorite.mangaId)) {
+        mangaSet.add(favorite.mangaId);
+        uniqueManga.push({
+          mangaId: favorite.mangaId,
+          isLiked: favorite.mangaId === mangaId ? true : false,
+        });
+      }
+    });
 
     const response = {
       manganame: manganame,
@@ -382,10 +381,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         namechap: chapter.number,
         viporfree: chapter.viporfree
       })),
-      favoriteManga:uniqueManga.map(manga=>({
-        mangaId:manga.mangaId,
-        isLiked:manga.isLiked
-      }))
+      favoriteManga:uniqueManga
     };
 
     res.json(response);
