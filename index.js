@@ -354,25 +354,26 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       }
     });
 
-    const mangaSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
+    
     const uniqueManga = [];
     
     const user=await User.findById(userId)
-
+    
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
     user.favoriteManga.forEach(favorite => {
-      if (!mangaSet.has(favorite.mangaId)) {
-        mangaSet.add(favorite.mangaId);
-        uniqueManga.push({
-          mangaId: favorite.mangaId,
-          isLiked: favorite.mangaId === mangaId ? true : false,
-        });
+      let isLiked = false;
+      if (favorite.mangaId === mangaId) {
+        isLiked = true;
       }
+      uniqueManga.push({
+        mangaId: favorite.mangaId,
+        isLiked: isLiked,
+      });
     });
-    
+
     const response = {
       manganame: manganame,
       author: author,
@@ -387,7 +388,10 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         namechap: chapter.number,
         viporfree: chapter.viporfree
       })),
-      favoriteManga:uniqueManga
+      favoriteManga:uniqueManga.map(manga=>({
+        mangaId:manga.mangaId,
+        isLiked:manga.isLiked
+      }))
     };
 
     res.json(response);
