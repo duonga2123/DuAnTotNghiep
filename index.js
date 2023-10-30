@@ -342,28 +342,34 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
     }
 
-    const { manganame, author, content, image, category, view, like, chapters } = manga;
-
-    const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
-    const uniqueChapters = [];
-    
-    manga.chapters.forEach(chapter => {
-      if (!chapterSet.has(chapter._id)) {
-        chapterSet.add(chapter._id);
-        uniqueChapters.push(chapter);
-      }
-    });
-
-    
-    
     const user=await User.findById(userId)
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
+    const { manganame, author, content, image, category, view, like, chapters } = manga;
+
+    const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
+    const uniqueChapters = [];
+   
+    manga.chapters.forEach(chapter => {
+      if (!chapterSet.has(chapter._id)) {
+        chapterSet.add(chapter._id);
+        uniqueChapters.push(chapter);
+        let viporfree = chapter.viporfree;
+        user.purchasedChapters.forEach(purchased =>{
+          if(purchased.chapterId.toString() === chapter._id.toString()){
+            viporfree="free"
+          }
+        });
+        chapter.viporfree=viporfree
+
+      }
+    });
+
     let isLiked = false;
     user.favoriteManga.forEach(favorite => {
-      if (favorite.mangaId.toString()=== mangaId ) {
+      if (favorite.mangaId.toString() === mangaId ) {
         isLiked = favorite.isLiked;
         
       }
@@ -381,7 +387,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       chapters: uniqueChapters.map(chapter => ({
         idchap: chapter._id,
         namechap: chapter.number,
-        viporfree: chapter.viporfree
+        viporfree: viporfree
       })),
      isLiked:isLiked
     };
