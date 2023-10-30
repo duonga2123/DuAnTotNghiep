@@ -357,6 +357,12 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
     const mangaSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
     const uniqueManga = [];
     
+    const user=await User.findById(userId)
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
     user.favoriteManga.forEach(favorite => {
       if (!mangaSet.has(favorite.mangaId)) {
         mangaSet.add(favorite.mangaId);
@@ -366,7 +372,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         });
       }
     });
-
+    
     const response = {
       manganame: manganame,
       author: author,
