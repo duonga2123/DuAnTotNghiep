@@ -363,8 +363,9 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
 
     let isLiked = false;
     user.favoriteManga.forEach(favorite => {
-      if (favorite.mangaId === String(mangaId) ) {
+      if (favorite.mangaId._id === mangaId ) {
         isLiked = true;
+        console.log(favorite.mangaId)
       }
     });
 
