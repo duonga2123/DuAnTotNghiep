@@ -76,7 +76,7 @@ app.get("/logout", async (req, res) => {
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
-    const category = await Category.find();
+    const category = await Category.find().populate('manga');
     res.json(category);
 
   } catch (error) {
