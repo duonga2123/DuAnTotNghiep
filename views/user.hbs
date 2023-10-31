@@ -35,11 +35,11 @@
                     <tbody>
                         {{#each user}}
                         <tr>
-                            <td>{{this._id}}</td>
-                            <td>{{this.username}}</td>
-                            <td>{{this.password}}</td>
-                            <td>{{this.role}}</td>
-                            <td>{{this.coin}}</td>
+                            <td style="text-align: center;" class="user-id">{{this._id}}</td>
+                            <td style="text-align: center;" class="user-username">{{this.username}}</td>
+                            <td style="text-align: center;" class="user-password">{{this.password}}</td>
+                            <td style="text-align: center;" class="user-role">{{this.role}}</td>
+                            <td style="text-align: center;" class="user-coin">{{this.coin}}</td>
                             <td>
                                 <form style="margin-top: 10px;" action="/userput/{{this._id}}" method="get">
                                     <button
@@ -145,10 +145,10 @@
 
             $(".editCategoryButton").click(function () {
 
-                var id = $(this).closest("tr").find("td:first").text();
-                var username = $(this).closest("tr").find("td:nth-child(2)").text();
-                var password = $(this).closest("tr").find("td:nth-child(3)").text();
-                var role = $(this).closest("tr").find("td:nth-child(4)").text();
+                var id = $(this).closest("tr").find(".user-id").text();
+                var username = $(this).closest("tr").find(".user-id").text();
+                var password = $(this).closest("tr").find(".user-password").text();
+                var role = $(this).closest("tr").find(".user-role").text();
 
                 $("#editusername").val(username);
                 $("#editpassword").val(password);
