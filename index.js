@@ -1092,11 +1092,15 @@ app.post('/userput/:id', async (req, res) => {
 app.get('/userscreen', async (req, res) => {
   try {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
-    users.forEach(async user => {
+
+    // Giải mã mật khẩu cho từng người dùng một
+    for (const user of users) {
       const hashedPasswordFromDB = user.password; // Lấy mật khẩu đã mã hóa từ cơ sở dữ liệu
-      const decryptedPassword = await bcrypt.compare(hashedPasswordFromDB, 'dummyPassword'); // Giải mã mật khẩu
+      const decryptedPassword = await bcrypt.hash(hashedPasswordFromDB, 10); // Giải mã mật khẩu
+
       user.password = decryptedPassword; // Gán mật khẩu giải mã vào thuộc tính user.password
-    });
+    }
+
     res.render("user", { user: users });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách người dùng:', error);
