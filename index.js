@@ -1092,9 +1092,10 @@ app.post('/userput/:id', async (req, res) => {
 app.get('/userscreen', async (req, res) => {
   try {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
-    users.forEach(user => {
-      const plainPassword ="123456"
-      user.password = bcrypt.compareSync(plainPassword, user.password); // Giải mã mật khẩu trước khi hiển thị
+    users.forEach(async user => {
+      const hashedPasswordFromDB = user.password; // Lấy mật khẩu đã mã hóa từ cơ sở dữ liệu
+      const decryptedPassword = await bcrypt.compare(hashedPasswordFromDB, 10); // Giải mã mật khẩu
+      user.password = decryptedPassword; // Gán mật khẩu giải mã vào thuộc tính user.password
     });
     res.render("user", { user: users });
   } catch (error) {
