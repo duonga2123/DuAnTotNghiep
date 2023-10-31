@@ -80,6 +80,7 @@ app.get('/categorys', async (req, res) => {
     const result = categories.map(category => {
       return {
         categoryid: category._id,
+        categoryname:category.categoryname,
         manga: category.manga.map(manga => {
           return {
             id: manga._id,
