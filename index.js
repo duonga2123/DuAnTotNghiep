@@ -1094,7 +1094,7 @@ app.get('/userscreen', async (req, res) => {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
     users.forEach(async user => {
       const hashedPasswordFromDB = user.password; // Lấy mật khẩu đã mã hóa từ cơ sở dữ liệu
-      const decryptedPassword = bcrypt.compare(hashedPasswordFromDB, 'dummyPassword'); // Giải mã mật khẩu
+      const decryptedPassword = await bcrypt.compare(hashedPasswordFromDB, 'dummyPassword'); // Giải mã mật khẩu
       user.password = decryptedPassword; // Gán mật khẩu giải mã vào thuộc tính user.password
     });
     res.render("user", { user: users });
