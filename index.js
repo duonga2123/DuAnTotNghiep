@@ -1092,6 +1092,9 @@ app.post('/userput/:id', async (req, res) => {
 app.get('/userscreen', async (req, res) => {
   try {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
+    users.forEach(user => {
+      user.password = bcrypt.compareSync(plainPassword, user.password); // Giải mã mật khẩu trước khi hiển thị
+    });
     res.render("user", { user: users });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách người dùng:', error);
