@@ -1091,11 +1091,11 @@ app.post('/userput/:id', async (req, res) => {
 });
 app.get('/userscreen', async (req, res) => {
   try {
-    const users = await User.find({ role: 'user', nhomdich: 'nhomdich' });
-    res.render("user", { user:users });
+    const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
+    res.render("user", { user: users });
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách thể loại:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
+    console.error('Lỗi khi lấy danh sách người dùng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách người dùng' });
   }
 });
 
