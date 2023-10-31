@@ -658,6 +658,12 @@
 				</a>
 			</li>
 			<li>
+				<a href="#" id="userManagerLink">
+					<i class='bx bxs-dollar-circle'></i>
+					<span class="text">User Management</span>
+				</a>
+			</li>
+			<li>
 				<a href="#" id="categoryManagerLink">
 					<i class='bx bxs-category'></i>
 					<span class="text">Category Manager</span>
@@ -1045,6 +1051,46 @@ const createRevenueChart = (dates, amounts) => {
 
                 // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
                 $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
+
+                $("#editCategoryModal").modal("show");
+            });
+
+        });
+		}
+		const userManagerLink = document.getElementById('userManagerLink');
+			userManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
+			fetch('/userscreen')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setuser();
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+	
+		function setuser(){
+			  $(document).ready(function () {
+
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
+
+
+            $(".editCategoryButton").click(function () {
+
+                var id = $(this).closest("tr").find("td:first").text();
+                var username = $(this).closest("tr").find("td:nth-child(2)").text();
+                var password = $(this).closest("tr").find("td:nth-child(3)").text();
+                var role = $(this).closest("tr").find("td:nth-child(4)").text();
+
+                $("#editusername").val(username);
+                $("#editpassword").val(username);
+                $("#editrole").val(role);
+
+
+                $("#editCategoryForm").attr("action", "/userput/" + id);
 
                 $("#editCategoryModal").modal("show");
             });

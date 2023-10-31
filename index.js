@@ -939,7 +939,7 @@ app.post('/register', async (req, res) => {
     const { username, password, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ username, password: hashedPassword, role });
+    const user = new User({ username, password: hashedPassword, role, coin:0 });
     await user.save();
 
     const responseData = {
@@ -951,6 +951,7 @@ app.post('/register', async (req, res) => {
             username: user.username,
             password: user.password,
             role: user.role,
+            coin:user.coin,
             __v: user.__v,
           },
         ],
@@ -1065,14 +1066,15 @@ app.post('/userdelete/:_id', async (req, res) => {
 app.post('/userput/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-    const { username, password } = req.body;
+    const { username, password,role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.findByIdAndUpdate(
       userId,
       {
         username,
-        password: hashedPassword
+        password: hashedPassword,
+        role
       },
       { new: true }
     );
@@ -1085,6 +1087,15 @@ app.post('/userput/:id', async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi cập nhật user:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
+  }
+});
+app.get('/userscreen', async (req, res) => {
+  try {
+    const users = await User.find({ role: 'user', nhomdich: 'nhomdich' });
+    res.render("user", { user:users });
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách thể loại:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
   }
 });
 
