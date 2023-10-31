@@ -1093,7 +1093,7 @@ app.get('/userscreen', async (req, res) => {
   try {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
     users.forEach(user => {
-      const plainPassword =user.password
+      const plainPassword ="123456"
       user.password = bcrypt.compareSync(plainPassword, user.password); // Giải mã mật khẩu trước khi hiển thị
     });
     res.render("user", { user: users });
