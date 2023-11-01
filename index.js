@@ -528,11 +528,11 @@ app.post('/user/removeFavoriteManga/:userId/:mangaId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    if (!user.favoriteManga.includes(mangaId)) {
+    if (!user.favoriteManga.some(manga => manga.mangaId.toString() === mangaId)) {
       return res.status(400).json({ message: 'Truyện không tồn tại trong danh sách yêu thích.' });
     }
 
-    user.favoriteManga.pull(mangaId); // Xóa truyện yêu thích khỏi danh sách
+    user.favoriteManga = user.favoriteManga.filter(manga => manga.mangaId.toString() !== mangaId); // Xóa truyện yêu thích khỏi danh sách
 
     await user.save();
 
