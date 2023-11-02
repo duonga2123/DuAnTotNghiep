@@ -806,8 +806,8 @@ app.post('/search', async (req, res) => {
 //api thanh toán
 paypal.configure({
   mode: 'sandbox',
-  client_id: 'AblsxUP2kfk8xQF3v6nEVZ7xaZJuYHIkLXEprhllAP9NKyCiIiPF_qUP_V6Fc5G9H1l7ig2NJGtaW4SQ',
-  client_secret: 'EHoctSTJJhR5YB5FrHY9IHpa9Nf1zd2DqEXbQuIN1a-HXNG--WUrbbyfhmArXvbTjnP0gBcEzR1pmB94'
+  client_id: 'Ab2EPlIe3lWg5riH2gsCt2CYrm4y8kI3S6oyZ7D6HGea8hVjG0YKsVItk6WcCR_rPpzpoqGLw-GsjNqh',
+  client_secret: 'EKUv6YK2PjVSGGYKIHlpiRMvuMn1xhDVa8_QMmJ90REtNiFTblsVp6aqvVCDVGXQGqXcZuZqSt6SEl2f'
 });
 
 app.post('/pay/:_userId', async (req, res) => {
