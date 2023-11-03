@@ -858,7 +858,7 @@ app.post('/pay/:_userId', async (req, res) => {
             await paymentData.save();
             user.payment.push(paymentData._id)
             await user.save()
-            res.status(500).json(payment.links[i].href);
+            res.json(payment.links[i].href);
           }
         }
       }
@@ -904,7 +904,14 @@ app.get('/success/:id', async (req, res) => {
           { new: true }
         );
 
-        res.status(200).json({ totalAmount, message: 'Thanh toán thành công!' });
+        res.json({
+          userID: updatePayment.userID,
+          currency: updatePayment.currency,
+          totalAmount: updatePayment.totalAmount,
+          coin: updatedCoin,
+          date: updatePayment.date,
+          success: success
+        });
       }
     });
   }
