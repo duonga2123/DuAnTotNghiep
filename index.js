@@ -929,7 +929,7 @@ if (!paymentDetail) {
 }
 
 // Phản hồi với dữ liệu theo cấu trúc mô hình
-res.status(200).json({
+res.json({
   userID: paymentDetail.userID,
   currency: paymentDetail.currency,
   totalAmount: paymentDetail.totalAmount,
