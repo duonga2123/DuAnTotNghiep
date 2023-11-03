@@ -9,7 +9,11 @@ const mangaSchema = new mongoose.Schema({
   chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'chapter' }],
   category: String,
   view:Number,
-  like:Number
+  like:Number,
+  comment:[{
+    userID:{type:mongoose.Schema.Types.ObjectId,ref:'user'},
+    cmt:{type: String}
+  }]
 });
 
 const Manga = mongoose.model('manga', mangaSchema);

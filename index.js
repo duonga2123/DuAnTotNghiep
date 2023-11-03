@@ -347,6 +347,18 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       }
     });
 
+    const allComments = [];
+    for (const com of comment) {
+      const userComment = await User.findById(com.userID);
+      const username = userComment.username;
+      const commentInfo = {
+        userID: com.userID,
+        username: username,
+        cmt: com.cmt
+      };
+      allComments.push(commentInfo);
+    }
+
     const response = {
       manganame: manganame,
       author: author,
@@ -361,7 +373,8 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         namechap: chapter.number,
         viporfree: chapter.viporfree
       })),
-     isLiked:isLiked
+     isLiked:isLiked,
+     comments: allComments
     };
 
     res.json(response);
@@ -499,6 +512,28 @@ app.post('/user/removeFavoriteManga/:userId/:mangaId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa truyện yêu thích.' });
   }
 });
+
+app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
+  try{
+    const userId=req.params.userId
+    const mangaId=req.params.mangaId
+    const { comment } = req.body;
+    const user=await User.findById(userId)
+    if(!user){
+      res.status(404).json({message:'không tìm thấy user'})
+    }
+    const manga=await Manga.findById(mangaId)
+    if(!manga){
+      res.status(404).json({message:'không tìm thấy truyện'})
+    }
+  
+    manga.comment.push({userID:userId,cmt:comment})
+    await manga.save()
+  }catch(error){
+    console.error('Lỗi khi post bình luận:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
+  }
+})
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
   res.render("addchap");
