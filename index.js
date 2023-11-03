@@ -922,21 +922,23 @@ const user= await User.findById(userid);
 if(!user){
   return res.status(404).json({ message: 'Người dùng không tồn tại' });
 }
-const paymentDetail = await Payment.findOne({ userID: userid });
+const paymentDetails = await Payment.find({ userID: userid });
 
-if (!paymentDetail) {
+if (!paymentDetails || paymentDetails.length === 0) {
   return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
 }
 
 // Phản hồi với dữ liệu theo cấu trúc mô hình
-res.json({
+const formattedPaymentDetails = paymentDetails.map(paymentDetail => ({
   userID: paymentDetail.userID,
   currency: paymentDetail.currency,
   totalAmount: paymentDetail.totalAmount,
   coin: paymentDetail.coin,
   date: paymentDetail.date,
   success: paymentDetail.success
-});
+}));
+
+res.json(formattedPaymentDetails);
    
   }
   catch (error) {
