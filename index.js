@@ -904,20 +904,44 @@ app.get('/success/:id', async (req, res) => {
           { new: true }
         );
 
-        res.json({
-          userID: updatePayment.userID,
-          currency: updatePayment.currency,
-          totalAmount: updatePayment.totalAmount,
-          coin: updatedCoin,
-          date: updatePayment.date,
-          success: success
-        });
+        res.status(200).json({ totalAmount, message: 'Thanh toán thành công!' });
       }
     });
   }
   catch (error) {
     console.error('Lỗi khi xử lý thanh toán:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi xử lý thanh toán.' });
+  }
+
+});
+
+app.get('/paymentdetail/:userid', async (req, res) => {
+  try {
+const userid=req.params.userid
+const user= await User.findById(userid);
+if(!user){
+  return res.status(404).json({ message: 'Người dùng không tồn tại' });
+}
+const paymentDetail = await Payment.findOne({ userID: userid });
+
+if (!paymentDetail) {
+  return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
+}
+
+// Phản hồi với dữ liệu theo cấu trúc mô hình
+res.status(200).json({
+  userID: paymentDetail.userID,
+  currency: paymentDetail.currency,
+  totalAmount: paymentDetail.totalAmount,
+  coin: paymentDetail.coin,
+  date: paymentDetail.date,
+  success: paymentDetail.success
+});
+   
+  }
+  catch (error) {
+    console.error('Lỗi lấy lịch sử giao dịch:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi lấy lịch sử giao dịch.' });
   }
 
 });
