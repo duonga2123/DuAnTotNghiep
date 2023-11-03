@@ -1122,6 +1122,23 @@ app.post('/userput/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
   }
 });
+app.get('/user/:userID', async (req, res) => {
+  try {
+  const userID=req.params.userID
+  const user=await User.findById(userID)
+  if(!user){
+    res.status(500).json({message:'không tìm thấy user'})
+  }
+  res.json({
+    id:userID,
+    username:user.username,
+    coin:user.coin
+  })
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin người dùng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin người dùng' });
+  }
+});
 app.get('/userscreen', async (req, res) => {
   try {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
