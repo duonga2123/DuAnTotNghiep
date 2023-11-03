@@ -7,11 +7,8 @@ const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
 const session = require('express-session');
-const redis = require('redis');
-
-const RedisStore = require("connect-redis")
 const Category = require('./models/CategoryModel')
-
+const multer = require('multer')
 const Manga = require('./models/MangaModel')
 const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
@@ -20,7 +17,7 @@ const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
 const methodOverride = require('method-override');
 const path = require('path')
-
+const myId = new mongoose.Types.ObjectId();
 
 var app = express();
 
@@ -34,7 +31,9 @@ app.engine(".hbs", hbs.engine({
 app.set("view engine", ".hbs");
 app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride('_method'));
+const storage = multer.memoryStorage();
 
+const upload = multer({ storage: storage });
 
 
 const uri = "mongodb+srv://totnghiepduan2023:MaNXmiIny7im1yjG@cluster0.tzx1qqh.mongodb.net/DuanTotNghiep?retryWrites=true&w=majority";
@@ -44,16 +43,10 @@ mongoose.connect(uri, {
 }).then(console.log("kết nối thành công"));
 
 
-const redisClient = redis.createClient();
-let redisStore = new RedisStore({
-  client: redisClient,
-  prefix: "myapp:",
-})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-  store: redisStore,
   secret: 'mysecretkey',
   resave: false,
   saveUninitialized: true,
@@ -381,7 +374,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         viporfree: chapter.viporfree
       })),
      isLiked:isLiked,
-     comments: allComments
+     
     };
 
     res.json(response);
