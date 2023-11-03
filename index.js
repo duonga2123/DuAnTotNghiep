@@ -9,7 +9,7 @@ const cheerio = require('cheerio');
 const session = require('express-session');
 const redis = require('redis');
 
-const RedisStore = require("connect-redis").default
+const RedisStore = require("connect-redis")
 const Category = require('./models/CategoryModel')
 
 const Manga = require('./models/MangaModel')
