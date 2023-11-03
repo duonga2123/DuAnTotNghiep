@@ -7,8 +7,6 @@ const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
-const redis = require('redis');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
 const Manga = require('./models/MangaModel')
@@ -48,10 +46,7 @@ mongoose.connect(uri, {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const redisClient = redis.createClient();
-
 app.use(session({
-  store: new RedisStore({ client: redisClient }),
   secret: 'mysecretkey',
   resave: false,
   saveUninitialized: true,
@@ -531,9 +526,13 @@ app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
     if(!manga){
       res.status(404).json({message:'không tìm thấy truyện'})
     }
-  
-    manga.comment.push({userID:userId,cmt:comment})
+    const newComment = {
+      userID: userId,
+      cmt: comment
+    };
+    manga.comment.push(newComment)
     await manga.save()
+    res.status(200).json({ message: 'Đã thêm bình luận thành công' });
   }catch(error){
     console.error('Lỗi khi post bình luận:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
