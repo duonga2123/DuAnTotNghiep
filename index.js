@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
 const Manga = require('./models/MangaModel')
@@ -46,7 +48,10 @@ mongoose.connect(uri, {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const redisClient = redis.createClient();
+
 app.use(session({
+  store: new RedisStore({ client: redisClient }),
   secret: 'mysecretkey',
   resave: false,
   saveUninitialized: true,
