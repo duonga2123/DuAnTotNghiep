@@ -303,50 +303,7 @@ app.post('/mangadelete/:_id', async (req, res) => {
   }
 });
 
-app.get('/mangachitiet/:mangaId', async (req, res) => {
-  try {
-    const mangaId = req.params.mangaId;
-    const manga = await Manga.findById(mangaId).populate('chapters', 'number viporfree');
 
-    if (!manga) {
-      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
-    }
-
-    const { manganame, author, content, image, category, view, like, chapters } = manga;
-
-    const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
-    const uniqueChapters = [];
-    
-    manga.chapters.forEach(chapter => {
-      if (!chapterSet.has(chapter._id)) {
-        chapterSet.add(chapter._id);
-        uniqueChapters.push(chapter);
-      }
-    });
-    
-
-    const response = {
-      manganame: manganame,
-      author: author,
-      content: content,
-      image: image,
-      category: category,
-      view: view,
-      like: like,
-      totalChapters: uniqueChapters.length,
-      chapters: uniqueChapters.map(chapter => ({
-        idchap: chapter._id,
-        namechap: chapter.number,
-        viporfree: chapter.viporfree
-      }))
-    };
-
-    res.json(response);
-  } catch (error) {
-    console.error('Lỗi khi lấy chi tiết truyện:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
-  }
-});
 app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
@@ -1123,23 +1080,7 @@ app.post('/userput/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
   }
 });
-app.get('/user/:userID', async (req, res) => {
-  try {
-  const userID=req.params.userID
-  const user=await User.findById(userID)
-  if(!user){
-    res.status(500).json({message:'không tìm thấy user'})
-  }
-  res.json({
-    id:userID,
-    username:user.username,
-    coin:user.coin
-  })
-  } catch (error) {
-    console.error('Lỗi khi lấy thông tin người dùng:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin người dùng' });
-  }
-});
+
 app.get('/userscreen', async (req, res) => {
   try {
     const users = await User.find({ $or: [{ role: 'user' }, { role: 'nhomdich' }] });
