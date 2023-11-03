@@ -1023,6 +1023,7 @@ app.post('/login', async (req, res) => {
             username: user.username,
             password: user.password,
             role: user.role,
+            coin:user.coin,
             __v: user.__v,
           },
         ],
