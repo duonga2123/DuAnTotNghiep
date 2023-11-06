@@ -829,6 +829,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
 
     const responseData = {
       images: chapter.images,
+      viporfree:chapter.viporfree,
       nextchap: nextChapter,
       prevchap: prevChapter
     };
