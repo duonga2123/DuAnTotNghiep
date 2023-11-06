@@ -361,6 +361,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
     }
 
     const response = {
+      mangaID:mangaId,
       manganame: manganame,
       author: author,
       content: content,
@@ -557,8 +558,7 @@ app.post('/deletecomment/:commentId/:mangaID', async (req, res) => {
     // Lưu lại thay đổi vào cơ sở dữ liệu
     await manga.save();
   
-    
-
+  
     res.status(200).json({ message: 'Xóa comment thành công' });
   } catch (error) {
     console.error('Lỗi khi xóa comment:', error);
@@ -775,9 +775,10 @@ app.get('/chapterchitiet/:_id', async (req, res) => {
   }
 });
 
-app.get('/chapter/:_id/images', async (req, res) => {
+app.get('/chapter/:_id/:userid/images', async (req, res) => {
   try {
     const chapterid = req.params._id;
+    const userid=req.params.userid
 
     const chapter = await Chapter.findById(chapterid);
     chapter.number = parseInt(chapter.number);
@@ -788,23 +789,42 @@ app.get('/chapter/:_id/images', async (req, res) => {
 
     const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
     const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
-       let nextChapter = null;
+    let nextChapter = null;
     let prevChapter = null;
+    const user = await User.findById(userid);
 
     if (currentChapterIndex < chapters.length - 1) {
       nextChapter = {
         _id: chapters[currentChapterIndex + 1]._id,
         images: chapters[currentChapterIndex + 1].images,
-        viporfree:chapters[currentChapterIndex + 1].viporfree
+        viporfree: chapters[currentChapterIndex + 1].viporfree
       };
+
+      // Kiểm tra xem id của nextChapter có trong mảng purchasedChapters của user hay không
+     
+      const isNextPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === nextChapter._id.toString());
+      if (isNextPurchased) {
+        nextChapter.viporfree = "free";
+      }
     }
 
     if (currentChapterIndex > 0) {
       prevChapter = {
         _id: chapters[currentChapterIndex - 1]._id,
         images: chapters[currentChapterIndex - 1].images,
-        viporfree:chapters[currentChapterIndex - 1].viporfree
+        viporfree: chapters[currentChapterIndex - 1].viporfree
       };
+
+      
+      const isPrevPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === prevChapter._id.toString());
+      if (isPrevPurchased) {
+        prevChapter.viporfree = "free";
+      }
+    }
+
+    const isPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === chapterid);
+    if (isPurchased) {
+      chapter.viporfree = "free";
     }
 
     const responseData = {
