@@ -539,14 +539,15 @@ app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
 })
-app.post('/deletecomment/:commentId', async (req, res) => {
+app.post('/deletecomment/:commentId/:userID', async (req, res) => {
   try {
     const commentId = req.params.commentId;
+    const userID=req.params.userID
     
     // Tìm người dùng có chứa comment cần xóa
-    const user = await User.findOne({ 'comment._id': commentId });
+    const user = await User.findOne(userID);
     if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy comment trong cơ sở dữ liệu' });
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
     }
 
     // Tìm và xóa comment từ user
