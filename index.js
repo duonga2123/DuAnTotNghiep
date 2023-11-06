@@ -539,6 +539,33 @@ app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
 })
+app.post('/deletecomment/:commentId', async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+    
+    // Tìm người dùng có chứa comment cần xóa
+    const user = await User.findOne({ 'comment._id': commentId });
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy comment trong cơ sở dữ liệu' });
+    }
+
+    // Tìm và xóa comment từ user
+    const commentIndex = user.comment.findIndex(cmt => cmt._id == commentId);
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: 'Không tìm thấy comment với ID cung cấp' });
+    }
+
+    user.comment.splice(commentIndex, 1); // Xóa comment từ mảng
+
+    // Lưu lại thay đổi vào cơ sở dữ liệu
+    await user.save();
+
+    res.status(200).json({ message: 'Xóa comment thành công' });
+  } catch (error) {
+    console.error('Lỗi khi xóa comment:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa comment.' });
+  }
+});
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
   res.render("addchap");
