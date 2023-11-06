@@ -352,6 +352,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       const userComment = await User.findById(com.userID);
       const username = userComment.username;
       const commentInfo = {
+        cmt_id:com._id,
         userID: com.userID,
         username: username,
         cmt: com.cmt
