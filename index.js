@@ -545,7 +545,7 @@ app.post('/deletecomment/:commentId/:userID', async (req, res) => {
     const userID=req.params.userID
     
     // Tìm người dùng có chứa comment cần xóa
-    const user = await User.findOne(userID);
+    const user = await User.findById(userID);
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng' });
     }
