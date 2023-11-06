@@ -376,7 +376,8 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         viporfree: chapter.viporfree
       })),
      isLiked:isLiked,
-     comments: allComments
+     comments: allComments,
+     totalcomment:allComments.length
     };
 
     res.json(response);
