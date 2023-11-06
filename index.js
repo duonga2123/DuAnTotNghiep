@@ -539,27 +539,25 @@ app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
 })
-app.post('/deletecomment/:commentId/:userID', async (req, res) => {
+app.post('/deletecomment/:commentId/:mangaID', async (req, res) => {
   try {
     const commentId = req.params.commentId;
-    const userID=req.params.userID
-    
-    // Tìm người dùng có chứa comment cần xóa
-    const user = await User.findById(userID);
-    if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    const mangaId=req.params.mangaID;
+    const manga=await Manga.findById(mangaId)
+    if(!manga){
+      res.status(404).json({ message: 'không tìm thấy truyện này' });
     }
-
-    // Tìm và xóa comment từ user
-    const commentIndex = user.comment.findIndex(cmt => cmt._id == commentId);
+    const commentIndex = manga.comment.findIndex(cmt => cmt._id == commentId);
     if (commentIndex === -1) {
       return res.status(404).json({ message: 'Không tìm thấy comment với ID cung cấp' });
     }
 
-    user.comment.splice(commentIndex, 1); // Xóa comment từ mảng
+    manga.comment.splice(commentIndex, 1); // Xóa comment từ mảng
 
     // Lưu lại thay đổi vào cơ sở dữ liệu
-    await user.save();
+    await manga.save();
+  
+    
 
     res.status(200).json({ message: 'Xóa comment thành công' });
   } catch (error) {
