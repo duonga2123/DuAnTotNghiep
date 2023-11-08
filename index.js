@@ -12,6 +12,7 @@ const multer = require('multer')
 const Manga = require('./models/MangaModel')
 const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
+const Baiviet=require('./models/BaiVietModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
@@ -74,7 +75,23 @@ app.get("/logout", async (req, res) => {
 });
 
 //api get, post bài viết 
-app.post('/',async(req,res)=>{
+app.post('/postbaiviet/:userId',async(req,res)=>{
+  try{
+    const userId=req.params.userId
+    const {content}=req.body
+    const user=await User.findById(userId)
+    if(!user){
+      res.status(404).json({message:'user không tồn tại'})
+    }
+    if(user.role === "user"){
+      res.status(404).json({message:'bạn không có quyền đăng bài viết'})
+    }
+    const baiviet=new Baiviet({userId,content,like:0})
+    await baiviet.save()
+res.status(500).json("post bài viết thành công")
+  }catch(err){
+
+  }
 
 })
 
