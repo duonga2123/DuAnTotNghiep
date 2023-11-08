@@ -74,6 +74,10 @@ app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
 });
 
+app.get('/nhomdich',checkAuth, async(req,res)=>{
+  res.render("nhomdich")
+})
+
 //api get, post bài viết 
 app.post('/postbaiviet/:userId', async (req, res) => {
   try {
@@ -1209,7 +1213,7 @@ app.post('/loginadmin', async (req, res) => {
 
     if (!user) {
       return res.render('login', {
-        UserError: 'tên đăng nhập không đúng'
+        UserError: 'Tên đăng nhập không đúng'
       });
     }
 
@@ -1217,23 +1221,31 @@ app.post('/loginadmin', async (req, res) => {
 
     if (!isPasswordValid) {
       return res.render('login', {
-        PassError: 'mật khẩu không đúng'
+        PassError: 'Mật khẩu không đúng'
       });
     }
 
-    if (user.role !== 'admin') {
+    if (user.role === 'admin') {
+      const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+      req.session.token = token;
+      return res.status(200).send(`
+        <script>
+          window.location.href = '/admin'; 
+        </script>
+      `);
+    } else if (user.role === 'nhomdich') {
+      const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+      req.session.token = token;
+      return res.status(200).send(`
+        <script>
+          window.location.href = '/nhomdich'; 
+        </script>
+      `);
+    } else {
       return res.render('login', {
-        RoleError: 'bạn không có quyền truy cập trang web'
+        RoleError: 'Bạn không có quyền truy cập trang web'
       });
     }
-
-    const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
-    req.session.token = token;
-    res.status(200).send(`
-    <script>
-      window.location.href = '/admin'; 
-    </script>
-  `);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
@@ -1293,6 +1305,7 @@ app.get('/userscreen', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách người dùng' });
   }
 });
+
 
 
 app.listen(8080, () =>
