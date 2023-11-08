@@ -1114,7 +1114,7 @@ app.get('/paymentdetail/:userid', async (req, res) => {
 
 app.get('/getrevenue', async (req, res) => {
   try {
-    const payments = await Payment.find({});
+    const payments = await Payment.find({success:"thanh toán thành công"});
 
     res.json(payments);
   } catch (error) {
