@@ -73,6 +73,11 @@ app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
 });
 
+//api get, post bài viết 
+app.post('/',async(req,res)=>{
+  
+})
+
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
@@ -373,7 +378,8 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       chapters: uniqueChapters.map(chapter => ({
         idchap: chapter._id,
         namechap: chapter.number,
-        viporfree: chapter.viporfree
+        viporfree: chapter.viporfree,
+        price:chapter.price
       })),
      isLiked:isLiked,
      comments: allComments,
@@ -843,7 +849,8 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       nextChapter = {
         _id: chapters[currentChapterIndex + 1]._id,
         images: chapters[currentChapterIndex + 1].images,
-        viporfree: chapters[currentChapterIndex + 1].viporfree
+        viporfree: chapters[currentChapterIndex + 1].viporfree,
+        price:chapters[currentChapterIndex + 1].price
       };
 
       // Kiểm tra xem id của nextChapter có trong mảng purchasedChapters của user hay không
@@ -858,7 +865,8 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       prevChapter = {
         _id: chapters[currentChapterIndex - 1]._id,
         images: chapters[currentChapterIndex - 1].images,
-        viporfree: chapters[currentChapterIndex - 1].viporfree
+        viporfree: chapters[currentChapterIndex - 1].viporfree,
+        price:chapters[currentChapterIndex - 1].price
       };
 
       
@@ -876,6 +884,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
     const responseData = {
       images: chapter.images,
       viporfree:chapter.viporfree,
+      price:chapter.price,
       nextchap: nextChapter,
       prevchap: prevChapter
     };
