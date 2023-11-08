@@ -81,14 +81,16 @@ app.post('/postbaiviet/:userId', async (req, res) => {
     const { content } = req.body
     const user = await User.findById(userId)
     if (!user) {
-      res.status(404).json({ message: 'user không tồn tại' })
+      return res.status(404).json({ message: 'user không tồn tại' })
     }
     if (user.role === "user") {
-      res.status(403).json({ message: 'bạn không có quyền đăng bài viết' })
+      return res.status(403).json({ message: 'bạn không có quyền đăng bài viết' })
     }
+
     const baiviet = new Baiviet({ userId, content, like: 0 })
     await baiviet.save()
-    res.status(200).json("post bài viết thành công")
+    return res.status(200).json("post bài viết thành công")
+
   } catch (err) {
     console.error('Lỗi khi đăng bài viết:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
