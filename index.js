@@ -12,7 +12,7 @@ const multer = require('multer')
 const Manga = require('./models/MangaModel')
 const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
-const Baiviet=require('./models/BaiVietModel')
+const Baiviet = require('./models/BaiVietModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
@@ -67,7 +67,7 @@ const checkAuth = (req, res, next) => {
   }
 };
 
-app.get("/admin",checkAuth, async (req, res) => {
+app.get("/admin", checkAuth, async (req, res) => {
   res.render("admin");
 });
 app.get("/logout", async (req, res) => {
@@ -75,22 +75,23 @@ app.get("/logout", async (req, res) => {
 });
 
 //api get, post bài viết 
-app.post('/postbaiviet/:userId',async(req,res)=>{
-  try{
-    const userId=req.params.userId
-    const {content}=req.body
-    const user=await User.findById(userId)
-    if(!user){
-      res.status(404).json({message:'user không tồn tại'})
+app.post('/postbaiviet/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const { content } = req.body
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'user không tồn tại' })
     }
-    if(user.role === "user"){
-      res.status(404).json({message:'bạn không có quyền đăng bài viết'})
+    if (user.role === "user") {
+      res.status(403).json({ message: 'bạn không có quyền đăng bài viết' })
     }
-    const baiviet=new Baiviet({userId,content,like:0})
+    const baiviet = new Baiviet({ userId, content, like: 0 })
     await baiviet.save()
-res.status(500).json("post bài viết thành công")
-  }catch(err){
-
+    res.status(200).json("post bài viết thành công")
+  } catch (err) {
+    console.error('Lỗi khi đăng bài viết:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
   }
 
 })
@@ -102,7 +103,7 @@ app.get('/categorys', async (req, res) => {
     const result = categories.map(category => {
       return {
         categoryid: category._id,
-        categoryname:category.categoryname,
+        categoryname: category.categoryname,
         manga: category.manga.map(manga => {
           return {
             id: manga._id,
@@ -290,7 +291,7 @@ app.post('/mangaput/:_id', async (req, res) => {
     manga.category = category;
     manga.view = view;
     manga.like = like;
-    manga.image=image;
+    manga.image = image;
 
     await manga.save();
 
@@ -336,36 +337,36 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
     }
 
-    const user=await User.findById(userId)
+    const user = await User.findById(userId)
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    const { manganame, author, content, image, category, view, like, chapters,comment } = manga;
+    const { manganame, author, content, image, category, view, like, chapters, comment } = manga;
 
     const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
     const uniqueChapters = [];
-   
+
     manga.chapters.forEach(chapter => {
       if (!chapterSet.has(chapter._id)) {
         chapterSet.add(chapter._id);
         uniqueChapters.push(chapter);
         let viporfree = chapter.viporfree;
-        user.purchasedChapters.forEach(purchased =>{
-          if(purchased.chapterId.toString() === chapter._id.toString()){
-            viporfree="free"
+        user.purchasedChapters.forEach(purchased => {
+          if (purchased.chapterId.toString() === chapter._id.toString()) {
+            viporfree = "free"
           }
         });
-        chapter.viporfree=viporfree
+        chapter.viporfree = viporfree
 
       }
     });
 
     let isLiked = false;
     user.favoriteManga.forEach(favorite => {
-      if (favorite.mangaId.toString() === mangaId ) {
+      if (favorite.mangaId.toString() === mangaId) {
         isLiked = favorite.isLiked;
-        
+
       }
     });
 
@@ -374,7 +375,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       const userComment = await User.findById(com.userID);
       const username = userComment.username;
       const commentInfo = {
-        cmt_id:com._id,
+        cmt_id: com._id,
         userID: com.userID,
         username: username,
         cmt: com.cmt
@@ -383,7 +384,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
     }
 
     const response = {
-      mangaID:mangaId,
+      mangaID: mangaId,
       manganame: manganame,
       author: author,
       content: content,
@@ -396,11 +397,11 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         idchap: chapter._id,
         namechap: chapter.number,
         viporfree: chapter.viporfree,
-        price:chapter.price
+        price: chapter.price
       })),
-     isLiked:isLiked,
-     comments: allComments,
-     totalcomment:allComments.length
+      isLiked: isLiked,
+      comments: allComments,
+      totalcomment: allComments.length
     };
 
     res.json(response);
@@ -456,14 +457,14 @@ app.get('/top5manga', async (req, res) => {
 app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
   try {
     const userId = req.params.userId;
-    const  mangaId = req.params.mangaId;
+    const mangaId = req.params.mangaId;
 
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    const mangaIndex =user.favoriteManga.findIndex(manga => manga._id === mangaId);
+    const mangaIndex = user.favoriteManga.findIndex(manga => manga._id === mangaId);
 
     if (mangaIndex === -1) {
       user.favoriteManga.push({ mangaId, isLiked: true });
@@ -539,18 +540,18 @@ app.post('/user/removeFavoriteManga/:userId/:mangaId', async (req, res) => {
   }
 });
 
-app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
-  try{
-    const userId=req.params.userId
-    const mangaId=req.params.mangaId
+app.post('/postcomment/:userId/:mangaId', async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const mangaId = req.params.mangaId
     const { comment } = req.body;
-    const user=await User.findById(userId)
-    if(!user){
-      res.status(404).json({message:'không tìm thấy user'})
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' })
     }
-    const manga=await Manga.findById(mangaId)
-    if(!manga){
-      res.status(404).json({message:'không tìm thấy truyện'})
+    const manga = await Manga.findById(mangaId)
+    if (!manga) {
+      res.status(404).json({ message: 'không tìm thấy truyện' })
     }
     const newComment = {
       userID: userId,
@@ -559,7 +560,7 @@ app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
     manga.comment.push(newComment)
     await manga.save()
     res.status(200).json({ message: 'Đã thêm bình luận thành công' });
-  }catch(error){
+  } catch (error) {
     console.error('Lỗi khi post bình luận:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
@@ -567,9 +568,9 @@ app.post('/postcomment/:userId/:mangaId', async(req,res)=>{
 app.post('/deletecomment/:commentId/:mangaID', async (req, res) => {
   try {
     const commentId = req.params.commentId;
-    const mangaId=req.params.mangaID;
-    const manga=await Manga.findById(mangaId)
-    if(!manga){
+    const mangaId = req.params.mangaID;
+    const manga = await Manga.findById(mangaId)
+    if (!manga) {
       res.status(404).json({ message: 'không tìm thấy truyện này' });
     }
     const commentIndex = manga.comment.findIndex(cmt => cmt._id == commentId);
@@ -581,8 +582,8 @@ app.post('/deletecomment/:commentId/:mangaID', async (req, res) => {
 
     // Lưu lại thay đổi vào cơ sở dữ liệu
     await manga.save();
-  
-  
+
+
     res.status(200).json({ message: 'Xóa comment thành công' });
   } catch (error) {
     console.error('Lỗi khi xóa comment:', error);
@@ -650,7 +651,7 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 
     const purchasedChapter = {
       chapterId: chapterId,
-      isChapterFree: true 
+      isChapterFree: true
     };
 
     user.purchasedChapters.push(purchasedChapter);
@@ -666,15 +667,15 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 app.post('/chapters', async (req, res) => {
   try {
     const { mangaName, number, viporfree, images } = req.body;
-   
-    const imageArray=images.split('\n')
+
+    const imageArray = images.split('\n')
 
     const manga = await Manga.findOne({ manganame: mangaName });
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
-    const chapter = new Chapter({ mangaName, number, viporfree, images:imageArray });
+    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray });
     await chapter.save();
 
     manga.chapters.push(chapter._id);
@@ -702,11 +703,11 @@ app.get("/chapterput/:_id", async (req, res) => {
 app.post('/chapterput/:_id', async (req, res) => {
   try {
     const chapterId = req.params._id;
-    let { mangaName, number, viporfree, price,images } = req.body;
-    const imageArray=images.split('\n')
-    number=number.toString();
+    let { mangaName, number, viporfree, price, images } = req.body;
+    const imageArray = images.split('\n')
+    number = number.toString();
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, price, images:imageArray
+      mangaName, number, viporfree, price, images: imageArray
     }, { new: true });
 
     if (!chapter) {
@@ -812,14 +813,14 @@ app.get('/chapter/:_id/images', async (req, res) => {
 
     const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
     const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
-       let nextChapter = null;
+    let nextChapter = null;
     let prevChapter = null;
 
     if (currentChapterIndex < chapters.length - 1) {
       nextChapter = {
         _id: chapters[currentChapterIndex + 1]._id,
         images: chapters[currentChapterIndex + 1].images,
-        viporfree:chapters[currentChapterIndex + 1].viporfree
+        viporfree: chapters[currentChapterIndex + 1].viporfree
       };
     }
 
@@ -827,7 +828,7 @@ app.get('/chapter/:_id/images', async (req, res) => {
       prevChapter = {
         _id: chapters[currentChapterIndex - 1]._id,
         images: chapters[currentChapterIndex - 1].images,
-        viporfree:chapters[currentChapterIndex - 1].viporfree
+        viporfree: chapters[currentChapterIndex - 1].viporfree
       };
     }
 
@@ -847,7 +848,7 @@ app.get('/chapter/:_id/images', async (req, res) => {
 app.get('/chapter/:_id/:userid/images', async (req, res) => {
   try {
     const chapterid = req.params._id;
-    const userid=req.params.userid
+    const userid = req.params.userid
 
     const chapter = await Chapter.findById(chapterid);
     chapter.number = parseInt(chapter.number);
@@ -867,11 +868,11 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
         _id: chapters[currentChapterIndex + 1]._id,
         images: chapters[currentChapterIndex + 1].images,
         viporfree: chapters[currentChapterIndex + 1].viporfree,
-        price:chapters[currentChapterIndex + 1].price
+        price: chapters[currentChapterIndex + 1].price
       };
 
       // Kiểm tra xem id của nextChapter có trong mảng purchasedChapters của user hay không
-     
+
       const isNextPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === nextChapter._id.toString());
       if (isNextPurchased) {
         nextChapter.viporfree = "free";
@@ -883,10 +884,10 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
         _id: chapters[currentChapterIndex - 1]._id,
         images: chapters[currentChapterIndex - 1].images,
         viporfree: chapters[currentChapterIndex - 1].viporfree,
-        price:chapters[currentChapterIndex - 1].price
+        price: chapters[currentChapterIndex - 1].price
       };
 
-      
+
       const isPrevPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === prevChapter._id.toString());
       if (isPrevPurchased) {
         prevChapter.viporfree = "free";
@@ -900,8 +901,8 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
 
     const responseData = {
       images: chapter.images,
-      viporfree:chapter.viporfree,
-      price:chapter.price,
+      viporfree: chapter.viporfree,
+      price: chapter.price,
       nextchap: nextChapter,
       prevchap: prevChapter
     };
@@ -1033,29 +1034,29 @@ app.get('/success/:id', async (req, res) => {
 
 app.get('/paymentdetail/:userid', async (req, res) => {
   try {
-const userid=req.params.userid
-const user= await User.findById(userid);
-if(!user){
-  return res.status(404).json({ message: 'Người dùng không tồn tại' });
-}
-const paymentDetails = await Payment.find({ userID: userid });
+    const userid = req.params.userid
+    const user = await User.findById(userid);
+    if (!user) {
+      return res.status(404).json({ message: 'Người dùng không tồn tại' });
+    }
+    const paymentDetails = await Payment.find({ userID: userid });
 
-if (!paymentDetails || paymentDetails.length === 0) {
-  return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
-}
+    if (!paymentDetails || paymentDetails.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
+    }
 
-// Phản hồi với dữ liệu theo cấu trúc mô hình
-const formattedPaymentDetails = paymentDetails.map(paymentDetail => ({
-  userID: paymentDetail.userID,
-  currency: paymentDetail.currency,
-  totalAmount: paymentDetail.totalAmount,
-  coin: paymentDetail.coin,
-  date: paymentDetail.date,
-  success: paymentDetail.success
-}));
+    // Phản hồi với dữ liệu theo cấu trúc mô hình
+    const formattedPaymentDetails = paymentDetails.map(paymentDetail => ({
+      userID: paymentDetail.userID,
+      currency: paymentDetail.currency,
+      totalAmount: paymentDetail.totalAmount,
+      coin: paymentDetail.coin,
+      date: paymentDetail.date,
+      success: paymentDetail.success
+    }));
 
-res.json(formattedPaymentDetails);
-   
+    res.json(formattedPaymentDetails);
+
   }
   catch (error) {
     console.error('Lỗi lấy lịch sử giao dịch:', error);
@@ -1068,14 +1069,14 @@ res.json(formattedPaymentDetails);
 app.get('/getrevenue', async (req, res) => {
   try {
     const payments = await Payment.find({});
-    
+
     res.json(payments);
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
   }
 });
-app.get("/revenue",async (req, res) => {
+app.get("/revenue", async (req, res) => {
   res.render("revenue");
 });
 
@@ -1089,7 +1090,7 @@ app.post('/register', async (req, res) => {
     const { username, password, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ username, password: hashedPassword, role, coin:0 });
+    const user = new User({ username, password: hashedPassword, role, coin: 0 });
     await user.save();
 
     const responseData = {
@@ -1101,7 +1102,7 @@ app.post('/register', async (req, res) => {
             username: user.username,
             password: user.password,
             role: user.role,
-            coin:user.coin,
+            coin: user.coin,
             __v: user.__v,
           },
         ],
@@ -1140,7 +1141,7 @@ app.post('/login', async (req, res) => {
             username: user.username,
             password: user.password,
             role: user.role,
-            coin:user.coin,
+            coin: user.coin,
             __v: user.__v,
           },
         ],
@@ -1165,23 +1166,23 @@ app.post('/loginadmin', async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.render('login',{
-        UserError:'tên đăng nhập không đúng'
-        });
+      return res.render('login', {
+        UserError: 'tên đăng nhập không đúng'
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.render('login',{
-        PassError:'mật khẩu không đúng'
-        });
+      return res.render('login', {
+        PassError: 'mật khẩu không đúng'
+      });
     }
 
     if (user.role !== 'admin') {
-      return res.render('login',{
-        RoleError:'bạn không có quyền truy cập trang web'
-        });
+      return res.render('login', {
+        RoleError: 'bạn không có quyền truy cập trang web'
+      });
     }
 
     const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
@@ -1217,7 +1218,7 @@ app.post('/userdelete/:_id', async (req, res) => {
 app.post('/userput/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-    const { username, password,role } = req.body;
+    const { username, password, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.findByIdAndUpdate(

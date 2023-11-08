@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const baivietSchema = new mongoose.Schema({
-userId:[{type:mongoose.Schema.Types.ObjectId, ref:'user'}],
+userId:String,
 content:String,
 like:Number,
 content:String,
