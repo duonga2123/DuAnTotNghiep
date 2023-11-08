@@ -118,6 +118,24 @@ app.get('/getbaiviet', async (req, res) => {
   }
 })
 
+app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
+  try {
+    const baivietid = req.params.baivietid
+    const userId=req.params.userId
+    const baiviet = await Baiviet.findByIdAndDelete(baivietid)
+    await baiviet.save()
+    const user=await User.findById(userId)
+    if(!user){
+      return res.status(404).json("không tìm thấy user")
+    }
+    user.baiviet.splice(baiviet._id)
+    await user.save()
+    return res.status(200).json({ message: 'xóa bài viết thành công' })
+  } catch (err) {
+    console.error('lỗi xóa bài viết', err)
+    res.status(500).json({ error: "lỗi xóa bài viết" })
+  }
+})
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
