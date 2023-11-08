@@ -75,7 +75,7 @@ app.get("/logout", async (req, res) => {
 
 //api get, post bài viết 
 app.post('/',async(req,res)=>{
-  
+
 })
 
 //api get, post category
@@ -1051,6 +1051,7 @@ res.json(formattedPaymentDetails);
 app.get('/getrevenue', async (req, res) => {
   try {
     const payments = await Payment.find({});
+    
     res.json(payments);
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error);
