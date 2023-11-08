@@ -103,7 +103,15 @@ app.post('/postbaiviet/:userId', async (req, res) => {
 app.get('/getbaiviet', async (req, res) => {
   try {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
-    res.json(baiviet)
+    const formattedBaiviet = baiviet.map(item => ({
+      _id: item._id,
+      userId: item.userId._id,
+      username: item.userId.username,
+      content: item.content,
+      like: item.like,
+      __v: item.__v
+    }));
+    res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
