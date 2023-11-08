@@ -14,7 +14,8 @@ const userSchema = new mongoose.Schema({
   favoriteManga:[{
     mangaId: { type: mongoose.Schema.Types.ObjectId, ref: 'manga' },
     isLiked: { type: Boolean, default: false },
-  }]
+  }],
+  baiviet:[{type:mongoose.Schema.Types.ObjectId,ref:'baiviet'}]
 });
 
 const User = mongoose.model('user', userSchema);

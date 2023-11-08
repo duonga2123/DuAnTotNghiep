@@ -89,7 +89,9 @@ app.post('/postbaiviet/:userId', async (req, res) => {
 
     const baiviet = new Baiviet({ userId, content, like: 0 })
     await baiviet.save()
-    return res.status(200).json("post bài viết thành công")
+    user.baiviet.push(baiviet._id)
+    await user.save()
+    return res.status(200).json({message:'post bài viết thành công'})
 
   } catch (err) {
     console.error('Lỗi khi đăng bài viết:', err);
