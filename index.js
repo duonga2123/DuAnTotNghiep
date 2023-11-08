@@ -122,13 +122,16 @@ app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   try {
     const baivietid = req.params.baivietid
     const userId=req.params.userId
-    const baiviet = await Baiviet.findByIdAndDelete(baivietid)
-    await baiviet.save()
+    const baiviet = await Baiviet.findById(baivietid)
+    if(!baiviet){
+      return res.status(403).json("không tìm thấy bài viết")
+    }
+    await baiviet.remove()
     const user=await User.findById(userId)
     if(!user){
       return res.status(404).json("không tìm thấy user")
     }
-    user.baiviet.splice(baiviet._id)
+    user.baiviet.pull(baiviet._id)
     await user.save()
     return res.status(200).json({ message: 'xóa bài viết thành công' })
   } catch (err) {
