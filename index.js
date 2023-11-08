@@ -91,13 +91,23 @@ app.post('/postbaiviet/:userId', async (req, res) => {
     await baiviet.save()
     user.baiviet.push(baiviet._id)
     await user.save()
-    return res.status(200).json({message:'post bài viết thành công'})
+    return res.status(200).json({ message: 'post bài viết thành công' })
 
   } catch (err) {
     console.error('Lỗi khi đăng bài viết:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
   }
 
+})
+
+app.get('/getbaiviet', async (req, res) => {
+  try {
+    const baiviet = await Baiviet.find({}).populate("userId", "username")
+    res.json(baiviet)
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
+  }
 })
 
 //api get, post category
