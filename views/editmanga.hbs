@@ -1,0 +1,78 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>EditManga</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="jumbotron text-center">
+        <h1 class="text-center">Edit Manga</h1>
+        <hr><br>
+        <form method="post" enctype="application/x-www-form-urlencoded">
+            <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">manganame: </label>
+                <input class="col-lg-4" required type="text" id="manganame" name="manganame"
+                    placeholder="Nhập Tên truyện" value="{{manga.manganame}}">
+            </div><br>
+
+            <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">author: </label>
+                <input class="col-lg-4" required type="text" id="author" name="author" placeholder="Nhập tác giả" value="{{manga.author}}">
+            </div><br>
+
+            <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">content: </label>
+                <input class="col-lg-4" required type="text" id="content" name="content" placeholder="Nhập nội dụng" value="{{manga.content}}">
+            </div><br>
+            <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">Thể loại: </label>
+                <select class="col-lg-4" id="category" name="category">
+                    <option>{{manga.category}}</option>
+                    <script>
+                        $(document).ready(function () {
+                            $.get('/categorys', function (data) {
+                                if (data && data.length > 0) {
+                                    data.forEach(function (category) {
+                                        $('#category').append($('<option>', {
+                                            value: category.categoryname,
+                                            text: category.categoryname
+                                        }));
+                                    });
+                                }
+                            });
+                        });
+                    </script>
+                </select>
+            </div><br>
+             <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">image: </label>
+                <textarea class="col-lg-4" required id="image" name="image" placeholder="Nhập liên kết ảnh" >{{manga.image}}</textarea>
+            </div><br>
+            <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">view: </label>
+                <input class="col-lg-4" required type="number" id="view" name="view" placeholder="Nhập số view" value="{{manga.view}}">
+            </div><br>
+            <div class="row">
+                <span class="col-lg-2"></span>
+                <label class="col-lg-2">like: </label>
+                <input class="col-lg-4" required type="number" id="like" name="like" placeholder="Nhập số like" value="{{manga.like}}">
+            </div><br>
+            <br>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </div>
+
+        </form>
+    </div>
+</body>
+
+</html>

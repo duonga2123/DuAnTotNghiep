@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Comic</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+
+<body>
+    <div class="jumbotron text-center">
+        <h1>Category</h1>
+        <form method="get" action="">
+            <button type="button" id="addCategoryButton">Thêm thể loại</button>
+        </form>
+        <hr>
+        <h2>Danh sách thể loại</h2>
+        <div class="table-data">
+            <div class="order">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">id</th>
+                            <th style="text-align: center;">categoryname</th>
+                            <th style="text-align: center;">nút</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{#each category}}
+                        <tr>
+                            <td>{{this._id}}</td>
+                            <td>{{this.categoryname}}</td>
+                            <td>
+                                <form style="margin-top: 10px;" action="/categoryput/{{this._id}}" method="get">
+                                    <button
+                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
+                                        type="button" class="editCategoryButton">Edit</button>
+                                </form>
+                                <form style="margin-top: 10px;" action="/categorydelete/{{this._id}}"
+                                    onclick="return confirm('ban co muon xoa khong ?" method="post">
+                                    <button
+                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
+                                        type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Thêm thể loại -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Thêm Thể loại</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form thêm thể loại -->
+                    <form id="addCategoryForm" method="post" action="/category">
+                        <div class="form-group">
+                            <label for="categoryname">Tên thể loại:</label>
+                            <input type="text" class="form-control" id="categoryname" name="categoryname">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="saveCategoryButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sửa thể loại -->
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel">Sửa Thể loại</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form sửa thể loại -->
+                    <form id="editCategoryForm" method="post">
+                        <div class="form-group">
+                            <label for="editCategoryname">Tên thể loại:</label>
+                            <input type="text" class="form-control" id="editCategoryname" name="categoryname">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="updateCategoryButton">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
+
+            // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
+            $(".editCategoryButton").click(function () {
+                // Lấy thông tin thể loại từ hàng bảng
+                var categoryId = $(this).closest("tr").find("td:first").text();
+                var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+
+                // Hiển thị thông tin thể loại trong modal sửa thể loại
+                $("#editCategoryname").val(categoryname);
+
+                // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
+                $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
+
+                $("#editCategoryModal").modal("show");
+            });
+
+        });
+    </script>
+</body>
+
+</html>

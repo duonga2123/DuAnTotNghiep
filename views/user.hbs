@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Comic</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+
+<body>
+    <div class="jumbotron text-center">
+        <h1>User</h1>
+        <form method="get" action="">
+            <button type="button" id="addCategoryButton">Thêm user</button>
+        </form>
+        <hr>
+        <h2>Danh sách User</h2>
+        <div class="table-data">
+            <div class="order">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">id</th>
+                            <th style="text-align: center;">username</th>
+                            <th style="text-align: center;">password</th>
+                            <th style="text-align: center;">role</th>
+                            <th style="text-align: center;">coin</th>
+                            <th style="text-align: center;">nút</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{#each user}}
+                        <tr>
+                            <td style="text-align: center;" class="user-id">{{this._id}}</td>
+                            <td style="text-align: center;" class="user-username">{{this.username}}</td>
+                            <td style="text-align: center;" class="user-password">{{this.password}}</td>
+                            <td style="text-align: center;" class="user-role">{{this.role}}</td>
+                            <td style="text-align: center;" class="user-coin">{{this.coin}}</td>
+                            <td>
+                                <form style="margin-top: 10px;" action="/userput/{{this._id}}" method="get">
+                                    <button
+                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
+                                        type="button" class="editCategoryButton">Edit</button>
+                                </form>
+                                <form style="margin-top: 10px;" action="/userdelete/{{this._id}}"
+                                    onclick="return confirm('ban co muon xoa khong ?" method="post">
+                                    <button
+                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
+                                        type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Thêm thể loại -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Thêm User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form thêm thể loại -->
+                    <form id="addCategoryForm" method="post" action="/register">
+                        <div class="form-group">
+                            <label for="username">username:</label>
+                            <input type="text" class="form-control" id="username" name="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">password:</label>
+                            <input type="text" class="form-control" id="password" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="role">role:</label>
+                            <input type="role" class="form-control" id="role" name="role">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="saveCategoryButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sửa thể loại -->
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel">Sửa user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form sửa thể loại -->
+                    <form id="editCategoryForm" method="post">
+                        <div class="form-group">
+                            <label for="editusername">username:</label>
+                            <input type="text" class="form-control" id="editusername" name="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="editpassword">password:</label>
+                            <input type="text" class="form-control" id="editpassword" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="editrole">role:</label>
+                            <input type="text" class="form-control" id="editrole" name="role">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="updateCategoryButton">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
+
+
+            $(".editCategoryButton").click(function () {
+
+                var id = $(this).closest("tr").find(".user-id").text();
+                var username = $(this).closest("tr").find(".user-id").text();
+                var password = $(this).closest("tr").find(".user-password").text();
+                var role = $(this).closest("tr").find(".user-role").text();
+
+                $("#editusername").val(username);
+                $("#editpassword").val(password);
+                $("#editrole").val(role);
+
+
+                $("#editCategoryForm").attr("action", "/userput/" + id);
+
+                $("#editCategoryModal").modal("show");
+            });
+
+        });
+    </script>
+</body>
+
+</html>
