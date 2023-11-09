@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Notification</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <h1>Thông báo</h1>
+    <p>{{notification.title}}</p>
+    <p>{{notification.content}}</p>
+    <button onclick="approve('{{notification.mangaId}}')">Duyệt</button>
+
+    <script>
+        function approve(mangaId) {
+            fetch(`/approveManga/${mangaId}`, {
+                method: 'POST'
+            }).then(response => {
+                if (response.status === 200) {
+                    alert('Duyệt truyện thành công');
+                } else {
+                    alert('Đã xảy ra lỗi khi duyệt truyện');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

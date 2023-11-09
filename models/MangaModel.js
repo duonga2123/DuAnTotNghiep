@@ -13,7 +13,8 @@ const mangaSchema = new mongoose.Schema({
   comment: [{
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     cmt: { type: String }
-  }]
+  }],
+  isRead:{type:Boolean}
 });
 
 const Manga = mongoose.model('manga', mangaSchema);

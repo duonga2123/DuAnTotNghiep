@@ -13,6 +13,7 @@ const Manga = require('./models/MangaModel')
 const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
 const Baiviet = require('./models/BaiVietModel')
+const Notification=require('./models/NotifyModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
@@ -74,7 +75,7 @@ app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
 });
 
-app.get('/nhomdich',checkAuth, async(req,res)=>{
+app.get('/nhomdich', checkAuth, async (req, res) => {
   res.render("nhomdich")
 })
 
@@ -125,10 +126,10 @@ app.get('/getbaiviet', async (req, res) => {
 app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   try {
     const baivietid = req.params.baivietid
-    const userId=req.params.userId
+    const userId = req.params.userId
     const baiviet = await Baiviet.findByIdAndDelete(baivietid)
-    const user=await User.findById(userId)
-    if(!user){
+    const user = await User.findById(userId)
+    if (!user) {
       return res.status(404).json("không tìm thấy user")
     }
     const baivietIndex = user.baiviet.indexOf(baivietid);
@@ -296,19 +297,32 @@ app.post('/mangapost', async (req, res) => {
 
 app.post('/mangapost/:userId', async (req, res) => {
   try {
-    const userId=req.params.userId
+    const userId = req.params.userId
     const { manganame, author, content, category, view, like, image } = req.body;
     const categoryObject = await Category.findOne({ categoryname: category });
-const user=await User.findById(userId)
-if(!user){
-  return res.status(403).json({message:'user không tồn tại'})
-}
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(403).json({ message: 'user không tồn tại' })
+    }
 
     if (!categoryObject) {
       return res.status(404).json({ message: 'Thể loại không tồn tại.' });
     }
+    const manga = new Manga({ userID: userId, manganame, author, content, category, view, like, image });
 
-    const manga = new Manga({ userID:userId,manganame, author, content, category, view, like, image });
+    if (user.role === 'nhomdich') {
+      const notification = new Notification({
+        title: 'Truyện cần duyệt',
+        content: `Truyện ${manganame} cần được duyệt.`,
+        userId: userId,
+      });
+      await notification.save();
+
+      manga.isRead = false;
+    }
+    else{
+      manga.isRead=true
+    }
     await manga.save();
 
     categoryObject.manga.push(manga._id);
@@ -359,6 +373,7 @@ app.post('/mangaput/:_id', async (req, res) => {
       }
     }
 
+    manga.userID='653a20c611295a22062661f9'
     manga.manganame = manganame;
     manga.author = author;
     manga.content = content;
@@ -366,6 +381,7 @@ app.post('/mangaput/:_id', async (req, res) => {
     manga.view = view;
     manga.like = like;
     manga.image = image;
+    manga.isRead=true;
 
     await manga.save();
 
@@ -1142,7 +1158,7 @@ app.get('/paymentdetail/:userid', async (req, res) => {
 
 app.get('/getrevenue', async (req, res) => {
   try {
-    const payments = await Payment.find({success:"thanh toán thành công"});
+    const payments = await Payment.find({ success: "thanh toán thành công" });
 
     res.json(payments);
   } catch (error) {
