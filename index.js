@@ -238,7 +238,7 @@ app.get("/add", async (req, res) => {
 
 app.get('/mangass', async (req, res) => {
   try {
-    const manga = await Manga.find();
+    const manga = await Manga.find({isRead:true});
     res.render("home", { manga });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
@@ -258,7 +258,7 @@ app.get('/getmanga', async (req, res) => {
 
 app.get('/mangas', async (req, res) => {
   try {
-    const mangaList = await Manga.find().select('manganame image category chapters').populate('chapters', 'number').exec();
+    const mangaList = await Manga.find({isRead:true}).select('manganame image category chapters').populate('chapters', 'number').exec();
     const formattedMangaList = mangaList.map(manga => ({
       id: manga._id,
       manganame: manga.manganame,
@@ -270,28 +270,6 @@ app.get('/mangas', async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
-  }
-});
-
-app.post('/mangapost', async (req, res) => {
-  try {
-    const { manganame, author, content, category, view, like, image } = req.body;
-    const categoryObject = await Category.findOne({ categoryname: category });
-
-    if (!categoryObject) {
-      return res.status(404).json({ message: 'Thể loại không tồn tại.' });
-    }
-
-    const manga = new Manga({ manganame, author, content, category, view, like, image });
-    await manga.save();
-
-    categoryObject.manga.push(manga._id);
-    await categoryObject.save();
-
-    res.status(201).json(manga);
-  } catch (error) {
-    console.error('Lỗi khi tạo truyện:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo truyện' });
   }
 });
 
