@@ -315,7 +315,9 @@ app.post('/mangapost/:userId', async (req, res) => {
         title: 'Truyện cần duyệt',
         content: `Truyện ${manganame} cần được duyệt.`,
         userId: userId,
+        mangaId: manga._id
       });
+
       await notification.save();
 
       manga.isRead = false;
@@ -335,6 +337,35 @@ app.post('/mangapost/:userId', async (req, res) => {
   }
 });
 
+app.get('/rendernotifi',async(req,res)=>{
+  const notification=await Notification.find()
+  res.render('notification', { notification });
+})
+
+app.post('/approveManga/:mangaId', async (req, res) => {
+  try {
+      const mangaId = req.params.mangaId;
+      
+      // Tìm truyện dựa trên ID
+      const manga = await Manga.findById(mangaId);
+
+      if (!manga) {
+          return res.status(404).send('Không tìm thấy truyện');
+      }
+
+      // Kiểm tra xem truyện đã được duyệt chưa, nếu chưa thì cập nhật trạng thái và lưu truyện
+      if (!manga.isApproved) {
+          manga.isApproved = true;
+          await manga.save();
+          return res.status(200).send('Duyệt truyện thành công');
+      } else {
+          return res.status(200).send('Truyện đã được duyệt trước đó');
+      }
+  } catch (error) {
+      console.error('Lỗi khi duyệt truyện:', error);
+      res.status(500).send('Đã xảy ra lỗi khi duyệt truyện');
+  }
+});
 
 app.get("/mangaput/:_id", async (req, res) => {
   const id = req.params._id;
@@ -373,7 +404,6 @@ app.post('/mangaput/:_id', async (req, res) => {
       }
     }
 
-    manga.userID='653a20c611295a22062661f9'
     manga.manganame = manganame;
     manga.author = author;
     manga.content = content;
@@ -381,8 +411,7 @@ app.post('/mangaput/:_id', async (req, res) => {
     manga.view = view;
     manga.like = like;
     manga.image = image;
-    manga.isRead=true;
-
+   
     await manga.save();
 
     res.json(manga);
