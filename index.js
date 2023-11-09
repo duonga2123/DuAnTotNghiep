@@ -232,7 +232,7 @@ app.post('/categorydelete/:_id', async (req, res) => {
 
 //api get, post truyện
 app.get("/add", async (req, res) => {
-  res.render("add");
+  res.render("add", { userId: req.session.userId });
 });
 
 app.get('/mangass', async (req, res) => {
@@ -293,6 +293,34 @@ app.post('/mangapost', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo truyện' });
   }
 });
+
+app.post('/mangapost/:userId', async (req, res) => {
+  try {
+    const userId=req.params.userId
+    const { manganame, author, content, category, view, like, image } = req.body;
+    const categoryObject = await Category.findOne({ categoryname: category });
+const user=await User.findById(userId)
+if(!user){
+  return res.status(403).json({message:'user không tồn tại'})
+}
+
+    if (!categoryObject) {
+      return res.status(404).json({ message: 'Thể loại không tồn tại.' });
+    }
+
+    const manga = new Manga({ manganame, author, content, category, view, like, image });
+    await manga.save();
+
+    categoryObject.manga.push(manga._id);
+    await categoryObject.save();
+
+    res.status(201).json(manga);
+  } catch (error) {
+    console.error('Lỗi khi tạo truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo truyện' });
+  }
+});
+
 
 app.get("/mangaput/:_id", async (req, res) => {
   const id = req.params._id;
@@ -1227,6 +1255,7 @@ app.post('/loginadmin', async (req, res) => {
 
     if (user.role === 'admin') {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+      req.session.userId = user._id;
       req.session.token = token;
       return res.status(200).send(`
         <script>
@@ -1235,6 +1264,7 @@ app.post('/loginadmin', async (req, res) => {
       `);
     } else if (user.role === 'nhomdich') {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+      req.session.userId = user._id;
       req.session.token = token;
       return res.status(200).send(`
         <script>
