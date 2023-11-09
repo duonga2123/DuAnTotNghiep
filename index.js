@@ -200,7 +200,7 @@ app.post('/loginadmin', async (req, res) => {
 
     if (!user) {
       return res.render('login', {
-        UserError: 'Tên đăng nhập không đúng'
+        UserError: 'bạn nhập sai tên đăng nhập'
       });
     }
 
