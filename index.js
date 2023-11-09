@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/UserModel')
 const bodyParser = require('body-parser');
+const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
@@ -42,13 +45,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
-
-
-app.get("/logout", async (req, res) => {
-  res.redirect('/loginadmin');
-});
-
-
 
 
 //api get, post category
@@ -216,17 +212,17 @@ app.post('/loginadmin', async (req, res) => {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
       req.session.token = token;
       return res.status(200).send(`
-        <script>
-          window.location.href = '/admin'; 
-        </script>
+        // <script>
+        //   window.location.href = '/admin'; 
+        // </script>
       `);
     } else if (user.role === 'nhomdich') {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
       req.session.token = token;
       return res.status(200).send(`
-        <script>
-          window.location.href = '/nhomdich'; 
-        </script>
+        // <script>
+        //   window.location.href = '/nhomdich'; 
+        // </script>
       `);
     } else {
       return res.render('login', {
