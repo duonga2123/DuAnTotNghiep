@@ -55,10 +55,7 @@
                 method: 'POST'
             }).then(response => {
                 if (response.status === 200) {
-                    const notificationRow = document.querySelector(`[data-manga-id="${mangaId}"]`);
-                    if (notificationRow) {
-                    notificationRow.remove();
-                    }
+                    
                    confirm('Duyệt thành công')
                 } else {
                     alert('Đã xảy ra lỗi khi duyệt truyện');
