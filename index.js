@@ -307,7 +307,7 @@ app.get('/mangas/category/:categoryName', async (req, res) => {
 
     res.json(formattedMangaList);
   } catch (error) {
-    console.error('Lỗi khi lấy truyện theo thể loại:', error);
+    console.error('Lỗi khi lấy truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy truyện theo thể loại.' });
   }
 });
