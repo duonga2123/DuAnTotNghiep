@@ -354,8 +354,8 @@ app.post('/approveManga/:mangaId', async (req, res) => {
       }
 
       // Kiểm tra xem truyện đã được duyệt chưa, nếu chưa thì cập nhật trạng thái và lưu truyện
-      if (!manga.isApproved) {
-          manga.isApproved = true;
+      if (!manga.isRead) {
+          manga.isRead = true;
           await manga.save();
           return res.status(200).send('Duyệt truyện thành công');
       } else {

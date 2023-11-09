@@ -9,11 +9,12 @@
 </head>
 
 <body>
+     {{#each notification}}
     <h1>Thông báo</h1>
-    <p>{{notification.title}}</p>
-    <p>{{notification.content}}</p>
-    <button onclick="approve('{{notification.mangaId}}')">Duyệt</button>
-
+    <p>{{this.title}}</p>
+    <p>{{this.content}}</p>
+    <button onclick="approve('{{this.mangaId}}')">Duyệt</button>
+ {{#each}}
     <script>
         function approve(mangaId) {
             fetch(`/approveManga/${mangaId}`, {
