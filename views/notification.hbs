@@ -38,13 +38,8 @@
                             </td> --}}
                             <td>
 
-                                <button onclick="approve('{{this.mangaId}}', this)"
+                                <button onclick="approve('{{this.mangaId}}')"
                                     style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;">Duyệt</button>
-                                <form style="margin-top: 10px;" action="" onclick="" method="">
-                                    <button
-                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
-                                        type="submit">Delete</button>
-                                </form>
                             </td>
                         </tr>
                         {{/each}}
@@ -55,13 +50,13 @@
         </div>
     </div>
     <script>
-        function approve(mangaId, button) {
+        function approve(mangaId) {
             fetch(`/approveManga/${mangaId}`, {
                 method: 'POST'
             }).then(response => {
                 if (response.status === 200) {
-                    alert('Duyệt truyện thành công');
-                     button.style.display = 'none';
+                    
+                   confirm('Duyệt thành công')
                 } else {
                     alert('Đã xảy ra lỗi khi duyệt truyện');
                 }
