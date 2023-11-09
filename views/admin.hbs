@@ -687,6 +687,12 @@
 					<span class="text">Revenue Management</span>
 				</a>
 			</li>
+			<li>
+				<a href="#" id="notificationManagerLink">
+					<i class='bx bxs-dollar-circle'></i>
+					<span class="text">Notification Management</span>
+				</a>
+			</li>
 		</ul>
 		<ul class="side-menu">
 			<li>
@@ -1097,6 +1103,32 @@ const createRevenueChart = (dates, amounts) => {
 
         });
 		}
+
+		const notificationManagerLink = document.getElementById('notificationManagerLink');
+			categoryManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
+			fetch('/rendernotifi')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					const mangaid=data.map(item => item.mangaId)
+					approve(mangaid)
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		  function approve(mangaId) {
+            fetch(`/approveManga/${mangaId}`, {
+                method: 'POST'
+            }).then(response => {
+                if (response.status === 200) {
+                    alert('Duyệt truyện thành công');
+                } else {
+                    alert('Đã xảy ra lỗi khi duyệt truyện');
+                }
+            });
+        }
+
 	</script>
 </body>
 
