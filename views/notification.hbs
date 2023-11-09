@@ -18,7 +18,7 @@
         <div class="table-data">
             <div class="order">
 
-                <table>
+                <table >
                     <thead>
                         <tr>
                             <th>title</th>
@@ -27,9 +27,9 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="notificationTable">
                         {{#each notification}}
-                        <tr>
+                        <tr data-manga-id="{{this.mangaId}}">
                             <td>{{this.title}}</td>
                             <td>{{this.content}}</td>
                             {{!-- <td>
@@ -55,7 +55,10 @@
                 method: 'POST'
             }).then(response => {
                 if (response.status === 200) {
-                    
+                    const notificationRow = document.querySelector(`[data-manga-id="${mangaId}"]`);
+                    if (notificationRow) {
+                    notificationRow.remove();
+                    }
                    confirm('Duyệt thành công')
                 } else {
                     alert('Đã xảy ra lỗi khi duyệt truyện');
