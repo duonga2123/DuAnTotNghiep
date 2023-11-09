@@ -308,7 +308,7 @@ if(!user){
       return res.status(404).json({ message: 'Thể loại không tồn tại.' });
     }
 
-    const manga = new Manga({ manganame, author, content, category, view, like, image });
+    const manga = new Manga({ userID:userId,manganame, author, content, category, view, like, image });
     await manga.save();
 
     categoryObject.manga.push(manga._id);
