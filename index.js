@@ -335,6 +335,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
       if (!manga.isRead) {
           manga.isRead = true;
           await manga.save();
+          await Notification.deleteOne({ mangaId: mangaId });
           return res.status(200).send('Duyệt truyện thành công');
       } else {
           return res.status(200).send('Truyện đã được duyệt trước đó');
