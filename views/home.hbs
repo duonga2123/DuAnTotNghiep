@@ -639,7 +639,7 @@
 <body>
   <div class="jumbotron text-center">
     <h1>Comic</h1>
-    <form method="get" action="/add?userId=<%= typeof req !== 'undefined' ? req.session.userId : '' %>">
+    <form method="get" action="/add?userId=<%= userId %>">
       <button type="submit">thêm truyện</button>
     </form>
     <hr>
