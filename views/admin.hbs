@@ -642,6 +642,8 @@
 </head>
 
 <body>
+
+
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 		<a href="#" class="brand">
@@ -722,7 +724,7 @@
 			<label for="switch-mode" class="switch-mode"></label>
 			<a href="#" id="notification" class="notification">
 				<i class='bx bxs-bell'></i>
-				<span class="num" id="number">8</span>
+				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
 				<img src="https://lmhoptacxatthue.com.vn/wp-content/uploads/2023/05/anh-con-cho-ngao-10.jpg">
@@ -915,7 +917,7 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			 event.preventDefault(); 
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
@@ -925,10 +927,10 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		const chapterManagerLink = document.getElementById('chapterManagerLink');
+			const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			 event.preventDefault(); 
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
@@ -939,89 +941,89 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
+		
+    function setupChapterPage() {
+        const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
-		function setupChapterPage() {
-			const chapterDetailButtons = document.querySelectorAll('.detail-button');
+        chapterDetailButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                const chapterId = this.getAttribute('data-chapter-id');
+                fetch(`/chapterchitiet/${chapterId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            const modalBody = document.querySelector('#image-modal .modal-body');
+                            {{!-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --}}
+                            modalBody.innerHTML = '';
+							  data.forEach(image => {
+                                    const imgElement = document.createElement('img');
+                                    imgElement.src = image;
+                                    imgElement.style.width = '100px';
+                                    imgElement.style.height = '100px';
+                                    imgElement.style.margin = '5px';
+                                    imgElement.style.objectFit = 'cover';
+                                    modalBody.appendChild(imgElement);
+                                });
+                            $('#image-modal').modal('show');
+                        } else {
+                            alert('Chưa có ảnh cho chương này.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy dữ liệu ảnh:', error);
+                        alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
+                    });
+            });
+        });
+    }
 
-			chapterDetailButtons.forEach(button => {
-				button.addEventListener('click', function (event) {
-					const chapterId = this.getAttribute('data-chapter-id');
-					fetch(`/chapterchitiet/${chapterId}`)
-						.then(response => response.json())
-						.then(data => {
-							if (data.length > 0) {
-								const modalBody = document.querySelector('#image-modal .modal-body');
-								{ { !-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --} }
-								modalBody.innerHTML = '';
-								data.forEach(image => {
-									const imgElement = document.createElement('img');
-									imgElement.src = image;
-									imgElement.style.width = '100px';
-									imgElement.style.height = '100px';
-									imgElement.style.margin = '5px';
-									imgElement.style.objectFit = 'cover';
-									modalBody.appendChild(imgElement);
-								});
-								$('#image-modal').modal('show');
-							} else {
-								alert('Chưa có ảnh cho chương này.');
-							}
-						})
-						.catch(error => {
-							console.error('Lỗi khi lấy dữ liệu ảnh:', error);
-							alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
-						});
-				});
-			});
-		}
-
-		const revenueManagerLink = document.getElementById('revenueManagerLink');
+	const revenueManagerLink = document.getElementById('revenueManagerLink');
 
 		revenueManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
-			fetch('/getrevenue')
-				.then(response => response.json())
-				.then(data => {
-					const mainContent = document.querySelector("#main-content");
-					const revenueChartDiv = document.createElement('div');
-					revenueChartDiv.classList.add('revenue-chart');
-					revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-					mainContent.innerHTML = '';
-					mainContent.appendChild(revenueChartDiv);
-					const dates = data.map(item => item.date);
-					const amounts = data.map(item => item.totalAmount);
-					createRevenueChart(dates, amounts);
-				})
-				.catch(error => console.error('Đã xảy ra lỗi:', error));
-		});
+    event.preventDefault();
+    fetch('/getrevenue')
+        .then(response => response.json())
+        .then(data => {
+            const mainContent = document.querySelector("#main-content");
+            const revenueChartDiv = document.createElement('div');
+            revenueChartDiv.classList.add('revenue-chart');
+            revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
+            mainContent.innerHTML = '';
+            mainContent.appendChild(revenueChartDiv);
+            const dates = data.map(item => item.date);
+            const amounts = data.map(item => item.totalAmount);
+            createRevenueChart(dates, amounts);
+        })
+        .catch(error => console.error('Đã xảy ra lỗi:', error));
+});
 
-		const createRevenueChart = (dates, amounts) => {
-			const ctx = document.getElementById('revenueChart').getContext('2d');
-			const revenueChart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: dates,
-					datasets: [{
-						label: 'Doanh thu',
-						data: amounts,
-						borderColor: 'rgb(75, 192, 192)',
-						tension: 0.1
-					}]
-				},
-				options: {
-					scales: {
-						y: {
-							beginAtZero: true
-						}
-					}
-				}
-			});
-		};
+const createRevenueChart = (dates, amounts) => {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Doanh thu',
+                data: amounts,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+};
 
-		const categoryManagerLink = document.getElementById('categoryManagerLink');
+	const categoryManagerLink = document.getElementById('categoryManagerLink');
 
 		categoryManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			 event.preventDefault(); 
 			fetch('/categoryscreen')
 				.then(response => response.text())
 				.then(data => {
@@ -1032,33 +1034,33 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		function setcategory() {
-			$(document).ready(function () {
-				// Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
-				$("#addCategoryButton").click(function () {
-					$("#addCategoryModal").modal("show");
-				});
+		function setcategory(){
+			  $(document).ready(function () {
+            // Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
 
-				// Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
-				$(".editCategoryButton").click(function () {
-					// Lấy thông tin thể loại từ hàng bảng
-					var categoryId = $(this).closest("tr").find("td:first").text();
-					var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+            // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
+            $(".editCategoryButton").click(function () {
+                // Lấy thông tin thể loại từ hàng bảng
+                var categoryId = $(this).closest("tr").find("td:first").text();
+                var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
 
-					// Hiển thị thông tin thể loại trong modal sửa thể loại
-					$("#editCategoryname").val(categoryname);
+                // Hiển thị thông tin thể loại trong modal sửa thể loại
+                $("#editCategoryname").val(categoryname);
 
-					// Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
-					$("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
+                // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
+                $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
 
-					$("#editCategoryModal").modal("show");
-				});
+                $("#editCategoryModal").modal("show");
+            });
 
-			});
+        });
 		}
 		const userManagerLink = document.getElementById('userManagerLink');
-		userManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			userManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
 			fetch('/userscreen')
 				.then(response => response.text())
 				.then(data => {
@@ -1068,38 +1070,38 @@
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
+	
+		function setuser(){
+			  $(document).ready(function () {
 
-		function setuser() {
-			$(document).ready(function () {
-
-				$("#addCategoryButton").click(function () {
-					$("#addCategoryModal").modal("show");
-				});
-
-
-				$(".editCategoryButton").click(function () {
-
-					var id = $(this).closest("tr").find("td:first").text();
-					var username = $(this).closest("tr").find("td:nth-child(2)").text();
-					var password = $(this).closest("tr").find("td:nth-child(3)").text();
-					var role = $(this).closest("tr").find("td:nth-child(4)").text();
-
-					$("#editusername").val(username);
-					$("#editpassword").val(username);
-					$("#editrole").val(role);
+            $("#addCategoryButton").click(function () {
+                $("#addCategoryModal").modal("show");
+            });
 
 
-					$("#editCategoryForm").attr("action", "/userput/" + id);
+            $(".editCategoryButton").click(function () {
 
-					$("#editCategoryModal").modal("show");
-				});
+                var id = $(this).closest("tr").find("td:first").text();
+                var username = $(this).closest("tr").find("td:nth-child(2)").text();
+                var password = $(this).closest("tr").find("td:nth-child(3)").text();
+                var role = $(this).closest("tr").find("td:nth-child(4)").text();
 
-			});
+                $("#editusername").val(username);
+                $("#editpassword").val(username);
+                $("#editrole").val(role);
+
+
+                $("#editCategoryForm").attr("action", "/userput/" + id);
+
+                $("#editCategoryModal").modal("show");
+            });
+
+        });
 		}
 
 		const notificationManagerLink = document.getElementById('notification');
-		notificationManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
+			notificationManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
 			fetch('/rendernotifi')
 				.then(response => response.text())
 				.then(data => {
@@ -1108,17 +1110,8 @@
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
+		  
 
-		{{!-- fetch(`/unread-count/${userId}`)
-			.then(response => response.json())
-			.then(data => {
-				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
-				const notificationSpan = document.getElementById('number');
-				if (notificationSpan) {
-					notificationSpan.innerText = data.unreadCount.toString();
-				}
-			})
-			.catch(error => console.error(error)); --}}
 	</script>
 </body>
 
