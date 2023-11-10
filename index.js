@@ -71,10 +71,11 @@ const checkAuth = (req, res, next) => {
 };
 
 app.get("/admin", checkAuth, async (req, res) => {
-  
+  console.log("Session:", req.session);
   res.render("admin",{userId:req.session.userId});
 });
 app.get("/logout", async (req, res) => {
+  
   res.redirect('/loginadmin');
 });
 
@@ -1274,6 +1275,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.get("/loginadmin", async (req, res) => {
+  console.log("Session:", req.session);
   res.render("login");
 });
 app.post('/loginadmin', async (req, res) => {
