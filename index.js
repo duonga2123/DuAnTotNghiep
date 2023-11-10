@@ -20,6 +20,8 @@ const hbs = require('express-handlebars');
 const methodOverride = require('method-override');
 const path = require('path')
 const myId = new mongoose.Types.ObjectId();
+const cors = require('cors');
+
 
 var app = express();
 
@@ -53,6 +55,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
+app.use(cors());
 
 const checkAuth = (req, res, next) => {
   if (!req.session.token) {
