@@ -922,7 +922,7 @@
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
-					const mainContent = document.querySelector("#content main");
+					const mainContent = document.querySelector("#main-content");
 					mainContent.innerHTML = data;
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
@@ -935,7 +935,7 @@
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
-					const mainContent = document.querySelector("#content main");
+					const mainContent = document.querySelector("#main-content");
 					mainContent.innerHTML = data;
 					setupChapterPage();
 				})
@@ -1028,7 +1028,7 @@
 			fetch('/categoryscreen')
 				.then(response => response.text())
 				.then(data => {
-					const mainContent = document.querySelector("#content main");
+					const mainContent = document.querySelector("#main-content");
 					mainContent.innerHTML = data;
 					setcategory();
 				})
@@ -1065,7 +1065,7 @@
 			fetch('/userscreen')
 				.then(response => response.text())
 				.then(data => {
-					const mainContent = document.querySelector("#content main");
+					const mainContent = document.querySelector("#main-content");
 					mainContent.innerHTML = data;
 					setuser();
 				})
@@ -1106,7 +1106,7 @@
 			fetch('/rendernotifi')
 				.then(response => response.text())
 				.then(data => {
-					const mainContent = document.querySelector("#content main");
+					const mainContent = document.querySelector("#main-content");
 					mainContent.innerHTML = data;
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
@@ -1120,7 +1120,7 @@
 				.then(response => response.json())
 				.then(data => {
 					// Cập nhật số lượng thông báo chưa đọc trong thẻ span
-					const notificationSpan = document.querySelector('.num');
+					const notificationSpan = document.querySelector("#num");
 						notificationSpan.innerText = data.unreadCount.toString();
 				})
 				.catch(error => console.error(error));
