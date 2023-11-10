@@ -1298,7 +1298,7 @@ app.post('/loginadmin', async (req, res) => {
       req.session.token = token;
       return res.status(200).send(`
         <script>
-          window.location.href = '/admin?userId=<%= userId %>'; 
+          window.location.href = '/admin?userId=${user._id}'; 
         </script>
       `);
     } else if (user.role === 'nhomdich') {
@@ -1307,7 +1307,7 @@ app.post('/loginadmin', async (req, res) => {
       req.session.token = token;
       return res.status(200).send(`
         <script>
-          window.location.href = '/nhomdich?userId=<%= userId %>'; 
+          window.location.href = '/nhomdich?userId=${user._id}'; 
         </script>
       `);
     } else {
