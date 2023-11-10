@@ -648,19 +648,13 @@
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
-			<span class="text">NhomDichMangaLand</span>
+			<span class="text">NhomDich</span>
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
 				<a href="">
 					<i class='bx bxs-dashboard'></i>
 					<span class="text">Dashboard</span>
-				</a>
-			</li>
-			<li>
-				<a href="#" id="userManagerLink">
-					<i class='bx bxs-user'></i>
-					<span class="text">User Management</span>
 				</a>
 			</li>
 			<li>
@@ -679,12 +673,6 @@
 				<a id="chapterManagerLink" href="#">
 					<i class='bx bx bxs-file'></i>
 					<span class="text">Chapter Manager</span>
-				</a>
-			</li>
-			<li>
-				<a href="#" id="revenueManagerLink">
-					<i class='bx bxs-dollar-circle'></i>
-					<span class="text">Revenue Management</span>
 				</a>
 			</li>
 		</ul>
@@ -747,31 +735,6 @@
 					</ul>
 				</div>
 			</div>
-
-			<ul class="box-info">
-				<li>
-					<i class='bx bxs-calendar-check'></i>
-					<span class="text">
-						<h3>1020</h3>
-						<p>New Order</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-group'></i>
-					<span class="text">
-						<h3>2834</h3>
-						<p>Visitors</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-dollar-circle'></i>
-					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Sales</p>
-					</span>
-				</li>
-			</ul>
-
 
 			<div class="table-data">
 				<div class="order">
@@ -940,7 +903,6 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		
     function setupChapterPage() {
         const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
@@ -975,50 +937,6 @@
             });
         });
     }
-
-	const revenueManagerLink = document.getElementById('revenueManagerLink');
-
-		revenueManagerLink.addEventListener("click", function (event) {
-    event.preventDefault();
-    fetch('/getrevenue')
-        .then(response => response.json())
-        .then(data => {
-            const mainContent = document.querySelector("#main-content");
-            const revenueChartDiv = document.createElement('div');
-            revenueChartDiv.classList.add('revenue-chart');
-            revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-            mainContent.innerHTML = '';
-            mainContent.appendChild(revenueChartDiv);
-            const dates = data.map(item => item.date);
-            const amounts = data.map(item => item.totalAmount);
-            createRevenueChart(dates, amounts);
-        })
-        .catch(error => console.error('Đã xảy ra lỗi:', error));
-});
-
-const createRevenueChart = (dates, amounts) => {
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Doanh thu',
-                data: amounts,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-};
-
 	const categoryManagerLink = document.getElementById('categoryManagerLink');
 
 		categoryManagerLink.addEventListener("click", function (event) {
@@ -1051,46 +969,6 @@ const createRevenueChart = (dates, amounts) => {
 
                 // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
                 $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
-
-                $("#editCategoryModal").modal("show");
-            });
-
-        });
-		}
-		const userManagerLink = document.getElementById('userManagerLink');
-			userManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
-			fetch('/userscreen')
-				.then(response => response.text())
-				.then(data => {
-					const mainContent = document.querySelector("#content main");
-					mainContent.innerHTML = data;
-					setuser();
-				})
-				.catch(error => console.error('Đã xảy ra lỗi:', error));
-		});
-	
-		function setuser(){
-			  $(document).ready(function () {
-
-            $("#addCategoryButton").click(function () {
-                $("#addCategoryModal").modal("show");
-            });
-
-
-            $(".editCategoryButton").click(function () {
-
-                var id = $(this).closest("tr").find("td:first").text();
-                var username = $(this).closest("tr").find("td:nth-child(2)").text();
-                var password = $(this).closest("tr").find("td:nth-child(3)").text();
-                var role = $(this).closest("tr").find("td:nth-child(4)").text();
-
-                $("#editusername").val(username);
-                $("#editpassword").val(username);
-                $("#editrole").val(role);
-
-
-                $("#editCategoryForm").attr("action", "/userput/" + id);
 
                 $("#editCategoryModal").modal("show");
             });
