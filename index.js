@@ -1300,11 +1300,7 @@ app.post('/loginadmin', async (req, res) => {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey', { expiresIn: '1h' });
       req.session.userId = user._id;
       req.session.token = token;
-      return res.status(200).send(`
-        <script>
-          window.location.href = '/admin?userId=${user._id}'; 
-        </script>
-      `);
+      return res.redirect(`/admin?userId=${user._id}`)
     } else if (user.role === 'nhomdich') {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey', { expiresIn: '1h' });
       req.session.userId = user._id;
