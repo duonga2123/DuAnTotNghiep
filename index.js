@@ -62,12 +62,11 @@ const checkAuth = (req, res, next) => {
     return res.redirect('/loginadmin');
   }
   try {
-    const decoded = jwt.verify(req.session.token, 'mysecretkey');
+    const decoded = jwt.verify(req.session.token, 'mysecretkey',{ expiresIn: '1h' });
     req.userData = decoded;
     next();
   } catch (error) {
     console.error(error);
-    return res.redirect('/loginadmin');
   }
 };
 
@@ -341,7 +340,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
           manga.isRead = true;
           await manga.save();
           await Notification.deleteOne({ mangaId: mangaId });
-          return res.redirect('/admin')
+          return res.status(202).send({message:'Duyệt thành công'})
       } else {
           return res.status(200).send('Truyện đã được duyệt trước đó');
       }
