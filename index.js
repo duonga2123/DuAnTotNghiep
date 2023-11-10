@@ -399,6 +399,32 @@ app.get('/unread-count-nhomdich', async (req, res) => {
   }
 });
 
+app.get('/manganotifi/:mangaId', async (req, res) => {
+  try {
+    const mangaId = req.params.mangaId;
+
+    const notification = await Notification.findOne({ mangaId });
+
+    if (!notification) {
+      return res.status(404).json({ error: 'Không tìm thấy thông báo cho truyện này.' });
+    }
+    const mangaDetail = await Manga.findById(mangaId);
+
+    if (!mangaDetail) {
+      return res.status(404).json({ error: 'Không tìm thấy truyện chi tiết.' });
+    }
+
+    res.json({
+      image: mangaDetail.image,
+      content: mangaDetail.content,
+      author: mangaDetail.author,
+    });
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
+  }
+});
+
 app.get("/mangaput/:_id", async (req, res) => {
   const id = req.params._id;
   Manga.findById(id)

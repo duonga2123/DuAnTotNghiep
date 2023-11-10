@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-  
+
 </head>
 
 <body>
@@ -18,7 +18,7 @@
         <div class="table-data">
             <div class="order">
 
-                <table >
+                <table>
                     <thead>
                         <tr>
                             <th style="text-align: center;">title</th>
@@ -27,24 +27,51 @@
                         </tr>
                     </thead>
 
-                    <tbody >
+                    <tbody>
                         {{#each notification}}
-                        <tr >
+                        <tr>
                             <td style="text-align: center;">{{this.title}}</td>
                             <td style="text-align: center;">{{this.content}}</td>
-                            {{!-- <td>
-                                <button class="btn btn-info" onclick="showChapters('{{this.manganame}}')">Chi
-                                    tiết</button>
-                            </td> --}}
                             <td>
-                                  <form style="margin-top: 10dp;" action="/approveManga/{{this.mangaId}}"
+                                <button class="btn btn-info" onclick="showMangaDetail({{this.mangaId}})">Chi
+                                    tiết</button>
+                                <!-- Thêm modal vào giao diện HTML -->
+                                <div class="modal fade" id="mangaDetailModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="mangaDetailModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="mangaDetailModalLabel">Thông tin chi tiết
+                                                    truyện</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Hiển thị toàn bộ thông tin chi tiết truyện trong modal -->
+                                                <img id="mangaDetailImage" style="max-width: 100%;" alt="Ảnh truyện">
+                                                <p id="mangaDetailContent"></p>
+                                                <p id="mangaDetailAuthor"></p>
+                                                <!-- Các trường thông tin khác nếu có -->
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Đóng</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <form style="margin-top: 10dp;" action="/approveManga/{{this.mangaId}}"
                                     onclick="return confirm('Duyệt nha ?')" method="post">
                                     <button
                                         style="width: 100px; height:30px;  margin-top: 5px; background-color:#1E90FF ; border: none; border-radius: 5px; color: white;"
                                         type="submit">Duyệt</button>
                                 </form>
 
-                                
+
                             </td>
                         </tr>
                         {{/each}}
@@ -53,7 +80,30 @@
                 </table>
             </div>
         </div>
+
+
     </div>
+    <script>
+    function showMangaDetail(mangaId) {
+        // Gọi API để lấy toàn bộ thông tin chi tiết truyện
+        fetch(`/manganotifi/${mangaId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị toàn bộ thông tin chi tiết truyện trong modal
+                document.getElementById('mangaDetailImage').src = data.image;
+                document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+                document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+                // Các trường thông tin khác nếu có
+
+                // Kích hoạt modal
+                $('#mangaDetailModal').modal('show');
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy chi tiết truyện:', error);
+                alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+            });
+    }
+</script>
 </body>
 
 </html>
