@@ -69,7 +69,8 @@ const checkAuth = (req, res, next) => {
 };
 
 app.get("/admin", checkAuth, async (req, res) => {
-  res.render("admin");
+  const userId = req.session.userId;
+  res.render("admin",{userId});
 });
 app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
@@ -1304,6 +1305,8 @@ app.post('/loginadmin', async (req, res) => {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
       req.session.userId = user._id;
       req.session.token = token;
+      const userId = user._id;
+      localStorage.setItem('userId', userId);
       return res.status(200).send(`
         <script>
           window.location.href = '/nhomdich'; 
