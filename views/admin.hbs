@@ -1125,7 +1125,7 @@
 					.then(response => response.json())
 					.then(data => {
 						// Cập nhật số lượng thông báo chưa đọc trong thẻ span
-						const notificationSpan = document.querySelector('.num');
+						const notificationSpan = document.querySelector('#num');
 						notificationSpan.innerText = data.unreadCount.toString();
 					})
 					.catch(error => console.error(error));
