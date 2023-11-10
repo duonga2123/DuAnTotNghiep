@@ -1111,7 +1111,7 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		fetch(`/unread-count/${userId}`)
+		fetch(`/unread-count/?userId=<%= userId %>`)
 			.then(response => response.json())
 			.then(data => {
 				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
