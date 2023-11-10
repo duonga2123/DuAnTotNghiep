@@ -73,7 +73,7 @@ const checkAuth = (req, res, next) => {
 
 app.get("/admin", checkAuth, async (req, res) => {
   console.log("Session:", req.session);
-  res.render("admin",{userId:req.session.userId});
+  res.render("admin",{userId:req.session.userId,token:req.session.token});
 });
 app.get("/logout", async (req, res) => {
   
@@ -352,7 +352,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
   }
 });
 
-app.get('/unread-count/:userId', async (req, res) => {
+app.get('/unread-count/:userId/:token', async (req, res) => {
   try {
     const userId = req.params.userId;
 
