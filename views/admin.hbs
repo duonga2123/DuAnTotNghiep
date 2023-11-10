@@ -830,7 +830,7 @@
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	<script type="text/x-handlebars-template">
+	<script type="text/javascript">
 		const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
 		allSideMenu.forEach(item => {
@@ -1121,9 +1121,7 @@
 				.then(data => {
 					// Cập nhật số lượng thông báo chưa đọc trong thẻ span
 					const notificationSpan = document.querySelector('.num');
-					if (notificationSpan) {
 						notificationSpan.innerText = data.unreadCount.toString();
-					}
 				})
 				.catch(error => console.error(error));
 
