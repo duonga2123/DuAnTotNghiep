@@ -1106,30 +1106,11 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
-					const mangaId = data.map(item => item.mangaId);
-					showMangaDetail(mangaId)
+					setupMangaPage()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-		function showMangaDetail(mangaId) {
-			// Gọi API để lấy toàn bộ thông tin chi tiết truyện
-			fetch(`/manganotifi/${mangaId}`)
-				.then(response => response.json())
-				.then(data => {
-					// Hiển thị toàn bộ thông tin chi tiết truyện trong modal
-					document.getElementById('mangaDetailImage').src = data.image;
-					document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
-					document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
-					// Các trường thông tin khác nếu có
 
-					// Kích hoạt modal
-					$('#mangaDetailModal').modal('show');
-				})
-				.catch(error => {
-					console.error('Lỗi khi lấy chi tiết truyện:', error);
-					alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
-				});
-		}
 
 		fetch('/unread-count')
 			.then(response => {
@@ -1144,6 +1125,36 @@
 				notificationSpan.innerText = data.unreadCount.toString();
 			})
 			.catch(error => console.error(error));
+
+		function setupMangaPage() {
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+
+			mangaDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifi/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+						});
+				});
+			});
+		}
 
 	</script>
 </body>

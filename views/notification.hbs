@@ -33,7 +33,7 @@
                             <td style="text-align: center;">{{this.title}}</td>
                             <td style="text-align: center;">{{this.content}}</td>
                             <td>
-                                <button class="btn btn-info" onclick="showMangaDetail({{this.mangaId}})">Chi
+                                <button class="btn btn-info manga-detail-button" data-manga-id="{{this.mangaId}}">Chi
                                     tiết</button>
                                 <!-- Thêm modal vào giao diện HTML -->
                                 <div class="modal fade" id="mangaDetailModal" tabindex="-1" role="dialog"
@@ -84,25 +84,38 @@
 
     </div>
     <script>
-    function showMangaDetail(mangaId) {
-        // Gọi API để lấy toàn bộ thông tin chi tiết truyện
-        fetch(`/manganotifi/${mangaId}`)
-            .then(response => response.json())
-            .then(data => {
-                // Hiển thị toàn bộ thông tin chi tiết truyện trong modal
-                document.getElementById('mangaDetailImage').src = data.image;
-                document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
-                document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
-                // Các trường thông tin khác nếu có
+    function setupMangaPage() {
+        const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
 
-                // Kích hoạt modal
-                $('#mangaDetailModal').modal('show');
-            })
-            .catch(error => {
-                console.error('Lỗi khi lấy chi tiết truyện:', error);
-                alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+        mangaDetailButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                const mangaId = this.getAttribute('data-manga-id');
+                fetch(`/manganotifi/${mangaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            // Hiển thị thông tin chi tiết truyện trong modal
+                            document.getElementById('mangaDetailImage').src = data.image;
+                            document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+                            document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+                            // Các trường thông tin khác nếu có
+
+                            // Kích hoạt modal
+                            $('#mangaDetailModal').modal('show');
+                        } else {
+                            alert('Không có thông tin chi tiết cho truyện này.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy chi tiết truyện:', error);
+                        alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+                    });
             });
+        });
     }
+    document.addEventListener('DOMContentLoaded', function () {
+            setupMangaPage()  
+        });
 </script>
 </body>
 
