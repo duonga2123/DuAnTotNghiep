@@ -1111,29 +1111,24 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		document.addEventListener('DOMContentLoaded', function () {
-			// Lấy giá trị của userId từ query parameter
-			const urlParams = new URLSearchParams(window.location.search);
-			const userId = urlParams.get('userId');
+		const urlParams = new URLSearchParams(window.location.search);
+		const userId = urlParams.get('userId');
 
-			// Kiểm tra xem userId có tồn tại không
-			if (userId) {
-				console.log('UserId:', userId);
+		console.log('UserId:', userId);
 
-				// Gọi API để lấy số lượng thông báo chưa đọc
-				fetch(`/unread-count/${userId}`)
-					.then(response => response.json())
-					.then(data => {
-						// Cập nhật số lượng thông báo chưa đọc trong thẻ span
-						const notificationSpan = document.querySelector('#num');
-						notificationSpan.innerText = data.unreadCount.toString();
-					})
-					.catch(error => console.error(error));
-			} else {
-				console.error('UserId không tồn tại.');
+		// Gọi API để lấy số lượng thông báo chưa đọc
+		fetch(`/unread-count/${userId}`)
+			.then(response => 
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
-		});
-
+				return response.json();)
+			.then(data => {
+				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
+				const notificationSpan = document.querySelector('.num');
+				notificationSpan.innerText = data.unreadCount.toString();
+			})
+			.catch(error => console.error(error));
 
 	</script>
 </body>
