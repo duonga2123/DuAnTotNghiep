@@ -1107,22 +1107,10 @@ const createRevenueChart = (dates, amounts) => {
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
-					const mangaid=data.map(item => item.mangaId)
-					approve(mangaid)
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-		  function approve(mangaId) {
-            fetch(`/approveManga/${mangaId}`, {
-                method: 'POST'
-            }).then(response => {
-                if (response.status === 200) {
-                    alert('Duyệt truyện thành công');
-                } else {
-                    alert('Đã xảy ra lỗi khi duyệt truyện');
-                }
-            });
-        }
+		  
 
 	</script>
 </body>

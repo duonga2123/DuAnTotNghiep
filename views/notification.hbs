@@ -27,9 +27,9 @@
                         </tr>
                     </thead>
 
-                    <tbody id="notificationTable">
+                    <tbody >
                         {{#each notification}}
-                        <tr data-manga-id="{{this.mangaId}}">
+                        <tr >
                             <td>{{this.title}}</td>
                             <td>{{this.content}}</td>
                             {{!-- <td>
@@ -37,9 +37,14 @@
                                     tiết</button>
                             </td> --}}
                             <td>
+                                  <form style="margin-top: 10dp;" action="/approveManga/{{this.mangaId}}"
+                                    onclick="return confirm('Duyệt nha ?')" method="post">
+                                    <button
+                                        style="width: 100px; height:30px;  margin-top: 5px; background-color:#1E90FF ; border: none; border-radius: 5px; color: white;"
+                                        type="submit">Duyệt</button>
+                                </form>
 
-                                <button onclick="approve('{{this.mangaId}}')"
-                                    style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;">Duyệt</button>
+                                
                             </td>
                         </tr>
                         {{/each}}
@@ -49,20 +54,6 @@
             </div>
         </div>
     </div>
-    <script>
-        function approve(mangaId) {
-            fetch(`/approveManga/${mangaId}`, {
-                method: 'POST'
-            }).then(response => {
-                if (response.status === 200) {
-                    
-                   confirm('Duyệt thành công')
-                } else {
-                    alert('Đã xảy ra lỗi khi duyệt truyện');
-                }
-            });
-        }
-    </script>
 </body>
 
 </html>
