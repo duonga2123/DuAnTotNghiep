@@ -829,7 +829,7 @@
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	<script>
+	<script type="text/javascript">
 		const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
 		allSideMenu.forEach(item => {
@@ -1112,7 +1112,7 @@
 		});
 
 		document.addEventListener('DOMContentLoaded', function () {
-			const userId = '<%= userId %>';
+			const userId = '{{userId}}';
 
 			// Gọi API để lấy số lượng thông báo chưa đọc
 			fetch(`/unread-count/${userId}`)
