@@ -1294,7 +1294,7 @@ app.post('/loginadmin', async (req, res) => {
     }
 
     if (user.role === 'admin') {
-      const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+      const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey', { expiresIn: '1h' });
       req.session.userId = user._id;
       req.session.token = token;
       return res.status(200).send(`
@@ -1303,7 +1303,7 @@ app.post('/loginadmin', async (req, res) => {
         </script>
       `);
     } else if (user.role === 'nhomdich') {
-      const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
+      const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey', { expiresIn: '1h' });
       req.session.userId = user._id;
       req.session.token = token;
       return res.status(200).send(`
