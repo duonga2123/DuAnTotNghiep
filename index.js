@@ -346,6 +346,20 @@ app.post('/approveManga/:mangaId', async (req, res) => {
   }
 });
 
+app.get('/unread-count/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Đếm số lượng thông báo chưa đọc
+    const unreadCount = await Notification.countDocuments({ userId, isRead: false });
+
+    res.json({ unreadCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.get("/mangaput/:_id", async (req, res) => {
   const id = req.params._id;
   Manga.findById(id)
@@ -1283,7 +1297,7 @@ app.post('/loginadmin', async (req, res) => {
       req.session.token = token;
       return res.status(200).send(`
         <script>
-          window.location.href = '/admin'; 
+          window.location.href = '/admin?userId=<%= userId %>'; 
         </script>
       `);
     } else if (user.role === 'nhomdich') {
@@ -1292,7 +1306,7 @@ app.post('/loginadmin', async (req, res) => {
       req.session.token = token;
       return res.status(200).send(`
         <script>
-          window.location.href = '/nhomdich'; 
+          window.location.href = '/nhomdich?userId=<%= userId %>'; 
         </script>
       `);
     } else {
