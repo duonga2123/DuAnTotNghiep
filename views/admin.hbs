@@ -1110,11 +1110,8 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		const urlParams = new URLSearchParams(window.location.search);
-		const userId = urlParams.get('userId');
 
-		console.log('UserId:', userId);
-
+        const userId='userId=<%= userId %>'
 		fetch(`/unread-count/${userId}`)
 			.then(response => {
 				if (!response.ok) {
