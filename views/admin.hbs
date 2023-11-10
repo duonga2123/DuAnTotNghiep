@@ -642,8 +642,6 @@
 </head>
 
 <body>
-
-
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 		<a href="#" class="brand">
@@ -1111,7 +1109,7 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		fetch(`/unread-count/${userId}`)
+		{{!-- fetch(`/unread-count/${userId}`)
 			.then(response => response.json())
 			.then(data => {
 				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
@@ -1120,9 +1118,7 @@
 					notificationSpan.innerText = data.unreadCount.toString();
 				}
 			})
-			.catch(error => console.error(error));
-
-
+			.catch(error => console.error(error)); --}}
 	</script>
 </body>
 
