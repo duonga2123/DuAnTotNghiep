@@ -1016,6 +1016,20 @@
 				console.error('Lỗi khi lấy thông báo:', error);
 				// Xử lý lỗi nếu cần thiết
 			});
+
+		fetch('/unread-count-nhomdich')
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
+				const notificationSpan = document.querySelector('.num');
+				notificationSpan.innerText = data.unreadCount.toString();
+			})
+			.catch(error => console.error(error));
 	</script>
 </body>
 

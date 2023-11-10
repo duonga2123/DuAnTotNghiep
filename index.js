@@ -73,7 +73,7 @@ const checkAuth = (req, res, next) => {
 
 app.get("/admin", checkAuth, async (req, res) => {
   console.log("Session:", req.session);
-  res.render("admin",{userId:req.session.userId,token:req.session.token});
+  res.render("admin");
 });
 app.get("/logout", async (req, res) => {
   
@@ -373,12 +373,24 @@ app.post('/approveManga/:mangaId', async (req, res) => {
   }
 });
 
-app.get('/unread-count/:userId/:token', async (req, res) => {
+app.get('/unread-count', async (req, res) => {
+  try {
+    // Đếm số lượng thông báo chưa đọc
+    const unreadCount = await Notification.countDocuments({ title: 'Truyện cần duyệt' });
+
+    res.json({ unreadCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/unread-count-nhomdich', async (req, res) => {
   try {
     const userId = req.params.userId;
 
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ adminId:userId, isRead: false });
+    const unreadCount = await Notification.countDocuments({ title: 'được phê duyệt' });
 
     res.json({ unreadCount });
   } catch (error) {

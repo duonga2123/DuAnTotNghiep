@@ -1111,9 +1111,7 @@
 		});
 
 
-        const userId = '{{ userId }}';
-		const token = '{{ token }}'
-		fetch(`/unread-count/${userId}/${token}`)
+		fetch('/unread-count')
 			.then(response => {
 				if (!response.ok) {
 					throw new Error(`HTTP error! Status: ${response.status}`);
