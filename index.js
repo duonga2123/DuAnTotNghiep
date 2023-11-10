@@ -1157,7 +1157,7 @@ app.get('/paymentdetail/:userid', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Người dùng không tồn tại' });
     }
-    const paymentDetails = await Payment.find({ userID: userid });
+    const paymentDetails = await Payment.find({ userID: userid, success:'thanh toán thành công' });
 
     if (!paymentDetails || paymentDetails.length === 0) {
       return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
