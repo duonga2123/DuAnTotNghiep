@@ -1298,18 +1298,16 @@ app.post('/loginadmin', async (req, res) => {
       req.session.token = token;
       return res.status(200).send(`
         <script>
-          window.location.href = '/admin'; 
+          window.location.href = '/admin?userId=<%= userId %>'; 
         </script>
       `);
     } else if (user.role === 'nhomdich') {
       const token = jwt.sign({ userId: user._id, role: user.role }, 'mysecretkey');
       req.session.userId = user._id;
       req.session.token = token;
-      const userId = user._id;
-      localStorage.setItem('userId', userId);
       return res.status(200).send(`
         <script>
-          window.location.href = '/nhomdich'; 
+          window.location.href = '/nhomdich?userId=<%= userId %>'; 
         </script>
       `);
     } else {
