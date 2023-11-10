@@ -1115,13 +1115,13 @@
 
 		console.log('UserId:', userId);
 
-		// Gọi API để lấy số lượng thông báo chưa đọc
 		fetch(`/unread-count/${userId}`)
-			.then(response => 
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-				return response.json();)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
 			.then(data => {
 				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
 				const notificationSpan = document.querySelector('.num');
