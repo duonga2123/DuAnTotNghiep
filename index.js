@@ -302,6 +302,7 @@ app.post('/mangapost/:userId', async (req, res) => {
         mangaId: manga._id
       });
 
+
       await notification.save();
 
       manga.isRead = false;
@@ -322,9 +323,18 @@ app.post('/mangapost/:userId', async (req, res) => {
 });
 
 app.get('/rendernotifi',async(req,res)=>{
-  const notification=await Notification.find()
+  const notification=await Notification.find({title: 'Truyện cần duyệt'})
   res.render('notification', { notification });
 })
+app.get('/rendernotifinhomdich', async (req, res) => {
+  try {
+    const notifications = await Notification.find({ title: 'được phê duyệt' });
+    res.json(notifications);
+  } catch (error) {
+    console.error('Lỗi khi lấy thông báo:', error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi khi lấy thông báo' });
+  }
+});
 
 app.post('/approveManga/:mangaId', async (req, res) => {
   try {
@@ -342,6 +352,17 @@ app.post('/approveManga/:mangaId', async (req, res) => {
           manga.isRead = true;
           await manga.save();
           await Notification.deleteOne({ mangaId: mangaId });
+
+          const newNotification = new Notification({
+            adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
+            title: 'được phê duyệt',
+            content: `Truyện ${manga.manganame} của bạn đã được duyệt và đăng thành công, giờ đây bạn có thể đăng chap của truyện.`,
+            userId: manga.userID, // Thay đổi đây thành userId tương ứng với nhóm dịch
+            mangaId: mangaId
+          });
+    
+          
+          await newNotification.save();
           return res.status(202).send({message:'Duyệt thành công'})
       } else {
           return res.status(200).send('Truyện đã được duyệt trước đó');
