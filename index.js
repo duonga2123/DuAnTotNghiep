@@ -291,6 +291,7 @@ app.post('/mangapost/:userId', async (req, res) => {
 
     if (user.role === 'nhomdich') {
       const notification = new Notification({
+        adminId:'653a20c611295a22062661f9',
         title: 'Truyện cần duyệt',
         content: `Truyện ${manganame} cần được duyệt.`,
         userId: userId,
@@ -352,7 +353,7 @@ app.get('/unread-count/:userId', async (req, res) => {
     const userId = req.params.userId;
 
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ userId, isRead: false });
+    const unreadCount = await Notification.countDocuments({ adminId:userId, isRead: false });
 
     res.json({ unreadCount });
   } catch (error) {
