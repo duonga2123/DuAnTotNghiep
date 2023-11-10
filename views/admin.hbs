@@ -1111,7 +1111,7 @@
 		});
 
 
-        const userId='userId=<%= userId %>'
+        const userId='<%= userId %>'
 		fetch(`/unread-count/${userId}`)
 			.then(response => {
 				if (!response.ok) {
