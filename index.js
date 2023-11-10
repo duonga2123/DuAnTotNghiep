@@ -69,8 +69,8 @@ const checkAuth = (req, res, next) => {
 };
 
 app.get("/admin", checkAuth, async (req, res) => {
-  const userId = req.session.userId;
-  res.render("admin",{userId});
+  
+  res.render("admin");
 });
 app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
