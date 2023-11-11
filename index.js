@@ -76,7 +76,6 @@ app.get("/admin", checkAuth, async (req, res) => {
   res.render("admin");
 });
 app.get("/logout", async (req, res) => {
-  
   res.redirect('/loginadmin');
 });
 
