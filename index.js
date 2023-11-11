@@ -742,13 +742,27 @@ app.post('/postcomment/:userId/:mangaId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
 })
-app.post('/deletecomment/:commentId/:mangaID', async (req, res) => {
+app.post('/deletecomment/:commentId/:mangaID/:userId', async (req, res) => {
   try {
     const commentId = req.params.commentId;
     const mangaId = req.params.mangaID;
+    const userId = req.params.userId
+
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' })
+    }
+
     const manga = await Manga.findById(mangaId)
     if (!manga) {
       res.status(404).json({ message: 'không tìm thấy truyện này' });
+    }
+
+    const commentToDelete = manga.comment.find((cmt) => cmt._id == commentId && cmt.userID == userId);
+
+    if (!commentToDelete) {
+      res.status(403).json({ message: 'Bạn không có quyền xóa comment này' });
+      return;
     }
     const commentIndex = manga.comment.findIndex(cmt => cmt._id == commentId);
     if (commentIndex === -1) {
