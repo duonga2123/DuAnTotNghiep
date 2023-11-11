@@ -1445,7 +1445,7 @@ app.get('/userscreen', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách người dùng' });
   }
 });
-app.get('user/:userId',async(req,res)=>{
+app.get('/user/:userId',async(req,res)=>{
   try{
     const userId=req.params.userId
     const user=await User.findById(userId)
