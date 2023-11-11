@@ -1445,8 +1445,24 @@ app.get('/userscreen', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách người dùng' });
   }
 });
-
-
+app.get('user/:userId',async(req,res)=>{
+  try{
+    const userId=req.params.userId
+    const user=await User.findById(userId)
+    if(!user){
+      res.status(404).json({message:'user không tồn tại'})
+    }
+    res.json({
+      userId:userId,
+      username:user.username,
+      role:user.role,
+      coin:user.coin
+    })
+  }catch(err){
+    console.error('Lỗi khi tìm user:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm user.' });
+  }
+})
 
 app.listen(8080, () =>
   console.log("Server is running on port 8080...")
