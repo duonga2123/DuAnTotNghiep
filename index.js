@@ -1056,6 +1056,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
     if (currentChapterIndex < chapters.length - 1) {
       nextChapter = {
         _id: chapters[currentChapterIndex + 1]._id,
+        chapname: chapters[currentChapterIndex + 1].number,
         images: chapters[currentChapterIndex + 1].images,
         viporfree: chapters[currentChapterIndex + 1].viporfree,
         price: chapters[currentChapterIndex + 1].price
@@ -1072,6 +1073,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
     if (currentChapterIndex > 0) {
       prevChapter = {
         _id: chapters[currentChapterIndex - 1]._id,
+        chapname: chapters[currentChapterIndex - 1].number,
         images: chapters[currentChapterIndex - 1].images,
         viporfree: chapters[currentChapterIndex - 1].viporfree,
         price: chapters[currentChapterIndex - 1].price
@@ -1091,6 +1093,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
 
     const responseData = {
       images: chapter.images,
+      chapname:chapter.number,
       viporfree: chapter.viporfree,
       price: chapter.price,
       nextchap: nextChapter,
