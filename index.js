@@ -1121,60 +1121,67 @@ paypal.configure({
 });
 
 app.post('/pay/:_userId', async (req, res) => {
-  const { totalAmount, currency } = req.body
-  const userId = req.params._userId
-  let coin = totalAmount * 10
-  const success = "đợi thanh toán"
-  const paymentData = new Payment({
-    userID: userId,
-    currency: currency,
-    totalAmount: totalAmount,
-    coin: coin,
-    date: new Date(),
-    success: success
-  });
-  const createPaymentJson = {
-    intent: 'sale',
-    payer: {
-      payment_method: 'paypal'
-    },
-    transactions: [
-      {
-        amount: {
-          total: totalAmount,
-          currency: currency
+  try {
+    const { totalAmount, currency } = req.body;
+    const userId = req.params._userId;
+    let coin = totalAmount * 10;
+    const success = "đợi thanh toán";
+    const paymentData = new Payment({
+      userID: userId,
+      currency: currency,
+      totalAmount: totalAmount,
+      coin: coin,
+      date: new Date(),
+      success: success
+    });
+    
+    const createPaymentJson = {
+      intent: 'sale',
+      payer: {
+        payment_method: 'paypal'
+      },
+      transactions: [
+        {
+          amount: {
+            total: totalAmount,
+            currency: currency
+          }
         }
+      ],
+      redirect_urls: {
+        return_url: `http://du-an-2023.vercel.app/success/${paymentData._id}`,
+        cancel_url: `http://du-an-2023.vercel.app/cancel`,
       }
-    ],
-    redirect_urls: {
-      return_url: `http://du-an-2023.vercel.app/success/${paymentData._id}`,
-      cancel_url: `http://du-an-2023.vercel.app/cancel`,
-    }
-  };
-  const user = await User.findById(userId)
-
-  paypal.payment.create(createPaymentJson, async (error, payment) => {
-    if (error) {
-      throw error;
-    }
-    else {
-      for (let i = 0; i < payment.links.length; i++) {
-        if (!user) {
-          res.status(500).json("không tìm thấy người dùng")
-        }
-        else {
-
-          if (payment.links[i].rel === 'approval_url') {
-            await paymentData.save();
-            user.payment.push(paymentData._id)
-            await user.save()
-            res.json(payment.links[i].href);
+    };
+    
+    const user = await User.findById(userId);
+    
+    paypal.payment.create(createPaymentJson, async (error, payment) => {
+      if (error) {
+        // Bắt lỗi và trả về response 500
+        console.error('Lỗi khi tạo thanh toán:', error);
+        return res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo thanh toán.' });
+      } else {
+        for (let i = 0; i < payment.links.length; i++) {
+          if (!user) {
+            // Trả về response 500 nếu không tìm thấy người dùng
+            return res.status(500).json("Không tìm thấy người dùng");
+          } else {
+            if (payment.links[i].rel === 'approval_url') {
+              await paymentData.save();
+              user.payment.push(paymentData._id);
+              await user.save();
+              // Trả về URL để chuyển hướng đến trang thanh toán PayPal
+              return res.json(payment.links[i].href);
+            }
           }
         }
       }
-    }
-  });
-
+    });
+  } catch (error) {
+    console.error('Lỗi khi xử lý thanh toán:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi xử lý thanh toán.' });
+  }
 });
 
 app.get('/success/:id', async (req, res) => {
