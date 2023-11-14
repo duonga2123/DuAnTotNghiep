@@ -1298,6 +1298,9 @@ app.get('/topUsers', async (req, res) => {
   try {
     const topUsers = await Payment.aggregate([
       {
+        $match: { success: 'thanh toán thành công' },
+      },
+      {
         $group: {
           _id: '$userID',
           totalAmount: { $sum: '$totalAmount' },
@@ -1318,7 +1321,7 @@ app.get('/topUsers', async (req, res) => {
         return {
           userID: user._id,
           totalAmount: user.totalAmount,
-          userInfo: userInfo, 
+          userInfo: userInfo
         };
       })
     );
@@ -1330,11 +1333,7 @@ app.get('/topUsers', async (req, res) => {
   }
 });
 
-// Lắng nghe trên cổng 3000
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server đang lắng nghe tại http://localhost:${port}`);
-});
+
 
 //api đăng kí
 app.post('/register', async (req, res) => {
