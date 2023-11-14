@@ -1294,6 +1294,48 @@ app.get('/cancel', (req, res) => {
   res.send('Thanh toán đã bị hủy.');
 });
 
+app.get('/topUsers', async (req, res) => {
+  try {
+    const topUsers = await Payment.aggregate([
+      {
+        $group: {
+          _id: '$userID',
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $sort: { totalAmount: -1 },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+
+    const extendedTopUsers = await Promise.all(
+      topUsers.map(async (user) => {
+        const userInfo = await User.findById(user._id);
+
+        return {
+          userID: user._id,
+          totalAmount: user.totalAmount,
+          userInfo: userInfo, 
+        };
+      })
+    );
+
+    res.json(extendedTopUsers);
+  } catch (error) {
+    console.error('Lỗi khi lấy top người dùng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy top người dùng' });
+  }
+});
+
+// Lắng nghe trên cổng 3000
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server đang lắng nghe tại http://localhost:${port}`);
+});
+
 //api đăng kí
 app.post('/register', async (req, res) => {
   try {
