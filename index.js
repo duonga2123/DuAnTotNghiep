@@ -507,7 +507,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
     const userId = req.params.userId;
-    const manga = await Manga.findById(mangaId).populate('chapters', 'number viporfree');
+    const manga = await Manga.findById(mangaId).populate('chapters', 'number viporfree price');
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
@@ -528,13 +528,15 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         chapterSet.add(chapter._id);
         uniqueChapters.push(chapter);
         let viporfree = chapter.viporfree;
+        let price = chapter.price;
         user.purchasedChapters.forEach(purchased => {
           if (purchased.chapterId.toString() === chapter._id.toString()) {
             viporfree = "free"
+            price=0
           }
         });
         chapter.viporfree = viporfree
-
+        chapter.price=price
       }
     });
 
