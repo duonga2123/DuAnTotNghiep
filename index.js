@@ -1047,7 +1047,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
 
-    const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
+    const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 'asc' });
     const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
     let nextChapter = null;
     let prevChapter = null;
