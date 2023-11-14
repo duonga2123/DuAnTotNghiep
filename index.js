@@ -1041,13 +1041,18 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
     const userid = req.params.userid
 
     const chapter = await Chapter.findById(chapterid);
-    chapter.number = parseInt(chapter.number);
 
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
 
-    const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: parseInt(chapter.number) });
+    const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 }).lean(); // Thêm .lean() để đảm bảo kết quả trả về là plain JavaScript objects, không phải Mongoose Documents.
+
+    // Chuyển đổi kiểu dữ liệu của trường number sang số
+    chapters.forEach(chap => chap.number = parseInt(chap.number));
+
+    // Sắp xếp theo number
+    chapters.sort((a, b) => a.number - b.number);
     const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
     let nextChapter = null;
     let prevChapter = null;
