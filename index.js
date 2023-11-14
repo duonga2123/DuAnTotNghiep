@@ -832,9 +832,14 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 
     const chapterPrice = chapter.price;
 
+    if (isNaN(user.coin)) {
+      return res.status(500).json({ message: 'Lỗi: Giá trị coin không hợp lệ' });
+    }
+
     if (user.coin < chapterPrice) {
       return res.status(400).json({ message: 'Không đủ coin để mua chương' });
     }
+
 
     user.coin -= chapterPrice;
     await user.save();
