@@ -1079,6 +1079,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       const isNextPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === nextChapter._id.toString());
       if (isNextPurchased) {
         nextChapter.viporfree = "free";
+        nextChapter.price=0
       }
     }
 
@@ -1095,12 +1096,14 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       const isPrevPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === prevChapter._id.toString());
       if (isPrevPurchased) {
         prevChapter.viporfree = "free";
+        prevChapter.price=0
       }
     }
 
     const isPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === chapterid);
     if (isPurchased) {
       chapter.viporfree = "free";
+      chapter.price=0
     }
 
     const responseData = {
