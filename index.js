@@ -1316,12 +1316,13 @@ app.get('/topUsers', async (req, res) => {
 
     const extendedTopUsers = await Promise.all(
       topUsers.map(async (user) => {
-        const userInfo = await User.findById(user._id);
+        const userInfo = await User.findById(user._id).select('username role');;
 
         return {
           userID: user._id,
+          username:userInfo.username,
+          role:userInfo.role,
           totalAmount: user.totalAmount,
-          userInfo: userInfo
         };
       })
     );
