@@ -15,8 +15,13 @@
 
         .card-img-top {
             width: 100%;
-            height: auto;
+            height: 200px;
             border-bottom: 0; /* Loại bỏ viền dưới hình ảnh */
+        }
+
+        /* Độ dài cố định cho các thành phần */
+        .card-body {
+            height: 150px; /* Điều chỉnh độ dài tùy ý */
         }
     </style>
 </head>
@@ -24,7 +29,7 @@
 
 <div class="container mt-4">
     <h2>Danh Sách Truyện</h2>
-    <div class="row" id="mangaRow">
+    <div class="row">
         {{#each manga}}
         <div class="col-sm-6 col-md-4 mb-4">
             <div class="card">
@@ -44,33 +49,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script>
-    // Tính toán chiều cao cao nhất trong cùng một hàng
-    function equalizeRowHeights() {
-        var rowDivs = $('#mangaRow .col-md-4');
-
-        // Reset chiều cao của tất cả các thành phần trong hàng
-        rowDivs.css('height', 'auto');
-
-        // Tìm chiều cao lớn nhất
-        var maxHeight = 0;
-        rowDivs.each(function() {
-            var height = $(this).height();
-            maxHeight = Math.max(maxHeight, height);
-        });
-
-        // Gán chiều cao lớn nhất cho tất cả các thành phần trong hàng
-        rowDivs.height(maxHeight);
-    }
-
-    // Gọi hàm khi trang tải xong và khi kích thước cửa sổ thay đổi
-    $(document).ready(function() {
-        equalizeRowHeights();
-    });
-
-    $(window).resize(function() {
-        equalizeRowHeights();
-    });
-</script>
 </body>
 </html>
