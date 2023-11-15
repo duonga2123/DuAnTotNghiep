@@ -22,7 +22,7 @@ const path = require('path')
 const myId = new mongoose.Types.ObjectId();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo')(session);
 
 
 
