@@ -50,6 +50,7 @@ mongoose.connect(uri, {
 }).then(console.log("kết nối thành công"));
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
+  mongoUrl: uri,
   collection: 'sessions', // Tên collection lưu trữ session trong MongoDB
 };
 
