@@ -997,50 +997,7 @@ app.get('/chapterchitiet/:_id', async (req, res) => {
   }
 });
 
-app.get('/chapter/:_id/images', async (req, res) => {
-  try {
-    const chapterid = req.params._id;
 
-    const chapter = await Chapter.findById(chapterid);
-    chapter.number = parseInt(chapter.number);
-
-    if (!chapter) {
-      return res.status(404).json({ message: 'Không tìm thấy chap.' });
-    }
-
-    const chapters = await Chapter.find({ mangaName: chapter.mangaName }).sort({ number: 1 });
-    const currentChapterIndex = chapters.findIndex(ch => ch._id.toString() === chapterid);
-    let nextChapter = null;
-    let prevChapter = null;
-
-    if (currentChapterIndex < chapters.length - 1) {
-      nextChapter = {
-        _id: chapters[currentChapterIndex + 1]._id,
-        images: chapters[currentChapterIndex + 1].images,
-        viporfree: chapters[currentChapterIndex + 1].viporfree
-      };
-    }
-
-    if (currentChapterIndex > 0) {
-      prevChapter = {
-        _id: chapters[currentChapterIndex - 1]._id,
-        images: chapters[currentChapterIndex - 1].images,
-        viporfree: chapters[currentChapterIndex - 1].viporfree
-      };
-    }
-
-    const responseData = {
-      images: chapter.images,
-      nextchap: nextChapter,
-      prevchap: prevChapter
-    };
-
-    res.json(responseData);
-  } catch (error) {
-    console.error('Lỗi khi lấy danh sách ảnh chap:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
-  }
-});
 
 app.get('/chapter/:_id/:userid/images', async (req, res) => {
   try {
@@ -1552,6 +1509,21 @@ app.get('/manga/:id/chapters', async (req, res) => {
   } catch (err) {
       console.error('Lỗi khi lấy danh sách chương', err);
       res.status(500).json({ message: 'Đã xảy ra lỗi' });
+  }
+});
+app.get('/chapter/:_id/images', async (req, res) => {
+  try {
+    const chapterid = req.params._id;
+
+    const chapter = await Chapter.findById(chapterid);
+
+    if (!chapter) {
+      return res.status(404).json({ message: 'Không tìm thấy chap.' });
+    }
+    res.render('anhchap',{chapter});
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách ảnh chap:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
   }
 });
 

@@ -1,0 +1,56 @@
+<!-- views/anhchap.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Ảnh Chap</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Thêm CSS tùy chỉnh */
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .image-item {
+            width: 25%; /* Hiển thị 4 ảnh trên mỗi hàng */
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <h2> {{chapter.mangaName}} - Chương {{chapter.number}}</h2>
+        <div class="image-container">
+            {{#each chapter}}
+                <div class="image-item">
+                    <img src="{{this.images}}" alt="Ảnh {{@index}}">
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+
+
+
+
