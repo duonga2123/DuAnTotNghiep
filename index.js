@@ -81,7 +81,7 @@ app.get("/logout", async (req, res) => {
 
 app.get('/nhomdich', checkAuth, async (req, res) => {
   console.log("Session:", req.session);
-  res.render("nhomdich")
+  res.render("nhomdich", { userId: req.session.userId })
 })
 
 //api get, post bài viết 
