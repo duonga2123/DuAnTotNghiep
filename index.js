@@ -13,7 +13,7 @@ const Manga = require('./models/MangaModel')
 const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
 const Baiviet = require('./models/BaiVietModel')
-const Notification=require('./models/NotifyModel')
+const Notification = require('./models/NotifyModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
@@ -63,7 +63,7 @@ const checkAuth = (req, res, next) => {
     return res.redirect('/loginadmin');
   }
   try {
-    const decoded = jwt.verify(req.session.token, 'mysecretkey',{ expiresIn: '1h' });
+    const decoded = jwt.verify(req.session.token, 'mysecretkey', { expiresIn: '1h' });
     req.userData = decoded;
     next();
   } catch (error) {
@@ -242,7 +242,7 @@ app.get("/add", async (req, res) => {
 
 app.get('/mangass', async (req, res) => {
   try {
-    const manga = await Manga.find({isRead:true});
+    const manga = await Manga.find({ isRead: true });
     res.render("home", { manga });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
@@ -262,7 +262,7 @@ app.get('/getmanga', async (req, res) => {
 
 app.get('/mangas', async (req, res) => {
   try {
-    const mangaList = await Manga.find({isRead:true}).select('manganame image category chapters').populate('chapters', 'number').exec();
+    const mangaList = await Manga.find({ isRead: true }).select('manganame image category chapters').populate('chapters', 'number').exec();
     const formattedMangaList = mangaList.map(manga => ({
       id: manga._id,
       manganame: manga.manganame,
@@ -294,7 +294,7 @@ app.post('/mangapost/:userId', async (req, res) => {
 
     if (user.role === 'nhomdich') {
       const notification = new Notification({
-        adminId:'653a20c611295a22062661f9',
+        adminId: '653a20c611295a22062661f9',
         title: 'Truyện cần duyệt',
         content: `Truyện ${manganame} cần được duyệt.`,
         userId: userId,
@@ -306,8 +306,8 @@ app.post('/mangapost/:userId', async (req, res) => {
 
       manga.isRead = false;
     }
-    else{
-      manga.isRead=true
+    else {
+      manga.isRead = true
     }
     await manga.save();
 
@@ -321,8 +321,8 @@ app.post('/mangapost/:userId', async (req, res) => {
   }
 });
 
-app.get('/rendernotifi',async(req,res)=>{
-  const notification=await Notification.find({title: 'Truyện cần duyệt'})
+app.get('/rendernotifi', async (req, res) => {
+  const notification = await Notification.find({ title: 'Truyện cần duyệt' })
   res.render('notification', { notification });
 })
 app.get('/rendernotifinhomdich', async (req, res) => {
@@ -337,38 +337,38 @@ app.get('/rendernotifinhomdich', async (req, res) => {
 
 app.post('/approveManga/:mangaId', async (req, res) => {
   try {
-      const mangaId = req.params.mangaId;
-      
-      // Tìm truyện dựa trên ID
-      const manga = await Manga.findById(mangaId);
+    const mangaId = req.params.mangaId;
 
-      if (!manga) {
-          return res.status(404).send('Không tìm thấy truyện');
-      }
+    // Tìm truyện dựa trên ID
+    const manga = await Manga.findById(mangaId);
 
-      // Kiểm tra xem truyện đã được duyệt chưa, nếu chưa thì cập nhật trạng thái và lưu truyện
-      if (!manga.isRead) {
-          manga.isRead = true;
-          await manga.save();
-          await Notification.deleteOne({ mangaId: mangaId });
+    if (!manga) {
+      return res.status(404).send('Không tìm thấy truyện');
+    }
 
-          const newNotification = new Notification({
-            adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
-            title: 'được phê duyệt',
-            content: `Truyện ${manga.manganame} của bạn đã được duyệt và đăng thành công, giờ đây bạn có thể đăng chap của truyện.`,
-            userId: manga.userID, // Thay đổi đây thành userId tương ứng với nhóm dịch
-            mangaId: mangaId
-          });
-    
-          
-          await newNotification.save();
-          return res.status(202).send({message:'Duyệt thành công'})
-      } else {
-          return res.status(200).send('Truyện đã được duyệt trước đó');
-      }
+    // Kiểm tra xem truyện đã được duyệt chưa, nếu chưa thì cập nhật trạng thái và lưu truyện
+    if (!manga.isRead) {
+      manga.isRead = true;
+      await manga.save();
+      await Notification.deleteOne({ mangaId: mangaId });
+
+      const newNotification = new Notification({
+        adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
+        title: 'được phê duyệt',
+        content: `Truyện ${manga.manganame} của bạn đã được duyệt và đăng thành công, giờ đây bạn có thể đăng chap của truyện.`,
+        userId: manga.userID, // Thay đổi đây thành userId tương ứng với nhóm dịch
+        mangaId: mangaId
+      });
+
+
+      await newNotification.save();
+      return res.status(202).send({ message: 'Duyệt thành công' })
+    } else {
+      return res.status(200).send('Truyện đã được duyệt trước đó');
+    }
   } catch (error) {
-      console.error('Lỗi khi duyệt truyện:', error);
-      res.status(500).send('Đã xảy ra lỗi khi duyệt truyện');
+    console.error('Lỗi khi duyệt truyện:', error);
+    res.status(500).send('Đã xảy ra lỗi khi duyệt truyện');
   }
 });
 
@@ -468,7 +468,7 @@ app.post('/mangaput/:_id', async (req, res) => {
     manga.view = view;
     manga.like = like;
     manga.image = image;
-   
+
     await manga.save();
 
     res.json(manga);
@@ -532,11 +532,11 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         user.purchasedChapters.forEach(purchased => {
           if (purchased.chapterId.toString() === chapter._id.toString()) {
             viporfree = "free"
-            price=0
+            price = 0
           }
         });
         chapter.viporfree = viporfree
-        chapter.price=price
+        chapter.price = price
       }
     });
 
@@ -1079,7 +1079,7 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       const isNextPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === nextChapter._id.toString());
       if (isNextPurchased) {
         nextChapter.viporfree = "free";
-        nextChapter.price=0
+        nextChapter.price = 0
       }
     }
 
@@ -1096,20 +1096,20 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
       const isPrevPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === prevChapter._id.toString());
       if (isPrevPurchased) {
         prevChapter.viporfree = "free";
-        prevChapter.price=0
+        prevChapter.price = 0
       }
     }
 
     const isPurchased = user.purchasedChapters.some(item => item.chapterId.toString() === chapterid);
     if (isPurchased) {
       chapter.viporfree = "free";
-      chapter.price=0
+      chapter.price = 0
     }
 
     const responseData = {
-      _id:chapterid,
+      _id: chapterid,
       images: chapter.images,
-      chapname:chapter.number,
+      chapname: chapter.number,
       viporfree: chapter.viporfree,
       price: chapter.price,
       nextchap: nextChapter,
@@ -1150,7 +1150,7 @@ app.post('/pay/:_userId', async (req, res) => {
       date: new Date(),
       success: success
     });
-    
+
     const createPaymentJson = {
       intent: 'sale',
       payer: {
@@ -1169,9 +1169,9 @@ app.post('/pay/:_userId', async (req, res) => {
         cancel_url: `http://du-an-2023.vercel.app/cancel`,
       }
     };
-    
+
     const user = await User.findById(userId);
-    
+
     paypal.payment.create(createPaymentJson, async (error, payment) => {
       if (error) {
         // Bắt lỗi và trả về response 500
@@ -1255,7 +1255,7 @@ app.get('/paymentdetail/:userid', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Người dùng không tồn tại' });
     }
-    const paymentDetails = await Payment.find({ userID: userid, success:'thanh toán thành công' });
+    const paymentDetails = await Payment.find({ userID: userid, success: 'thanh toán thành công' });
 
     if (!paymentDetails || paymentDetails.length === 0) {
       return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
@@ -1326,10 +1326,10 @@ app.get('/topUsers', async (req, res) => {
 
         return {
           userID: user._id,
-          username:userInfo.username,
-          role:userInfo.role,
+          username: userInfo.username,
+          role: userInfo.role,
           totalAmount: user.totalAmount,
-          coin:user.totalAmount*10
+          coin: user.totalAmount * 10
         };
       })
     );
@@ -1513,22 +1513,30 @@ app.get('/userscreen', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách người dùng' });
   }
 });
-app.get('/user/:userId',async(req,res)=>{
-  try{
-    const userId=req.params.userId
-    const user=await User.findById(userId)
-    if(!user){
-      res.status(404).json({message:'user không tồn tại'})
+app.get('/user/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'user không tồn tại' })
     }
     res.json({
-      userId:userId,
-      username:user.username,
-      role:user.role,
-      coin:user.coin
+      userId: userId,
+      username: user.username,
+      role: user.role,
+      coin: user.coin
     })
-  }catch(err){
-    console.error('Lỗi khi tìm user:', error);
+  } catch (err) {
+    console.error('Lỗi khi tìm user:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm user.' });
+  }
+})
+app.get("/doctruyen", async (req, res) => {
+  try {
+    const manga = await Manga.find().lean();
+    res.render('doctruyen', { manga })
+  } catch (err) {
+    console.error("Lỗi chuyển màn", err)
   }
 })
 

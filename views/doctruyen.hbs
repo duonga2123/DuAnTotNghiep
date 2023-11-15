@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Truyện</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-4">
+    <h2>Danh Sách Truyện</h2>
+    <div class="row">
+        {{#each manga}}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{this.image}}" class="card-img-top" alt="{{this.manganame}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.manganame}}</h5>
+                    <p class="card-text">{{this.author}}</p>
+                    <p class="card-text">{{this.category}}</p>
+                    <a href="#" class="btn btn-primary">Đọc Truyện</a>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
