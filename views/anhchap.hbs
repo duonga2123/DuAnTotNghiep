@@ -35,9 +35,9 @@
     <div class="container mt-4">
         <h2> {{chapter.mangaName}} Chương {{chapter.number}}</h2>
         <div class="image-container">
-            {{#each chapter}}
+            {{#each imageLinks}}
                 <div class="image-item">
-                    <img src="{{this.images}}" alt="Ảnh {{@index}}">
+                    <img src="{{this}}" alt="Ảnh {{@index}}">
                 </div>
             {{/each}}
         </div>
