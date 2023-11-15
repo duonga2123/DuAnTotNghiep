@@ -1537,7 +1537,7 @@ app.get('/chapter/:_id/images', async (req, res) => {
       }
     });
 
-    res.render('anhchap',{imageLinks});
+    res.render('anhchap',{imageLinks,chapter});
   } catch (error) {
     console.error('Lỗi khi lấy danh sách ảnh chap:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
