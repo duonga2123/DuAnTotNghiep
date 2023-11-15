@@ -1539,6 +1539,23 @@ app.get("/doctruyen", async (req, res) => {
     console.error("Lỗi chuyển màn", err)
   }
 })
+app.get('/manga/:id/chapters', async (req, res) => {
+  try {
+      const mangaId = req.params.id;
+      const manga = await Manga.findById(mangaId).populate('chapters');
+      
+      if (!manga) {
+          return res.status(404).json({ message: 'Truyện không tồn tại' });
+      }
+
+      res.render('docchap', { manga });
+  } catch (err) {
+      console.error('Lỗi khi lấy danh sách chương', err);
+      res.status(500).json({ message: 'Đã xảy ra lỗi' });
+  }
+});
+
+module.exports = router;
 
 app.listen(8080, () =>
   console.log("Server is running on port 8080...")
