@@ -788,7 +788,7 @@ app.get("/addchap", async (req, res) => {
 });
 
 app.get("/getchap", async (req, res) => {
-  const data = await Chapter.find({isChap: true}).lean();
+  const data = await Chapter.find({ isChap: true }).lean();
   res.render("chapter", { data });
 });
 
@@ -926,7 +926,7 @@ app.post('/chapterput/:_id', async (req, res) => {
     const imageArray = images.split('\n')
     number = number.toString();
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, price, images: imageArray,isChap: true
+      mangaName, number, viporfree, price, images: imageArray, isChap: true
     }, { new: true });
 
     if (!chapter) {
@@ -1019,6 +1019,41 @@ app.get('/chapterchitiet/:_id', async (req, res) => {
   }
 });
 
+app.post('/approvechap/:chapid', async (req, res) => {
+  try {
+    const chapterId = req.params.chapid;
+
+    // Tìm truyện dựa trên ID
+    const chapter = await Chapter.findById(chapterId);
+
+    if (!chapter) {
+      return res.status(404).send('Không tìm thấy chương');
+    }
+
+    // Kiểm tra xem truyện đã được duyệt chưa, nếu chưa thì cập nhật trạng thái và lưu truyện
+    if (!chapter.isChap) {
+      chapter.isChap = true;
+      await chapter.save();
+      const notify = await Notification.findByIdAndDelete({ mangaId: chapterId })
+      const newNotification = new Notification({
+        adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
+        title: 'được phê duyệt',
+        content: `Chap ${chapter.number} - truyện ${chapter.mangaName} của bạn đã được duyệt và đăng thành công`,
+        userId: notify.userId, // Thay đổi đây thành userId tương ứng với nhóm dịch
+        mangaId: chapterId
+      });
+
+
+      await newNotification.save();
+      return res.status(202).send({ message: 'Duyệt thành công' })
+    } else {
+      return res.status(200).send('Truyện đã được duyệt trước đó');
+    }
+  } catch (error) {
+    console.error('Lỗi khi duyệt truyện:', error);
+    res.status(500).send('Đã xảy ra lỗi khi duyệt truyện');
+  }
+});
 
 
 app.get('/chapter/:_id/:userid/images', async (req, res) => {

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- Boxicons -->
-  <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -1145,6 +1145,19 @@
 								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
 								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
 								// Các trường thông tin khác nếu có
+
+								const approveMangaButton = document.getElementById('approveMangaButton');
+								const approveChapButton = document.getElementById('approveChapButton');
+
+								if (data.title === 'Chap cần duyệt') {
+									// Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
+									approveMangaButton.style.display = 'none';
+									approveChapButton.style.display = 'block';
+								} else if (data.title === 'Truyện cần duyệt') {
+									// Nếu title là "Truyện cần duyệt", ẩn nút duyệt chap
+									approveMangaButton.style.display = 'block';
+									approveChapButton.style.display = 'none';
+								}
 
 								// Kích hoạt modal
 								$('#mangaDetailModal').modal('show');
