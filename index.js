@@ -80,6 +80,7 @@ app.get("/logout", async (req, res) => {
 });
 
 app.get('/nhomdich', checkAuth, async (req, res) => {
+  console.log("Session:", req.session);
   res.render("nhomdich")
 })
 
