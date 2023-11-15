@@ -1329,6 +1329,7 @@ app.get('/topUsers', async (req, res) => {
           username:userInfo.username,
           role:userInfo.role,
           totalAmount: user.totalAmount,
+          coin:user.totalAmount*10
         };
       })
     );
