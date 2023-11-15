@@ -59,8 +59,6 @@ app.use(session({
   cookie: { 
     secure: true,
     maxAge: 3600000,
-    sameSite: 'none',
-    domain: 'du-an-2023.vercel.app'
    }
 }));
 app.use(cors());
