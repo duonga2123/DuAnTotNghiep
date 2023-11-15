@@ -870,6 +870,7 @@ app.post('/chapters', async (req, res) => {
     const { mangaName, number, viporfree, images } = req.body;
     const user = await User.findById(userId)
     if (!user) {
+      console.log("Session:", req.session);
       return res.status(403).json({ message: 'Không tìm thấy user.' });
     }
 
