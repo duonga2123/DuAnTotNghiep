@@ -786,6 +786,7 @@ app.post('/deletecomment/:commentId/:mangaID/:userId', async (req, res) => {
 });
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
+  console.log("Session:", req.session);
   res.render("addchap", { userId: req.session.userId });
 });
 
