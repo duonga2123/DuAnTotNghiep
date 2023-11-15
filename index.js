@@ -57,8 +57,10 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { 
-    secure: false,
-    maxAge: 3600000
+    secure: true,
+    maxAge: 3600000,
+    sameSite: 'none',
+    domain: 'du-an-2023.vercel.app'
    }
 }));
 app.use(cors());
