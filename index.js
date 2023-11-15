@@ -1520,6 +1520,23 @@ app.get('/chapter/:_id/images', async (req, res) => {
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chap.' });
     }
+    const htmlToParse = '<html><head>...</head>' + chapter.images + '</html>';
+
+    // Kiểm tra dữ liệu trước khi sử dụng cheerio
+    console.log('Raw HTML data:', chapter.images);
+
+    const imageLinks = [];
+    const $ = cheerio.load(htmlToParse, { normalizeWhitespace: true, xmlMode: true });
+
+    $('img').each((index, element) => {
+      const src = $(element).attr('src');
+      if (src) {
+        imageLinks.push(src);
+      } else {
+        console.error('Không tìm thấy thuộc tính src trong thẻ img');
+      }
+    });
+
     res.render('anhchap',{chapter});
   } catch (error) {
     console.error('Lỗi khi lấy danh sách ảnh chap:', error);
