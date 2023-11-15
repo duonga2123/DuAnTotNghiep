@@ -21,6 +21,8 @@ const methodOverride = require('method-override');
 const path = require('path')
 const myId = new mongoose.Types.ObjectId();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 
 
 var app = express();
@@ -47,7 +49,7 @@ mongoose.connect(uri, {
 }).then(console.log("kết nối thành công"));
 
 
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
