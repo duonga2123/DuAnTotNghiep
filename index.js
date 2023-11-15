@@ -22,6 +22,7 @@ const path = require('path')
 const myId = new mongoose.Types.ObjectId();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const MongoStore = require('connect-mongo');
 
 
 
@@ -47,6 +48,10 @@ mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(console.log("kết nối thành công"));
+const mongoStoreOptions = {
+  mongooseConnection: mongoose.connection,
+  collection: 'sessions', // Tên collection lưu trữ session trong MongoDB
+};
 
 
 app.use(cookieParser());
@@ -56,6 +61,7 @@ app.use(session({
   secret: 'mysecretkey',
   resave: false,
   saveUninitialized: true,
+  store: MongoStore.create(mongoStoreOptions),
   cookie: { 
     secure: false,
    }
