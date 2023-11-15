@@ -414,6 +414,7 @@ app.get('/manganotifi/:mangaId', async (req, res) => {
     }
 
     res.json({
+      title:notification.title,
       image: mangaDetail.image,
       content: mangaDetail.content,
       author: mangaDetail.author,
