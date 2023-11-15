@@ -797,7 +797,8 @@ app.get("/addchap", async (req, res) => {
 
 app.get("/getchap", async (req, res) => {
   const data = await Chapter.find({ isChap: true }).lean();
-  res.render("chapter", { data });
+  console.log("Session:", req.session);
+  res.render("chapter", { data, userId: req.session.userId });
 });
 
 app.get('/chap', async (req, res) => {
