@@ -106,8 +106,8 @@
                                 document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
                                 // Các trường thông tin khác nếu có
 
-                                const approveMangaButton = document.getElementById('approveMangaButton');
-                                const approveChapButton = document.getElementById('approveChapButton');
+                                const approveMangaButton = document.querySelector('#approveMangaButton');
+                                const approveChapButton = document.querySelector('#approveChapButton');
 
                                 if (data.title === 'Chap cần duyệt') {
                                     // Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
