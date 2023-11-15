@@ -322,9 +322,9 @@ app.post('/mangapost/:userId', async (req, res) => {
 });
 
 app.get('/rendernotifi', async (req, res) => {
-  const notification = await Notification.find({ title: 'Truyện cần duyệt' })
+  const notification = await Notification.find({ title: { $regex: /Truyện cần duyệt|Chap cần duyệt/ } });
   res.render('notification', { notification });
-})
+});
 app.get('/rendernotifinhomdich', async (req, res) => {
   try {
     const notifications = await Notification.find({ title: 'được phê duyệt' });
