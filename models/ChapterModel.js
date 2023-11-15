@@ -5,7 +5,8 @@ mangaName:String,
 number:String,
 images: [String],
 viporfree:{type:String,enum:['vip','free']},
-price:Number
+price:Number,
+isChap:{type:Boolean,default:false}
 });
 
 const Chapter = mongoose.model('chapter', chapterSchema);

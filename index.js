@@ -784,7 +784,7 @@ app.post('/deletecomment/:commentId/:mangaID/:userId', async (req, res) => {
 });
 //api get, post chapter
 app.get("/addchap", async (req, res) => {
-  res.render("addchap");
+  res.render("addchap", { userId: req.session.userId });
 });
 
 app.get("/getchap", async (req, res) => {
@@ -863,7 +863,12 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 
 app.post('/chapters', async (req, res) => {
   try {
+    const userId = req.session.userId
     const { mangaName, number, viporfree, images } = req.body;
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(403).json({ message: 'Không tìm thấy user.' });
+    }
 
     const imageArray = images.split('\n')
 
@@ -873,7 +878,23 @@ app.post('/chapters', async (req, res) => {
     }
 
     const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray });
+    if (user.role === 'nhomdich') {
+      const notification = new Notification({
+        adminId: '653a20c611295a22062661f9',
+        title: 'Chap cần duyệt',
+        content: `Chap ${number} - Truyện ${mangaName} cần được duyệt.`,
+        userId: userId,
+        mangaId: manga._id
+      });
+      await notification.save();
+
+      chapter.isChap = false;
+    }
+    else {
+      chapter.isChap = true
+    }
     await chapter.save();
+
 
     manga.chapters.push(chapter._id);
     await manga.save();
@@ -899,12 +920,13 @@ app.get("/chapterput/:_id", async (req, res) => {
 
 app.post('/chapterput/:_id', async (req, res) => {
   try {
+
     const chapterId = req.params._id;
     let { mangaName, number, viporfree, price, images } = req.body;
     const imageArray = images.split('\n')
     number = number.toString();
     const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, price, images: imageArray
+      mangaName, number, viporfree, price, images: imageArray,isChap: true
     }, { new: true });
 
     if (!chapter) {
@@ -1498,17 +1520,17 @@ app.get("/doctruyen", async (req, res) => {
 })
 app.get('/manga/:id/chapters', async (req, res) => {
   try {
-      const mangaId = req.params.id;
-      const manga = await Manga.findById(mangaId).populate('chapters');
-      
-      if (!manga) {
-          return res.status(404).json({ message: 'Truyện không tồn tại' });
-      }
+    const mangaId = req.params.id;
+    const manga = await Manga.findById(mangaId).populate('chapters');
 
-      res.render('docchap', { manga });
+    if (!manga) {
+      return res.status(404).json({ message: 'Truyện không tồn tại' });
+    }
+
+    res.render('docchap', { manga });
   } catch (err) {
-      console.error('Lỗi khi lấy danh sách chương', err);
-      res.status(500).json({ message: 'Đã xảy ra lỗi' });
+    console.error('Lỗi khi lấy danh sách chương', err);
+    res.status(500).json({ message: 'Đã xảy ra lỗi' });
   }
 });
 app.get('/chapter/:_id/images', async (req, res) => {
@@ -1537,7 +1559,7 @@ app.get('/chapter/:_id/images', async (req, res) => {
       }
     });
 
-    res.render('anhchap',{imageLinks,chapter});
+    res.render('anhchap', { imageLinks, chapter });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách ảnh chap:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
