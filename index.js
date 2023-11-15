@@ -885,7 +885,7 @@ app.post('/chapters', async (req, res) => {
         title: 'Chap cần duyệt',
         content: `Chap ${number} - Truyện ${mangaName} cần được duyệt.`,
         userId: userId,
-        mangaId: manga._id
+        mangaId: chapter._id
       });
       await notification.save();
 
