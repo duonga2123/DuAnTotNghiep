@@ -54,7 +54,11 @@ app.use(session({
   secret: 'mysecretkey',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { 
+    secure: false,
+    maxAge: 3600000, 
+    sameSite: 'none'
+   }
 }));
 app.use(cors());
 
