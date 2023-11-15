@@ -1038,7 +1038,7 @@ app.post('/approvechap/:chapid', async (req, res) => {
     if (!chapter.isChap) {
       chapter.isChap = true;
       await chapter.save();
-      const notify = await Notification.findByIdAndDelete({ mangaId: chapterId })
+      const notify = await Notification.findOneAndDelete({ mangaId: chapterId })
       const newNotification = new Notification({
         adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
         title: 'được phê duyệt',
