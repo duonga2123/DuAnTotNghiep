@@ -56,8 +56,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: { 
     secure: false,
-    maxAge: 3600000, 
-    sameSite: 'none'
+    maxAge: 3600000
    }
 }));
 app.use(cors());
