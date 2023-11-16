@@ -1015,7 +1015,7 @@
 						const notificationDiv = document.createElement('div');
 						const checkbox = document.createElement('input');
 						checkbox.type = 'checkbox';
-						checkbox.value = notification.id; // Đặt giá trị của checkbox là ID của thông báo
+						checkbox.value = notification._id; // Đặt giá trị của checkbox là ID của thông báo
 						checkbox.classList.add('notification-checkbox');
 
 						notificationDiv.innerHTML = `<h5>${notification.title}</h5><p>${notification.content}</p>`;
