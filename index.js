@@ -364,7 +364,7 @@ app.post('/delete-selected-notifications', async (req, res) => {
       // Xóa các thông báo có ID trong danh sách đã chọn
       await Notification.deleteMany({ _id: { $in: selectedIds } });
 
-      res.json({ message: 'Xóa thành công.' });
+      res.render("nhomdich")
   } catch (error) {
       console.error('Lỗi khi xóa thông báo:', error);
       res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa thông báo.' });
