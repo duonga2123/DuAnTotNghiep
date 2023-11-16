@@ -354,6 +354,22 @@ app.get('/rendernotifinhomdich', async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi khi lấy thông báo' });
   }
 });
+app.post('/delete-selected-notifications', async (req, res) => {
+  try {
+      const selectedIds = req.body.ids;
+      if (!selectedIds || !Array.isArray(selectedIds)) {
+          return res.status(400).json({ error: 'Danh sách ID không hợp lệ.' });
+      }
+
+      // Xóa các thông báo có ID trong danh sách đã chọn
+      await Notification.deleteMany({ _id: { $in: selectedIds } });
+
+      res.json({ message: 'Xóa thành công.' });
+  } catch (error) {
+      console.error('Lỗi khi xóa thông báo:', error);
+      res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa thông báo.' });
+  }
+});
 
 app.post('/approveManga/:mangaId', async (req, res) => {
   try {

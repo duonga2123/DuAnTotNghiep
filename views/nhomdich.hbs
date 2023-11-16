@@ -732,7 +732,7 @@
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
-					<div class="modal-body">
+					<div class="modal-body" id="notificationBody">
 						<!-- Nội dung thông báo sẽ hiển thị ở đây -->
 						<!-- Điều này có thể là một danh sách các thông báo từ API của bạn -->
 					</div>
@@ -998,23 +998,82 @@
 			});
 		}
 
-		const modalBody = document.querySelector('#notificationModal .modal-body');
+		document.addEventListener('DOMContentLoaded', function () {
+			const modalBody = document.getElementById('notificationBody');
+			const deleteSelectedButton = document.getElementById('deleteSelectedButton');
+			const selectAllButton = document.getElementById('selectAllButton');
 
-		// Lấy thông báo từ API
-		fetch('/rendernotifinhomdich')
-			.then(response => response.json())
-			.then(notifications => {
-				// Hiển thị thông báo trong modal body
-				notifications.forEach(notification => {
-					const notificationDiv = document.createElement('div');
-					notificationDiv.innerHTML = `<h5>${notification.title}</h5><p>${notification.content}</p>`;
-					modalBody.appendChild(notificationDiv);
+			// Lấy thông báo từ API
+			fetch('/rendernotifinhomdich')
+				.then(response => response.json())
+				.then(notifications => {
+					// Hiển thị thông báo trong modal body
+					notifications.forEach(notification => {
+						const notificationDiv = document.createElement('div');
+						const checkbox = document.createElement('input');
+						checkbox.type = 'checkbox';
+						checkbox.value = notification.id; // Đặt giá trị của checkbox là ID của thông báo
+						checkbox.classList.add('notification-checkbox');
+
+						notificationDiv.innerHTML = `<h5>${notification.title}</h5><p>${notification.content}</p>`;
+						notificationDiv.prepend(checkbox); // Thêm checkbox vào đầu div thông báo
+						modalBody.appendChild(notificationDiv);
+					});
+
+					// Sự kiện khi checkbox được chọn
+					modalBody.addEventListener('change', function (event) {
+						const checkboxes = document.querySelectorAll('.notification-checkbox');
+						const selectedCheckboxes = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+
+						// Hiển thị/nút xóa nếu có ít nhất một checkbox được chọn
+						if (selectedCheckboxes.length > 0) {
+							deleteSelectedButton.style.display = 'block';
+						} else {
+							deleteSelectedButton.style.display = 'none';
+						}
+					});
+
+					// Sự kiện khi nút xóa được nhấn
+					deleteSelectedButton.addEventListener('click', function () {
+						const checkboxes = document.querySelectorAll('.notification-checkbox:checked');
+						const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+						// Gọi API xóa thông báo đã chọn
+						fetch('/delete-selected-notifications', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({ ids: selectedIds })
+						})
+							.then(response => response.json())
+							.then(data => {
+								// Xử lý kết quả từ API nếu cần thiết
+								console.log(data);
+							})
+							.catch(error => {
+								console.error('Lỗi khi xóa thông báo:', error);
+								// Xử lý lỗi nếu cần thiết
+							});
+
+						// Đóng modal sau khi xóa
+						$('#notificationModal').modal('hide');
+					});
+
+					// Sự kiện khi nút Chọn tất cả được nhấn
+					selectAllButton.addEventListener('click', function () {
+						const checkboxes = document.querySelectorAll('.notification-checkbox');
+						checkboxes.forEach(checkbox => checkbox.checked = true);
+
+						// Hiển thị/nút xóa vì tất cả checkbox đều được chọn
+						deleteSelectedButton.style.display = 'block';
+					});
+				})
+				.catch(error => {
+					console.error('Lỗi khi lấy thông báo:', error);
+					// Xử lý lỗi nếu cần thiết
 				});
-			})
-			.catch(error => {
-				console.error('Lỗi khi lấy thông báo:', error);
-				// Xử lý lỗi nếu cần thiết
-			});
+		});
 
 		fetch('/unread-count-nhomdich')
 			.then(response => {
