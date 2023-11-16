@@ -78,7 +78,15 @@ const checkAuth = (req, res, next) => {
     req.userData = decoded;
     next();
   } catch (error) {
-    console.error(error);
+    if (error.name === 'TokenExpiredError') {
+      // Token đã hết hạn, thực hiện các hành động phù hợp ở đây
+      // Ví dụ: đăng nhập lại hoặc chuyển hướng đến trang đăng nhập
+      req.session.destroy(); // Xóa phiên làm việc
+      return res.redirect('/loginadmin');
+    } else {
+      console.error(error);
+      return res.status(500).json({ message: 'Đã xảy ra lỗi.' });
+    }
   }
 };
 
