@@ -7,7 +7,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-
+    <style>
+        .hidden-button {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -30,7 +34,7 @@
                     <tbody>
                         {{#each notification}}
                         <tr>
-                            <td style="text-align: center;">{{this.title}}</td>
+                            <td style="text-align: center;" id="titleCell">{{this.title}}</td>
                             <td style="text-align: center;">{{this.content}}</td>
                             <td>
                                 <button class="btn btn-info manga-detail-button" data-manga-id="{{this.mangaId}}">Chi
@@ -90,6 +94,18 @@
 
     </div>
     <script>
+        const approveMangaButton = document.querySelector('#approveMangaButton');
+        const approveChapButton = document.querySelector('#approveChapButton');
+        const titleCell = document.getElementById('titleCell');
+        if (titleCell.textContent.trim() === 'Chap cần duyệt') {
+            // Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
+            approveMangaButton.classList.add('hidden-button');
+            approveChapButton.classList.remove('hidden-button');
+        } else if (titleCell.textContent.trim() === 'Truyện cần duyệt') {
+            // Nếu title là "Truyện cần duyệt", ẩn nút duyệt chap
+            approveMangaButton.classList.remove('hidden-button');
+            approveChapButton.classList.add('hidden-button');
+        }
         function setupMangaPage() {
             const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
 
@@ -105,19 +121,6 @@
                                 document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
                                 document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
                                 // Các trường thông tin khác nếu có
-
-                                const approveMangaButton = document.querySelector('#approveMangaButton');
-                                const approveChapButton = document.querySelector('#approveChapButton');
-
-                                if (data.title === 'Chap cần duyệt') {
-                                    // Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
-                                    approveMangaButton.style.display = 'none';
-                                    approveChapButton.style.display = 'block';
-                                } else if (data.title === 'Truyện cần duyệt') {
-                                    // Nếu title là "Truyện cần duyệt", ẩn nút duyệt chap
-                                    approveMangaButton.style.display = 'block';
-                                    approveChapButton.style.display = 'none';
-                                }
 
                                 // Kích hoạt modal
                                 $('#mangaDetailModal').modal('show');
