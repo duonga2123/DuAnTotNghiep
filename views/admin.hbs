@@ -1111,6 +1111,7 @@
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
 					setupMangaPage()
+					annut()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
@@ -1145,20 +1146,6 @@
 								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
 								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
 								// Các trường thông tin khác nếu có
-
-								const approveMangaButton = document.getElementById('approveMangaButton');
-								const approveChapButton = document.getElementById('approveChapButton');
-
-								if (data.title === 'Chap cần duyệt') {
-									// Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
-									approveMangaButton.style.display = 'none';
-									approveChapButton.style.display = 'block';
-								} else if (data.title === 'Truyện cần duyệt') {
-									// Nếu title là "Truyện cần duyệt", ẩn nút duyệt chap
-									approveMangaButton.style.display = 'block';
-									approveChapButton.style.display = 'none';
-								}
-
 								// Kích hoạt modal
 								$('#mangaDetailModal').modal('show');
 							} else {
@@ -1171,6 +1158,20 @@
 						});
 				});
 			});
+		}
+		function annut() {
+			const approveMangaButton = document.getElementById('approveMangaButton');
+			const approveChapButton = document.getElementById('approveChapButton');
+			const titleCell = document.getElementById('titleCell');
+			if (titleCell.textContent.trim() === 'Chap cần duyệt') {
+				// Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
+				approveMangaButton.style.display = 'none';
+				approveChapButton.style.display = 'block';
+			} else if (titleCell.textContent.trim() === 'Truyện cần duyệt') {
+				// Nếu title là "Truyện cần duyệt", ẩn nút duyệt chap
+				approveMangaButton.style.display = 'block';
+				approveChapButton.style.display = 'none';
+			}
 		}
 
 	</script>
