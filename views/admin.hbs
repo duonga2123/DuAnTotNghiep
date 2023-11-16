@@ -1160,18 +1160,25 @@
 			});
 		}
 		function annut() {
-			const approveMangaButton = document.getElementById('approveMangaButton');
-			const approveChapButton = document.getElementById('approveChapButton');
-			const titleCell = document.getElementById('titleCell');
-			if (titleCell.textContent.trim() === 'Chap cần duyệt') {
-				// Nếu title là "Chap cần duyệt", ẩn nút duyệt truyện
-				approveMangaButton.style.display = 'none';
-				approveChapButton.style.display = 'block';
-			} else if (titleCell.textContent.trim() === 'Truyện cần duyệt') {
-				// Nếu title là "Truyện cần duyệt", ẩn nút duyệt chap
-				approveMangaButton.style.display = 'block';
-				approveChapButton.style.display = 'none';
-			}
+			document.addEventListener('DOMContentLoaded', function () {
+				const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
+				const approveChapButtons = document.querySelectorAll('.approveChapButton');
+				const titleCells = document.querySelectorAll('.titleCell');
+
+				approveMangaButtons.forEach((button, index) => {
+					const title = titleCells[index].textContent.trim();
+					if (title === 'Chap cần duyệt') {
+						button.style.display = 'none';
+					}
+				});
+
+				approveChapButtons.forEach((button, index) => {
+					const title = titleCells[index].textContent.trim();
+					if (title === 'Truyện cần duyệt') {
+						button.style.display = 'none';
+					}
+				});
+			});
 		}
 
 	</script>
