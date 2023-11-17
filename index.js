@@ -129,21 +129,56 @@ app.post('/postbaiviet/:userId', async (req, res) => {
 
 })
 
-app.get('/getbaiviet', async (req, res) => {
+app.get('/getbaiviet/:userId', async (req, res) => {
   try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
     const baiviet = await Baiviet.find({}).populate("userId", "username")
+    let isLiked = false;
+    user.favoriteBaiviet.forEach(favorite => {
+      if (favorite.baivietId.toString() === baiviet._id.toString() ) {
+        isLiked = favorite.isLiked;
+      }
+    });
     const formattedBaiviet = baiviet.map(item => ({
       _id: item._id,
       userId: item.userId._id,
       username: item.userId.username,
       content: item.content,
       like: item.like,
+      isLiked:item.isLiked,
       __v: item.__v
     }));
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
+  }
+})
+app.post('/addfavoritebaiviet/:userId/:baivietId', async(req,res)=>{
+  try{
+    const userId=req.params.userId;
+    const baivietId=req.params.baivietId;
+    const user=await User.findById(userId)
+    if(!user){
+      res.status(403).json({message:'không tìm thấy user'})
+    }
+    const baivietIndex = user.favoriteBaiviet.findIndex(baiviet => baiviet._id === baivietId);
+
+    if (baivietIndex === -1) {
+      user.favoriteManga.push({ baivietId, isLiked: true });
+    } else {
+      user.favoriteBaiviet[baivietIndex].isLiked = true;
+    }
+    await user.save();
+
+    res.json({ message: 'bài viết đã được thêm vào danh sách yêu thích.' });
+  }catch(err){
+    console.error('Lỗi khi yêu thích bài viết:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi yêu thích bài viết.' });
   }
 })
 

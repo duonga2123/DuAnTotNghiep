@@ -15,7 +15,11 @@ const userSchema = new mongoose.Schema({
     mangaId: { type: mongoose.Schema.Types.ObjectId, ref: 'manga' },
     isLiked: { type: Boolean, default: false },
   }],
-  baiviet:[{type:mongoose.Schema.Types.ObjectId,ref:'baiviet'}]
+  baiviet:[{type:mongoose.Schema.Types.ObjectId,ref:'baiviet'}],
+  favoriteBaiviet:[{
+    baivietId: { type: mongoose.Schema.Types.ObjectId, ref: 'baiviet' },
+    isLiked: { type: Boolean, default: false },
+  }]
 });
 
 const User = mongoose.model('user', userSchema);
