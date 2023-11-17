@@ -149,8 +149,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       username: item.userId.username,
       content: item.content,
       like: item.like,
-      isLiked:item.isLiked,
-      __v: item.__v
+      isLiked:isLiked,
     }));
     res.json(formattedBaiviet);
   } catch (err) {
