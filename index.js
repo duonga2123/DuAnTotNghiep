@@ -137,20 +137,18 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
     const baiviet = await Baiviet.find({}).populate("userId", "username")
-    let isLiked = false;
-    user.favoriteBaiviet.forEach(favorite => {
-      if (baiviet.some(bai => favorite.baivietId.toString() === bai._id.toString())) {
-        isLiked = favorite.isLiked;
-      }
+    const formattedBaiviet = baiviet.map(item => {
+      const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
+
+      return {
+        _id: item._id,
+        userId: item.userId._id,
+        username: item.userId.username,
+        content: item.content,
+        like: item.like,
+        isLiked: isLiked,
+      };
     });
-    const formattedBaiviet = baiviet.map(item => ({
-      _id: item._id,
-      userId: item.userId._id,
-      username: item.userId.username,
-      content: item.content,
-      like: item.like,
-      isLiked:isLiked,
-    }));
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
