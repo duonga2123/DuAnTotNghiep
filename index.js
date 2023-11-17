@@ -170,6 +170,12 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async(req,res)=>{
     } else {
       user.favoriteBaiviet[baivietIndex].isLiked = true;
     }
+
+    const baiviet = await Baiviet.findById(baivietId);
+    if (baiviet) {
+      baiviet.like += 1;
+      await baiviet.save();
+    }
     await user.save();
 
     res.json({ message: 'bài viết đã được thêm vào danh sách yêu thích.' });

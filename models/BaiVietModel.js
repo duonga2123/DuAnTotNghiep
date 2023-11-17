@@ -6,7 +6,11 @@ content:String,
 like:Number,
 content:String,
 comment:String,
-isLiked:{type:Boolean,default:false}
+isLiked:{type:Boolean,default:false},
+comment: [{
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+    cmt: { type: String }
+  }]
 });
 
 const Baiviet = mongoose.model('baiviet', baivietSchema);
