@@ -169,7 +169,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async(req,res)=>{
     const baivietIndex = user.favoriteBaiviet.findIndex(baiviet => baiviet._id === baivietId);
 
     if (baivietIndex === -1) {
-      user.favoriteManga.push({ baivietId, isLiked: true });
+      user.favoriteBaiviet.push({ baivietId, isLiked: true });
     } else {
       user.favoriteBaiviet[baivietIndex].isLiked = true;
     }
