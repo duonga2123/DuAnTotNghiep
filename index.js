@@ -188,6 +188,25 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
   }
 })
+
+app.get('/getbaiviet', async (req, res) => {
+  try {
+    const baiviet = await Baiviet.find({}).populate("userId", "username")
+    const formattedBaiviet = baiviet.map(item => ({
+      _id: item._id,
+      userId: item.userId._id,
+      username: item.userId.username,
+      content: item.content,
+      like: item.like,
+    }));
+    res.json(formattedBaiviet);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
+  }
+})
+
+
 app.post('/addfavoritebaiviet/:userId/:baivietId', async(req,res)=>{
   try{
     const userId=req.params.userId;
