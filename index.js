@@ -139,7 +139,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
     let isLiked = false;
     user.favoriteBaiviet.forEach(favorite => {
-      if (favorite.baivietId.toString() === baiviet._id ) {
+      if (baiviet.some(bai => favorite.baivietId.toString() === bai._id.toString())) {
         isLiked = favorite.isLiked;
       }
     });
