@@ -128,6 +128,39 @@ app.post('/postbaiviet/:userId', async (req, res) => {
   }
 
 })
+app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { content } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy user' });
+    }
+
+    if (user.role === 'user') {
+      return res.status(403).json({ message: 'Bạn không có quyền đăng bài viết' });
+    }
+
+    const images = [];
+
+    // Lặp qua mảng các tệp đã tải lên và lưu chúng vào mảng images
+    for (const file of req.files) {
+      // Thêm đường dẫn tạm thời (buffer) của ảnh vào mảng images
+      images.push(file.buffer);
+    }
+
+    const baiviet = new Baiviet({ userId, content, like: 0, images });
+    await baiviet.save();
+    user.baiviet.push(baiviet._id);
+    await user.save();
+
+    return res.status(200).json({ message: 'Đăng bài viết thành công' });
+  } catch (err) {
+    console.error('Lỗi khi đăng bài viết:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
+  }
+});
 
 app.get('/getbaiviet/:userId', async (req, res) => {
   try {

@@ -10,7 +10,8 @@ isLiked:{type:Boolean,default:false},
 comment: [{
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     cmt: { type: String }
-  }]
+  }],
+  images: [String],
 });
 
 const Baiviet = mongoose.model('baiviet', baivietSchema);
