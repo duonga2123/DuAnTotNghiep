@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
-const { format }  = require('date-fns');
+const format  = require('date-fns');
 const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
@@ -170,7 +170,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
-      const formattedDate = format(item.date, 'dd/MM/yyyy');
+
       return {
         _id: item._id,
         userId: item.userId._id,
@@ -178,7 +178,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         content: item.content,
         like: item.like,
         isLiked: isLiked,
-        date:formattedDate
+        date:item.date
       };
     });
     res.json(formattedBaiviet);
@@ -191,17 +191,14 @@ app.get('/getbaiviet/:userId', async (req, res) => {
 app.get('/getbaiviet', async (req, res) => {
   try {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
-    const formattedBaiviet = baiviet.map(item => {
-      const formattedDate = format(item.date, 'dd/MM/yyyy');
-      return {
-        _id: item._id,
-        userId: item.userId._id,
-        username: item.userId.username,
-        content: item.content,
-        like: item.like,
-        date:formattedDate
-      };
-    });
+    const formattedBaiviet = baiviet.map(item => ({
+      _id: item._id,
+      userId: item.userId._id,
+      username: item.userId.username,
+      content: item.content,
+      like: item.like,
+      date:item.date
+    }));
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
