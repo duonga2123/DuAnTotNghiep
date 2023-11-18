@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
 const moment = require('moment');
-
+const momenttimezone = require('moment-timezone');
 const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
@@ -114,8 +114,9 @@ app.post('/postbaiviet/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'không tìm thấy user' })
     }
+    const currentDate = moment().utc();
 
-    const baiviet = new Baiviet({ userId, content, like: 0 })
+    const baiviet = new Baiviet({ userId, content, like: 0, date: currentDate })
     await baiviet.save()
     user.baiviet.push(baiviet._id)
     await user.save()
@@ -144,12 +145,14 @@ app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
     const images = [];
 
     // Lặp qua mảng các tệp đã tải lên và lưu chúng vào mảng images
+    const currentDate = moment().utc();
+
     for (const file of req.files) {
       // Thêm đường dẫn tạm thời (buffer) của ảnh vào mảng images
       images.push(file.buffer);
     }
 
-    const baiviet = new Baiviet({ userId, content, like: 0, images });
+    const baiviet = new Baiviet({ userId, content, like: 0, images,date: currentDate });
     await baiviet.save();
     user.baiviet.push(baiviet._id);
     await user.save();
