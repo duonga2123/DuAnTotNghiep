@@ -12,7 +12,7 @@ comment: [{
     cmt: { type: String }
   }],
   images: [String],
-  date: { type: Date, default: Date.now, required: true, expires: 60 }
+  date: { type: Date}
 });
 
 const Baiviet = mongoose.model('baiviet', baivietSchema);
