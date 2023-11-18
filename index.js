@@ -171,7 +171,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
-      const formattedDate = moment(item.date).format('DD/MM/YYYY');
+      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       return {
         _id: item._id,
         userId: item.userId._id,
@@ -194,7 +194,7 @@ app.get('/getbaiviet', async (req, res) => {
   try {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
-      const formattedDate = moment(item.date).format('DD/MM/YYYY');
+      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       return {
         _id: item._id,
         userId: item.userId._id,
