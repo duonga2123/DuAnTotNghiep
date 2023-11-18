@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
 const moment = require('moment');
-const momenttimezone = require('moment-timezone');
 const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
@@ -114,9 +113,8 @@ app.post('/postbaiviet/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'không tìm thấy user' })
     }
-    const currentDate = moment().utc();
 
-    const baiviet = new Baiviet({ userId, content, like: 0, date: currentDate })
+    const baiviet = new Baiviet({ userId, content, like: 0 })
     await baiviet.save()
     user.baiviet.push(baiviet._id)
     await user.save()
