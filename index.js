@@ -177,6 +177,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         content: item.content,
         like: item.like,
         isLiked: isLiked,
+        date:item.date
       };
     });
     res.json(formattedBaiviet);
@@ -195,6 +196,7 @@ app.get('/getbaiviet', async (req, res) => {
       username: item.userId.username,
       content: item.content,
       like: item.like,
+      date:item.date
     }));
     res.json(formattedBaiviet);
   } catch (err) {
