@@ -114,7 +114,7 @@ app.post('/postbaiviet/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'không tìm thấy user' })
     }
-    const vietnamTime = moment().add(7, 'hours').toDate();
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
     const baiviet = new Baiviet({ userId, content, like: 0, date: vietnamTime })
     await baiviet.save()
     user.baiviet.push(baiviet._id)
