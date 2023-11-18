@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const paypal = require('paypal-rest-sdk');
 const cheerio = require('cheerio');
-const moment = require('moment-timezone');
+const moment = require('moment');
 const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
@@ -195,7 +195,8 @@ app.get('/getbaiviet', async (req, res) => {
   try {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
-      const formattedDate = moment(item.date).tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY HH:mm:ss');      return {
+      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
+      return {
         _id: item._id,
         userId: item.userId._id,
         username: item.userId.username,
