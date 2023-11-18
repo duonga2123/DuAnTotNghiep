@@ -169,7 +169,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
-    const baiviet = await Baiviet.find({}).populate("userId", "username")
+    const baiviet = await Baiviet.find({}).sort({ date:-1 }).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
