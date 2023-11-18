@@ -112,9 +112,6 @@ app.post('/postbaiviet/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'không tìm thấy user' })
     }
-    if (user.role === "user") {
-      return res.status(403).json({ message: 'bạn không có quyền đăng bài viết' })
-    }
 
     const baiviet = new Baiviet({ userId, content, like: 0 })
     await baiviet.save()
