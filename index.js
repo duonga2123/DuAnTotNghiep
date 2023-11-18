@@ -203,6 +203,7 @@ app.get('/getbaiviet', async (req, res) => {
         username: item.userId.username,
         content: item.content,
         like: item.like,
+        isLiked:item.isLiked,
         date: formattedDate,
         commentCount: item.comment.length
       };
