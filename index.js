@@ -194,7 +194,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
 
 app.get('/getbaiviet', async (req, res) => {
   try {
-    const baiviet = await Baiviet.find({}).populate("userId", "username")
+    const baiviet = await Baiviet.find({}).sort({date:-1}).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       return {
