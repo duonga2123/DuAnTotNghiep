@@ -170,7 +170,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
     const formattedBaiviet = baiviet.map(item => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
-
+      const formattedDate = format(item.date, 'dd/MM/yyyy');
       return {
         _id: item._id,
         userId: item.userId._id,
@@ -178,31 +178,34 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         content: item.content,
         like: item.like,
         isLiked: isLiked,
-        date:item.date
+        date:formattedDate
       };
     });
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết', err });
   }
 })
 
 app.get('/getbaiviet', async (req, res) => {
   try {
     const baiviet = await Baiviet.find({}).populate("userId", "username")
-    const formattedBaiviet = baiviet.map(item => ({
-      _id: item._id,
-      userId: item.userId._id,
-      username: item.userId.username,
-      content: item.content,
-      like: item.like,
-      date:item.date
-    }));
+    const formattedBaiviet = baiviet.map(item =>{
+      const formattedDate = format(item.date, 'dd/MM/yyyy');
+      return {
+        _id: item._id,
+        userId: item.userId._id,
+        username: item.userId.username,
+        content: item.content,
+        like: item.like,
+        date:formattedDate
+      };
+    });
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết',err });
   }
 })
 
