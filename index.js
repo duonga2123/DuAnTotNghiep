@@ -266,6 +266,71 @@ app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
     res.status(500).json({ error: "lỗi xóa bài viết" })
   }
 })
+
+app.post('/postcmtbaiviet/:baivietId/:userId', async(req,res)=>{
+  try {
+    const baivietId=req.params.baivietId;
+    const userId=req.params.userId;
+    const { comment } = req.body;
+    const user= await User.findById(userId)
+    if(!user){
+      res.status(403).json({message:'không tìm thấy user'})
+    }
+    const baiviet=await Baiviet.findById(baivietId);
+    if(!baiviet){
+      res.status(404).json({message:'không tìm thấy bài viết'})
+    }
+    const newComment = {
+      userID: userId,
+      cmt: comment
+    };
+    baiviet.comment.push(newComment)
+    await baiviet.save()
+    res.status(200).json({ message: 'Đã thêm bình luận thành công' });
+  } catch (error) {
+    console.error('Lỗi khi post bình luận:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
+  }
+})
+app.post('/deletecomment/:commentId/:baivietId/:userId', async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+    const baivietId = req.params.baivietId;
+    const userId = req.params.userId
+
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' })
+    }
+
+    const baiviet = await Baiviet.findById(baivietId)
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết này' });
+    }
+
+    const commentToDelete = baiviet.comment.find((cmt) => cmt._id == commentId && cmt.userID == userId);
+
+    if (!commentToDelete) {
+      res.status(403).json({ message: 'Bạn không có quyền xóa comment này' });
+      return;
+    }
+    const commentIndex = baiviet.comment.findIndex(cmt => cmt._id == commentId);
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: 'Không tìm thấy comment với ID cung cấp' });
+    }
+
+    baiviet.comment.splice(commentIndex, 1); // Xóa comment từ mảng
+
+    // Lưu lại thay đổi vào cơ sở dữ liệu
+    await baiviet.save();
+
+
+    res.status(200).json({ message: 'Xóa comment thành công' });
+  } catch (error) {
+    console.error('Lỗi khi xóa comment:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa comment.' });
+  }
+});
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
