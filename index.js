@@ -228,7 +228,6 @@ app.get('/getbaiviet', async (req, res) => {
       };
     }));
     res.json(formattedBaiviet);
-    res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
