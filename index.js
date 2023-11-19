@@ -177,6 +177,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
         return {
+          _id:commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username, 
@@ -209,6 +210,7 @@ app.get('/getbaiviet', async (req, res) => {
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
         return {
+          _id:commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username, // Nếu bạn muốn lấy username từ usercmt
@@ -311,7 +313,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
 })
-app.post('/deletecomment/:commentId/:baivietId/:userId', async (req, res) => {
+app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => {
   try {
     const commentId = req.params.commentId;
     const baivietId = req.params.baivietId;
