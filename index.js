@@ -171,16 +171,17 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
     const baiviet = await Baiviet.find({}).sort({ date:-1 }).populate("userId", "username")
-    const formattedBaiviet = baiviet.map(item => {
+    const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
-      const comments = item.comment.map(commentItem => {
+      const comments = await Promise.all(item.comment.map(async (commentItem) => {
+        const usercmt = await User.findById(commentItem.userID);
         return {
           userId: commentItem.userID._id,
-          username: commentItem.userID.username,
           cmt: commentItem.cmt,
+          username: usercmt.username, 
         };
-      });
+      }));
       return {
         _id: item._id,
         userId: item.userId._id,
@@ -188,11 +189,11 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         content: item.content,
         like: item.like,
         isLiked: isLiked,
-        date:formattedDate,
-        comment:comments,
+        date: formattedDate,
+        comment: comments,
         commentCount: item.comment.length
       };
-    });
+    }));
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
@@ -203,19 +204,30 @@ app.get('/getbaiviet/:userId', async (req, res) => {
 app.get('/getbaiviet', async (req, res) => {
   try {
     const baiviet = await Baiviet.find({}).sort({date:-1}).populate("userId", "username")
-    const formattedBaiviet = baiviet.map(item => {
+    const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
+      const comments = await Promise.all(item.comment.map(async (commentItem) => {
+        const usercmt = await User.findById(commentItem.userID);
+        return {
+          userId: commentItem.userID._id,
+          cmt: commentItem.cmt,
+          username: usercmt.username, // Nếu bạn muốn lấy username từ usercmt
+          // Thêm thông tin khác của usercmt nếu cần
+        };
+      }));
       return {
         _id: item._id,
         userId: item.userId._id,
         username: item.userId.username,
         content: item.content,
         like: item.like,
-        isLiked:item.isLiked,
+        isLiked: item.isLiked,
         date: formattedDate,
+        comment: comments,
         commentCount: item.comment.length
       };
-    });
+    }));
+    res.json(formattedBaiviet);
     res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
