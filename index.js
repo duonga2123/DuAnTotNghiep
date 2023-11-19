@@ -174,6 +174,13 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     const formattedBaiviet = baiviet.map(item => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
+      const comments = item.comment.map(commentItem => {
+        return {
+          userId: commentItem.userID._id,
+          username: commentItem.userID.username,
+          cmt: commentItem.cmt,
+        };
+      });
       return {
         _id: item._id,
         userId: item.userId._id,
@@ -182,6 +189,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         like: item.like,
         isLiked: isLiked,
         date:formattedDate,
+        comment:comments,
         commentCount: item.comment.length
       };
     });
