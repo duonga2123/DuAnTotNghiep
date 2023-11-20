@@ -1088,7 +1088,7 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 app.post('/chapters', async (req, res) => {
   try {
     const userId = req.session.userId
-    const { mangaName, number, viporfree, images } = req.body;
+    const { mangaName, number, viporfree, images,price } = req.body;
     const user = await User.findById(userId)
     if (!userId || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -1106,7 +1106,7 @@ app.post('/chapters', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
-    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray });
+    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray, price });
     if (user.role === 'nhomdich') {
       const notification = new Notification({
         adminId: '653a20c611295a22062661f9',
