@@ -16,7 +16,7 @@ const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
 const Baiviet = require('./models/BaiVietModel')
 const Notification = require('./models/NotifyModel')
-const NotificationBaiviet=require('./models/NotifyBaiVietModel')
+const NotificationBaiviet = require('./models/NotifyBaiVietModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
@@ -66,9 +66,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   store: MongoStore.create(mongoStoreOptions),
-  cookie: { 
+  cookie: {
     secure: false,
-   }
+  }
 }));
 app.use(cors());
 
@@ -152,7 +152,7 @@ app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
       images.push(file.buffer);
     }
 
-    const baiviet = new Baiviet({ userId, content, like: 0, images,date: currentDate });
+    const baiviet = new Baiviet({ userId, content, like: 0, images, date: currentDate });
     await baiviet.save();
     user.baiviet.push(baiviet._id);
     await user.save();
@@ -171,17 +171,17 @@ app.get('/getbaiviet/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
-    const baiviet = await Baiviet.find({}).sort({ date:-1 }).populate("userId", "username")
+    const baiviet = await Baiviet.find({}).sort({ date: -1 }).populate("userId", "username")
     const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
         return {
-          _id:commentItem._id,
+          _id: commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
-          username: usercmt.username, 
+          username: usercmt.username,
         };
       }));
       return {
@@ -205,13 +205,13 @@ app.get('/getbaiviet/:userId', async (req, res) => {
 
 app.get('/getbaiviet', async (req, res) => {
   try {
-    const baiviet = await Baiviet.find({}).sort({date:-1}).populate("userId", "username")
+    const baiviet = await Baiviet.find({}).sort({ date: -1 }).populate("userId", "username")
     const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
         return {
-          _id:commentItem._id,
+          _id: commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username, // Nếu bạn muốn lấy username từ usercmt
@@ -261,7 +261,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
       baiviet.like += 1;
       await baiviet.save();
 
-const postOwner = await User.findById(baiviet.userId);
+      const postOwner = await User.findById(baiviet.userId);
       // Gửi thông báo cho chủ bài viết
       const notificationContentForPostOwner = `${user.username} đã thích bài viết của bạn: ${baiviet.content}`;
       const notificationForPostOwner = new NotificationBaiviet({
@@ -269,7 +269,7 @@ const postOwner = await User.findById(baiviet.userId);
         content: notificationContentForPostOwner,
         userId: baiviet.userId,
         baivietId: baivietId,
-        date:vietnamTime
+        date: vietnamTime
       });
 
       await notificationForPostOwner.save();
@@ -281,7 +281,7 @@ const postOwner = await User.findById(baiviet.userId);
         content: notificationContentForLiker,
         userId: userId,
         baivietId: baivietId,
-        date:vietnamTime
+        date: vietnamTime
       });
 
       await notificationForLiker.save();
@@ -296,11 +296,22 @@ const postOwner = await User.findById(baiviet.userId);
   }
 });
 
-app.get('/notifybaiviet/:userId', async(req,res)=>{
+app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
-    const userID=req.params.userId
-    const notify=await NotificationBaiviet.find({userId:userID}).lean()
-    res.json(notify)
+    const userID = req.params.userId
+    const notify = await NotificationBaiviet.find({ userId: userID }).lean()
+    const formatnotify=notify.map((item)=>{
+      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
+      return{
+        _id:item._id,
+        title:item.title,
+        content:item.content,
+        userId:item.userId,
+        date:formattedDate,
+        baivietId:item.baivietId
+      }
+    })
+    res.json(formatnotify)
   } catch (error) {
     console.error('Lỗi khi tìm thông báo:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
@@ -328,18 +339,18 @@ app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   }
 })
 
-app.post('/postcmtbaiviet/:baivietId/:userId', async(req,res)=>{
+app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
   try {
-    const baivietId=req.params.baivietId;
-    const userId=req.params.userId;
+    const baivietId = req.params.baivietId;
+    const userId = req.params.userId;
     const { comment } = req.body;
-    const user= await User.findById(userId)
-    if(!user){
-      res.status(403).json({message:'không tìm thấy user'})
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
     }
-    const baiviet=await Baiviet.findById(baivietId);
-    if(!baiviet){
-      res.status(404).json({message:'không tìm thấy bài viết'})
+    const baiviet = await Baiviet.findById(baivietId);
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết' })
     }
     const newComment = {
       userID: userId,
@@ -581,18 +592,18 @@ app.get('/rendernotifinhomdich', async (req, res) => {
 });
 app.post('/delete-selected-notifications', async (req, res) => {
   try {
-      const selectedIds = req.body.ids;
-      if (!selectedIds || !Array.isArray(selectedIds)) {
-          return res.status(400).json({ error: 'Danh sách ID không hợp lệ.' });
-      }
+    const selectedIds = req.body.ids;
+    if (!selectedIds || !Array.isArray(selectedIds)) {
+      return res.status(400).json({ error: 'Danh sách ID không hợp lệ.' });
+    }
 
-      // Xóa các thông báo có ID trong danh sách đã chọn
-      await Notification.deleteMany({ _id: { $in: selectedIds } });
+    // Xóa các thông báo có ID trong danh sách đã chọn
+    await Notification.deleteMany({ _id: { $in: selectedIds } });
 
-      res.render("nhomdich")
+    res.render("nhomdich")
   } catch (error) {
-      console.error('Lỗi khi xóa thông báo:', error);
-      res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa thông báo.' });
+    console.error('Lỗi khi xóa thông báo:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa thông báo.' });
   }
 });
 
@@ -675,7 +686,7 @@ app.get('/manganotifi/:mangaId', async (req, res) => {
     }
 
     res.json({
-      title:notification.title,
+      title: notification.title,
       image: mangaDetail.image,
       content: mangaDetail.content,
       author: mangaDetail.author,
@@ -1128,7 +1139,7 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 app.post('/chapters', async (req, res) => {
   try {
     const userId = req.session.userId
-    const { mangaName, number, viporfree, images,price } = req.body;
+    const { mangaName, number, viporfree, images, price } = req.body;
     const user = await User.findById(userId)
     if (!userId || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -1814,14 +1825,14 @@ app.get('/user/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm user.' });
   }
 })
-app.post('/repass/:userId', async(req,res)=>{
+app.post('/repass/:userId', async (req, res) => {
   try {
-    const {passOld,passNew}=req.body
-    const userId=req.params.userId;
-    const user=await User.findById(userId);
+    const { passOld, passNew } = req.body
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
     const hashedPassword = await bcrypt.hash(passNew, 10);
-    if(!user){
-      res.status(403).json({message:'không tìm thấy user'})
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
     }
     const isPasswordMatch = await bcrypt.compare(passOld, user.password);
 
@@ -1837,15 +1848,15 @@ app.post('/repass/:userId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi mật khẩu' });
   }
 })
-app.post('/rename/:userId', async(req,res)=>{
+app.post('/rename/:userId', async (req, res) => {
   try {
-    const userId=req.params.userId;
-    const {username}= req.body
-    const user=await User.findByIdAndUpdate(userId,{username},{ new: true })
-    if(!user){
-      res.status(403).json({message:'không tìm thấy user'})
+    const userId = req.params.userId;
+    const { username } = req.body
+    const user = await User.findByIdAndUpdate(userId, { username }, { new: true })
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
     }
-    res.status(200).json({message:'đổi tên thành công'});
+    res.status(200).json({ message: 'đổi tên thành công' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
