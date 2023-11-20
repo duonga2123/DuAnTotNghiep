@@ -1797,6 +1797,20 @@ app.post('/repass/:userId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi mật khẩu' });
   }
 })
+app.post('rename/:userId', async(req,res)=>{
+  try {
+    const userId=req.params.userId;
+    const {username}= req.body
+    const user=await User.findByIdAndUpdate(userId,{username},{ new: true })
+    if(!user){
+      res.status(403).json({message:'không tìm thấy user'})
+    }
+    res.status(200).json({message:'đổi tên thành công'});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
+  }
+})
 app.get("/doctruyen", async (req, res) => {
   try {
     const manga = await Manga.find().lean();
