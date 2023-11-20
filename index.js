@@ -298,7 +298,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
 app.get('/notifybaiviet/:userId', async(req,res)=>{
   try {
     const userID=req.params.userId
-    const notify=await NotificationBaiviet.find({userID}).lean()
+    const notify=await NotificationBaiviet.find({userId:userID}).lean()
     res.json(notify)
   } catch (error) {
     console.error('Lỗi khi tìm thông báo:', err);
