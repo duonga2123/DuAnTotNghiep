@@ -261,6 +261,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
       baiviet.like += 1;
       await baiviet.save();
 
+const postOwner = await User.findById(baiviet.userId);
       // Gửi thông báo cho chủ bài viết
       const notificationContentForPostOwner = `${user.username} đã thích bài viết của bạn: ${baiviet.content}`;
       const notificationForPostOwner = new NotificationBaiviet({
@@ -274,7 +275,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
       await notificationForPostOwner.save();
 
       // Gửi thông báo cho người like
-      const notificationContentForLiker = `Bạn đã thích bài viết: ${baiviet.content}`;
+      const notificationContentForLiker = `Bạn đã thích bài viết: ${baiviet.content} của ${postOwner.username}`;
       const notificationForLiker = new NotificationBaiviet({
         title: 'Bạn đã thích một bài viết',
         content: notificationContentForLiker,
