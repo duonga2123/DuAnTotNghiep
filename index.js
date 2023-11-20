@@ -261,8 +261,6 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
       baiviet.like += 1;
       await baiviet.save();
 
-      const postOwner = await User.findById(baiviet.userId);
-      // Gửi thông báo cho chủ bài viết
       const notificationContentForPostOwner = `${user.username} đã thích bài viết của bạn: ${baiviet.content}`;
       const notificationForPostOwner = new NotificationBaiviet({
         title: 'Bài viết được thích',
@@ -274,17 +272,6 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
 
       await notificationForPostOwner.save();
 
-      // Gửi thông báo cho người like
-      const notificationContentForLiker = `Bạn đã thích bài viết:${baiviet.content} của ${postOwner.username}`;
-      const notificationForLiker = new NotificationBaiviet({
-        title: 'Bạn đã thích một bài viết',
-        content: notificationContentForLiker,
-        userId: userId,
-        baivietId: baivietId,
-        date: vietnamTime
-      });
-
-      await notificationForLiker.save();
     }
 
     await user.save();
@@ -366,10 +353,6 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
 
     const vietnamTime = momenttimezone().add(7, 'hours').toDate();
 
-    // Gửi thông báo cho chủ bài viết
-    const postOwner = await User.findById(baiviet.userId);
-    const postOwnerName = postOwner ? postOwner.username : 'Người dùng không tồn tại';
-
     const notificationContentForPostOwner = `${user.username} đã bình luận bài viết:${baiviet.content} của bạn`;
     const notificationForPostOwner = new NotificationBaiviet({
       title: 'Bài viết có bình luận mới',
@@ -380,18 +363,6 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     });
 
     await notificationForPostOwner.save();
-
-    // Gửi thông báo cho người comment
-    const notificationContentForCommenter = `Bạn đã bình luận bài viết:${baiviet.content} của ${postOwnerName}`;
-    const notificationForCommenter = new NotificationBaiviet({
-      title: 'Bạn đã bình luận một bài viết',
-      content: notificationContentForCommenter,
-      userId: userId,
-      baivietId: baivietId,
-      date: vietnamTime,
-    });
-
-    await notificationForCommenter.save();
 
     res.status(200).json({ message: 'Đã thêm bình luận thành công' });
   } catch (error) {
