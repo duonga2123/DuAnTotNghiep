@@ -1774,6 +1774,29 @@ app.get('/user/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm user.' });
   }
 })
+app.post('/repass/:userId', async(req,res)=>{
+  try {
+    const {passOld,passNew}=req.body
+    const userId=req.params.userId;
+    const user=await User.findById(userId);
+    const hashedPassword = await bcrypt.hash(passNew, 10);
+    if(!user){
+      res.status(403).json({message:'không tìm thấy user'})
+    }
+    const isPasswordMatch = await bcrypt.compare(passOld, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(403).json({ message: 'Mật khẩu cũ của bạn không đúng' });
+    }
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi mật khẩu' });
+  }
+})
 app.get("/doctruyen", async (req, res) => {
   try {
     const manga = await Manga.find().lean();
