@@ -255,7 +255,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
     } else {
       user.favoriteBaiviet[baivietIndex].isLiked = true;
     }
-
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
     const baiviet = await Baiviet.findById(baivietId);
     if (baiviet) {
       baiviet.like += 1;
@@ -268,6 +268,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
         content: notificationContentForPostOwner,
         userId: baiviet.userId,
         baivietId: baivietId,
+        date:vietnamTime
       });
 
       await notificationForPostOwner.save();
@@ -279,6 +280,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
         content: notificationContentForLiker,
         userId: userId,
         baivietId: baivietId,
+        date:vietnamTime
       });
 
       await notificationForLiker.save();
@@ -286,7 +288,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
 
     await user.save();
 
-    res.json({ message: 'Bài viết đã được thêm vào danh sách yêu thích và thông báo đã được gửi.' });
+    res.json({ message: 'Bài viết đã được yêu thích.' });
   } catch (err) {
     console.error('Lỗi khi thích bài viết:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi thích bài viết.' });
