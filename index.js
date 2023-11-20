@@ -300,6 +300,11 @@ app.post('/removefavoritebaiviet/:userId/:baivietId', async(req,res)=>{
     user.favoriteBaiviet = user.favoriteBaiviet.filter(baiviet => baiviet.baivietId.toString() !== baivietId); 
 
     await user.save();
+    const baiviet = await Baiviet.findById(baivietId);
+    if (baiviet) {
+      baiviet.like -= 1;
+      await baiviet.save();
+    }
 
     res.json({ message: 'bài viết đã được xóa khỏi danh sách yêu thích.' });
   } catch (error) {
