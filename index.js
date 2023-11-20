@@ -16,6 +16,7 @@ const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
 const Baiviet = require('./models/BaiVietModel')
 const Notification = require('./models/NotifyModel')
+const NotificationBaiviet=require('./models/NotifyBaiVietModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
@@ -237,15 +238,17 @@ app.get('/getbaiviet', async (req, res) => {
 })
 
 
-app.post('/addfavoritebaiviet/:userId/:baivietId', async(req,res)=>{
-  try{
-    const userId=req.params.userId;
-    const baivietId=req.params.baivietId;
-    const user=await User.findById(userId)
-    if(!user){
-      res.status(403).json({message:'không tìm thấy user'})
+app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const baivietId = req.params.baivietId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(403).json({ message: 'Không tìm thấy người dùng' });
     }
-    const baivietIndex = user.favoriteBaiviet.findIndex(baiviet => baiviet._id === baivietId);
+
+    const baivietIndex = user.favoriteBaiviet.findIndex(baiviet => baiviet.baivietId === baivietId);
 
     if (baivietIndex === -1) {
       user.favoriteBaiviet.push({ baivietId, isLiked: true });
@@ -257,15 +260,38 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async(req,res)=>{
     if (baiviet) {
       baiviet.like += 1;
       await baiviet.save();
+
+      // Gửi thông báo cho chủ bài viết
+      const notificationContentForPostOwner = `${user.username} đã thích bài viết của bạn: ${baiviet.content}`;
+      const notificationForPostOwner = new NotificationBaiviet({
+        title: 'Bài viết được thích',
+        content: notificationContentForPostOwner,
+        userId: baiviet.userId,
+        baivietId: baivietId,
+      });
+
+      await notificationForPostOwner.save();
+
+      // Gửi thông báo cho người like
+      const notificationContentForLiker = `Bạn đã thích bài viết: ${baiviet.content}`;
+      const notificationForLiker = new NotificationBaiviet({
+        title: 'Bạn đã thích một bài viết',
+        content: notificationContentForLiker,
+        userId: userId,
+        baivietId: baivietId,
+      });
+
+      await notificationForLiker.save();
     }
+
     await user.save();
 
-    res.json({ message: 'bài viết đã được thêm vào danh sách yêu thích.' });
-  }catch(err){
-    console.error('Lỗi khi yêu thích bài viết:', err);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi yêu thích bài viết.' });
+    res.json({ message: 'Bài viết đã được thêm vào danh sách yêu thích và thông báo đã được gửi.' });
+  } catch (err) {
+    console.error('Lỗi khi thích bài viết:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi thích bài viết.' });
   }
-})
+});
 
 app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   try {
