@@ -344,26 +344,61 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     const baivietId = req.params.baivietId;
     const userId = req.params.userId;
     const { comment } = req.body;
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
+
     if (!user) {
-      res.status(403).json({ message: 'không tìm thấy user' })
+      res.status(403).json({ message: 'Không tìm thấy người dùng' });
     }
+
     const baiviet = await Baiviet.findById(baivietId);
+
     if (!baiviet) {
-      res.status(404).json({ message: 'không tìm thấy bài viết' })
+      res.status(404).json({ message: 'Không tìm thấy bài viết' });
     }
+
     const newComment = {
       userID: userId,
-      cmt: comment
+      cmt: comment,
     };
-    baiviet.comment.push(newComment)
-    await baiviet.save()
+
+    baiviet.comment.push(newComment);
+    await baiviet.save();
+
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+
+    // Gửi thông báo cho chủ bài viết
+    const postOwner = await User.findById(baiviet.userId);
+    const postOwnerName = postOwner ? postOwner.username : 'Người dùng không tồn tại';
+
+    const notificationContentForPostOwner = `${user.username} đã bình luận bài viết "${baiviet.content}" của bạn`;
+    const notificationForPostOwner = new NotificationBaiviet({
+      title: 'Bài viết có bình luận mới',
+      content: notificationContentForPostOwner,
+      userId: baiviet.userId,
+      baivietId: baivietId,
+      date: vietnamTime,
+    });
+
+    await notificationForPostOwner.save();
+
+    // Gửi thông báo cho người comment
+    const notificationContentForCommenter = `Bạn đã bình luận bài viết "${baiviet.content}" của ${postOwnerName}`;
+    const notificationForCommenter = new NotificationBaiviet({
+      title: 'Bạn đã bình luận một bài viết',
+      content: notificationContentForCommenter,
+      userId: userId,
+      baivietId: baivietId,
+      date: vietnamTime,
+    });
+
+    await notificationForCommenter.save();
+
     res.status(200).json({ message: 'Đã thêm bình luận thành công' });
   } catch (error) {
     console.error('Lỗi khi post bình luận:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
-})
+});
 app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => {
   try {
     const commentId = req.params.commentId;
