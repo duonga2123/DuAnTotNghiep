@@ -1797,7 +1797,7 @@ app.post('/repass/:userId', async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi mật khẩu' });
   }
 })
-app.post('rename/:userId', async(req,res)=>{
+app.post('/rename/:userId', async(req,res)=>{
   try {
     const userId=req.params.userId;
     const {username}= req.body
