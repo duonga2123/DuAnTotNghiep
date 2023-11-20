@@ -295,6 +295,17 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
   }
 });
 
+app.get('/notifybaiviet/:userId', async(req,res)=>{
+  try {
+    const userID=req.params.userId
+    const notify=await NotificationBaiviet.find({userID}).lean()
+    res.json(notify)
+  } catch (error) {
+    console.error('Lỗi khi tìm thông báo:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
+  }
+})
+
 app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   try {
     const baivietid = req.params.baivietid
