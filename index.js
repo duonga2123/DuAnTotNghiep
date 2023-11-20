@@ -275,7 +275,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
       await notificationForPostOwner.save();
 
       // Gửi thông báo cho người like
-      const notificationContentForLiker = `Bạn đã thích bài viết: ${baiviet.content} của ${postOwner.username}`;
+      const notificationContentForLiker = `Bạn đã thích bài viết:${baiviet.content} của ${postOwner.username}`;
       const notificationForLiker = new NotificationBaiviet({
         title: 'Bạn đã thích một bài viết',
         content: notificationContentForLiker,
@@ -370,7 +370,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     const postOwner = await User.findById(baiviet.userId);
     const postOwnerName = postOwner ? postOwner.username : 'Người dùng không tồn tại';
 
-    const notificationContentForPostOwner = `${user.username} đã bình luận bài viết "${baiviet.content}" của bạn`;
+    const notificationContentForPostOwner = `${user.username} đã bình luận bài viết:${baiviet.content} của bạn`;
     const notificationForPostOwner = new NotificationBaiviet({
       title: 'Bài viết có bình luận mới',
       content: notificationContentForPostOwner,
@@ -382,7 +382,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     await notificationForPostOwner.save();
 
     // Gửi thông báo cho người comment
-    const notificationContentForCommenter = `Bạn đã bình luận bài viết "${baiviet.content}" của ${postOwnerName}`;
+    const notificationContentForCommenter = `Bạn đã bình luận bài viết:${baiviet.content} của ${postOwnerName}`;
     const notificationForCommenter = new NotificationBaiviet({
       title: 'Bạn đã bình luận một bài viết',
       content: notificationContentForCommenter,
