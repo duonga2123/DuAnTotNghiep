@@ -282,6 +282,31 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi thích bài viết.' });
   }
 });
+app.post('/removefavoritebaiviet/:userId/:baivietId', async(req,res)=>{
+  try {
+    const userId = req.params.userId;
+    const baivietId = req.params.baivietId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
+    if (!user.favoriteBaiviet.some(baiviet => baiviet.baivietId.toString() === baivietId)) {
+      return res.status(400).json({ message: 'bài viết không tồn tại trong danh sách yêu thích.' });
+    }
+
+    user.favoriteBaiviet = user.favoriteBaiviet.filter(baiviet => baiviet.baivietId.toString() !== baivietId); 
+
+    await user.save();
+
+    res.json({ message: 'bài viết đã được xóa khỏi danh sách yêu thích.' });
+  } catch (error) {
+    console.error('Lỗi khi xóa bài viết yêu thích:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa bài viết yêu thích.' });
+  }
+})
 
 app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
