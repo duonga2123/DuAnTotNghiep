@@ -823,7 +823,15 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
     const userId = req.params.userId;
-    const manga = await Manga.findById(mangaId).populate('chapters', 'number viporfree price');
+    const manga = await Manga.findById(mangaId).populate({
+      path: 'chapters',
+      select: 'number viporfree price',
+      options: { sort: { number: 1 } }
+    }).exec();
+
+    manga.chapters.forEach(chapter => {
+      chapter.number = parseInt(chapter.number);
+    });
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
