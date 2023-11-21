@@ -1836,7 +1836,7 @@ app.post('/userput/:id', async (req, res) => {
         username,
         password: hashedPassword,
         role,
-        phone
+        phone:phone.toString()
       },
       { new: true }
     );
