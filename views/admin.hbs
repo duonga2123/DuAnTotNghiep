@@ -987,7 +987,7 @@
 			fetch('/getrevenue')
 				.then(response => response.json())
 				.then(data => {
-					const mainContent = document.querySelector("#content main");
+					const mainContent = document.querySelector("#main-content");
 					const revenueChartDiv = document.createElement('div');
 					revenueChartDiv.classList.add('revenue-chart');
 					revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
