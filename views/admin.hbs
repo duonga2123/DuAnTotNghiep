@@ -1026,6 +1026,7 @@
 
 			const startDate = startDateInput ? startDateInput.value : null;
 			const endDate = endDateInput ? endDateInput.value : null;
+			 const data = await fetchRevenueData(startDate, endDate);
 			const mainContent = document.querySelector("#reve");
 			const revenueChartDiv = document.createElement('div');
 			revenueChartDiv.classList.add('revenue-chart');
