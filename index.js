@@ -1683,10 +1683,16 @@ app.get('/topUsers', async (req, res) => {
 //api đăng kí
 app.post('/register', async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, role, phone } = req.body;
+
+    // Kiểm tra số điện thoại
+    if (!phone || !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ username, password: hashedPassword, role, coin: 0 });
+    const user = new User({ username, password: hashedPassword, role, coin: 0, phone });
     await user.save();
 
     const responseData = {
@@ -1699,6 +1705,7 @@ app.post('/register', async (req, res) => {
             password: user.password,
             role: user.role,
             coin: user.coin,
+            phone: user.phone,
             __v: user.__v,
           },
         ],
@@ -1903,6 +1910,22 @@ app.post('/rename/:userId', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
+  }
+})
+app.post('/quenmk', async(req,res)=>{
+  try {
+    const{phone, passNew}=req.body
+    const user=await User.findOne({phone:phone});
+    const hashedPassword = await bcrypt.hash(passNew, 10);
+    if(!user){
+      res.status(403).json({message:'không tìm thấy tài khoản'})
+    }
+user.password=hashedPassword;
+await user.save();
+res.status(200).json({ message: 'Mật khẩu đã được cập nhật' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi.' });
   }
 })
 app.get("/doctruyen", async (req, res) => {
