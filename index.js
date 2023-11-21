@@ -1924,9 +1924,14 @@ app.post('/quenmk', async(req,res)=>{
     if(!user){
       res.status(403).json({message:'không tìm thấy tài khoản'})
     }
-user.password=hashedPassword;
-await user.save();
-res.status(200).json({ message: 'Mật khẩu đã được cập nhật' });
+
+    if (user) {
+      user.password = hashedPassword;
+      await user.save();
+      res.status(200).json({ message: 'Mật khẩu đã được cập nhật' });
+    } else {
+      res.status(403).json({ message: 'Không tìm thấy tài khoản' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
