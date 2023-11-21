@@ -996,9 +996,14 @@
 		});
 
 		const fetchRevenueData = async (startDate, endDate) => {
-			const response = await fetch(`/getrevenue?startDate=${startDate}&endDate=${endDate}`);
-			const data = await response.json();
-			return data;
+			 let url = '/getrevenue';
+            if (startDate && endDate) {
+                url += `?startDate=${startDate}&endDate=${endDate}`;
+            }
+
+            const response = await fetch(url);
+            const data = await response.json();
+            return data;
 		};
 
 		const updateChart = async () => {
@@ -1060,6 +1065,10 @@
 					}
 				}
 			});
+			const totalRevenue = amounts.reduce((acc, curr) => acc + curr, 0);
+
+            // Hiển thị tổng doanh thu
+            document.getElementById('totalRevenue').textContent = `Total Revenue: ${totalRevenue.toFixed(2)}$`
 		};
 
 		const categoryManagerLink = document.getElementById('categoryManagerLink');
