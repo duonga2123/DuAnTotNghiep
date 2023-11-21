@@ -9,7 +9,8 @@ comment:String,
 isLiked:{type:Boolean,default:false},
 comment: [{
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
-    cmt: { type: String }
+    cmt: { type: String },
+    date:{type:Date}
   }],
   images: [String],
   date: { type: Date }

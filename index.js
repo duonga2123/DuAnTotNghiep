@@ -177,11 +177,13 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
+        const formatdatecmt=moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
+          date:formatdatecmt
         };
       }));
       return {
@@ -210,12 +212,13 @@ app.get('/getbaiviet', async (req, res) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
+        const formatdatecmt=moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
-          username: usercmt.username, // Nếu bạn muốn lấy username từ usercmt
-          // Thêm thông tin khác của usercmt nếu cần
+          username: usercmt.username, 
+          date:formatdatecmt
         };
       }));
       return {
@@ -261,17 +264,19 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
       baiviet.like += 1;
       await baiviet.save();
 
-      const notificationContentForPostOwner = `${user.username} đã thích bài viết của bạn: ${baiviet.content}`;
-      const notificationForPostOwner = new NotificationBaiviet({
-        title: 'Bài viết được thích',
-        content: notificationContentForPostOwner,
-        userId: baiviet.userId,
-        baivietId: baivietId,
-        date: vietnamTime
-      });
+      if (baiviet.userId.toString() !== userId) {
+        const notificationContentForPostOwner = `${user.username} đã thích bài viết của bạn: ${baiviet.content}`;
+        const notificationForPostOwner = new NotificationBaiviet({
+          title: 'Bài viết được thích',
+          content: notificationContentForPostOwner,
+          userId: baiviet.userId,
+          baivietId: baivietId,
+          date: vietnamTime
+        });
 
-      await notificationForPostOwner.save();
+        await notificationForPostOwner.save();
 
+      }
     }
 
     await user.save();
@@ -282,7 +287,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi thích bài viết.' });
   }
 });
-app.post('/removefavoritebaiviet/:userId/:baivietId', async(req,res)=>{
+app.post('/removefavoritebaiviet/:userId/:baivietId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const baivietId = req.params.baivietId;
@@ -297,9 +302,10 @@ app.post('/removefavoritebaiviet/:userId/:baivietId', async(req,res)=>{
       return res.status(400).json({ message: 'bài viết không tồn tại trong danh sách yêu thích.' });
     }
 
-    user.favoriteBaiviet = user.favoriteBaiviet.filter(baiviet => baiviet.baivietId.toString() !== baivietId); 
+    user.favoriteBaiviet = user.favoriteBaiviet.filter(baiviet => baiviet.baivietId.toString() !== baivietId);
 
     await user.save();
+
     const baiviet = await Baiviet.findById(baivietId);
     if (baiviet) {
       baiviet.like -= 1;
@@ -317,15 +323,15 @@ app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
     const userID = req.params.userId
     const notify = await NotificationBaiviet.find({ userId: userID }).lean()
-    const formatnotify=notify.map((item)=>{
+    const formatnotify = notify.map((item) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
-      return{
-        _id:item._id,
-        title:item.title,
-        content:item.content,
-        userId:item.userId,
-        date:formattedDate,
-        baivietId:item.baivietId
+      return {
+        _id: item._id,
+        title: item.title,
+        content: item.content,
+        userId: item.userId,
+        date: formattedDate,
+        baivietId: item.baivietId
       }
     })
     res.json(formatnotify)
@@ -361,6 +367,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     const baivietId = req.params.baivietId;
     const userId = req.params.userId;
     const { comment } = req.body;
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
     const user = await User.findById(userId);
 
     if (!user) {
@@ -376,23 +383,23 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     const newComment = {
       userID: userId,
       cmt: comment,
+      date:vietnamTime
     };
 
     baiviet.comment.push(newComment);
     await baiviet.save();
 
-    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
-
-    const notificationContentForPostOwner = `${user.username} đã bình luận bài viết:${baiviet.content} của bạn`;
-    const notificationForPostOwner = new NotificationBaiviet({
-      title: 'Bài viết có bình luận mới',
-      content: notificationContentForPostOwner,
-      userId: baiviet.userId,
-      baivietId: baivietId,
-      date: vietnamTime,
-    });
-
-    await notificationForPostOwner.save();
+    if (baiviet.userId.toString() !== userId) {
+      const notificationContentForPostOwner = `${user.username} đã bình luận bài viết:${baiviet.content} của bạn`;
+      const notificationForPostOwner = new NotificationBaiviet({
+        title: 'Bài viết có bình luận mới',
+        content: notificationContentForPostOwner,
+        userId: baiviet.userId,
+        baivietId: baivietId,
+        date: vietnamTime,
+      });
+      await notificationForPostOwner.save();
+    }
 
     res.status(200).json({ message: 'Đã thêm bình luận thành công' });
   } catch (error) {
