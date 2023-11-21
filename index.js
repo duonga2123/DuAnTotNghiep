@@ -1956,7 +1956,6 @@ app.get('/manga/:id/chapters', async (req, res) => {
     const manga = await Manga.findById(mangaId).populate({
       path: 'chapters',
       options: { sort: { number: 1 } }, // Sắp xếp chương theo số chương tăng dần
-      populate: { path: 'chapters', options: { sort: { number: 1 } } }
     });
 
     if (!manga) {
