@@ -1919,7 +1919,9 @@ app.post('/rename/:userId', async (req, res) => {
 app.post('/quenmk', async (req, res) => {
   try {
     const { phone, passNew } = req.body;
-
+    if (!phone || !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
+    }
     // Tìm người dùng theo số điện thoại
     const user = await User.findOne({ phone: phone });
 
