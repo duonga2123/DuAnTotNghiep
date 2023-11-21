@@ -1629,8 +1629,14 @@ app.get('/paymentdetail/:userid', async (req, res) => {
 
 app.get('/getrevenue', async (req, res) => {
   try {
-    const payments = await Payment.find({ success: "thanh toán thành công" });
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
 
+    // Thực hiện truy vấn dựa trên khoảng ngày
+    const payments = await Payment.find({
+      success: "thanh toán thành công",
+      date: { $gte: startDate, $lte: endDate }
+    });
     res.json(payments);
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error);
