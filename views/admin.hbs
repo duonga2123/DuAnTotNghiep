@@ -1002,34 +1002,41 @@
         };
 
         const updateChart = async () => {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const data = await fetchRevenueData(startDate, endDate);
+			const startDate = document.getElementById('startDate').value;
+			const endDate = document.getElementById('endDate').value;
+			const data = await fetchRevenueData(startDate, endDate);
 
-            const dates = data.map(item => item.date);
-            const amounts = data.map(item => item.totalAmount);
+			const dates = data.map(item => item.date);
+			const amounts = data.map(item => item.totalAmount);
 
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            const revenueChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Doanh thu',
-                        data: amounts,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        };
+			const ctx = document.getElementById('revenueChart').getContext('2d');
+
+			// Phá hủy instance biểu đồ trước nếu nó tồn tại
+			if (window.revenueChart) {
+				window.revenueChart.destroy();
+			}
+
+			window.revenueChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dates,
+					datasets: [{
+						label: 'Doanh thu',
+						data: amounts,
+						borderColor: 'rgb(75, 192, 192)',
+						tension: 0.1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
+		};
+
 
         const initializeChart = async () => {
             const startDateInput = document.getElementById('startDate');

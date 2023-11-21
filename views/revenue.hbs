@@ -670,7 +670,13 @@
 			const amounts = data.map(item => item.totalAmount);
 
 			const ctx = document.getElementById('revenueChart').getContext('2d');
-			const revenueChart = new Chart(ctx, {
+
+			// Phá hủy instance biểu đồ trước nếu nó tồn tại
+			if (window.revenueChart) {
+				window.revenueChart.destroy();
+			}
+
+			window.revenueChart = new Chart(ctx, {
 				type: 'line',
 				data: {
 					labels: dates,
