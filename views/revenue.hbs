@@ -1,18 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- Boxicons -->
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<!-- My CSS -->
-	<title>Revenue</title>
-	<style>
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- My CSS -->
+    <title>Revenue</title>
+<style>
 		@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
 
 		* {
@@ -642,49 +643,92 @@
 </head>
 
 <body>
-<div id="content">
+    <div id="content">
+        <input type="date" id="startDate" name="startDate">
+        <input type="date" id="endDate" name="endDate">
+        <button onclick="updateChart()">Update Chart</button>
+        <div class="revenue-chart">
+            <canvas id="revenueChart" width="800" height="400"></canvas>
+        </div>
+    </div>
 
-</div>
-	<script>
-	
-			fetch('/getrevenue')
-				.then(response => response.json())
-				.then(data => {
-					const mainContent = document.querySelector("#content");
-					const revenueChartDiv = document.createElement('div');
-					revenueChartDiv.classList.add('revenue-chart');
-					revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-					mainContent.innerHTML = '';
-					mainContent.appendChild(revenueChartDiv);
-					const dates = data.map(item => item.date);
-					const amounts = data.map(item => item.totalAmount);
-					createRevenueChart(dates, amounts);
-				})
-				.catch(error => console.error('Đã xảy ra lỗi:', error));
+    <script>
+        const fetchRevenueData = async (startDate, endDate) => {
+            const response = await fetch(`/getrevenue?startDate=${startDate}&endDate=${endDate}`);
+            const data = await response.json();
+            return data;
+        };
 
-			const createRevenueChart = (dates, amounts) => {
-			const ctx = document.getElementById('revenueChart').getContext('2d');
-			const revenueChart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: dates,
-					datasets: [{
-						label: 'Doanh thu',
-						data: amounts,
-						borderColor: 'rgb(75, 192, 192)',
-						tension: 0.1
-					}]
-				},
-				options: {
-					scales: {
-						y: {
-							beginAtZero: true
-						}
-					}
-				}
-			});
-		};
-	</script>
+        const updateChart = async () => {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const data = await fetchRevenueData(startDate, endDate);
+
+            const dates = data.map(item => item.date);
+            const amounts = data.map(item => item.totalAmount);
+
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Doanh thu',
+                        data: amounts,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+        const initializeChart = async () => {
+            const data = await fetchRevenueData();
+            const mainContent = document.querySelector("#content");
+            const revenueChartDiv = document.createElement('div');
+            revenueChartDiv.classList.add('revenue-chart');
+            revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
+            mainContent.innerHTML = '';
+            mainContent.appendChild(revenueChartDiv);
+
+            const dates = data.map(item => item.date);
+            const amounts = data.map(item => item.totalAmount);
+            createRevenueChart(dates, amounts);
+        };
+
+        const createRevenueChart = (dates, amounts) => {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Doanh thu',
+                        data: amounts,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+        // Initialize chart on page load
+        initializeChart();
+    </script>
 </body>
 
 </html>
