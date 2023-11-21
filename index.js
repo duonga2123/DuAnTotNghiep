@@ -1916,27 +1916,30 @@ app.post('/rename/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
   }
 })
-app.post('/quenmk', async(req,res)=>{
+app.post('/quenmk', async (req, res) => {
   try {
-    const{phone, passNew}=req.body
-    const user=await User.findOne({phone:phone});
-    const hashedPassword = await bcrypt.hash(passNew, 10);
-    if(!user){
-      res.status(403).json({message:'không tìm thấy tài khoản'})
+    const { phone, passNew } = req.body;
+
+    // Tìm người dùng theo số điện thoại
+    const user = await User.findOne({ phone: phone });
+
+    if (!user || user.phone === null) {
+      return res.status(403).json({ message: 'Không tìm thấy tài khoản' });
     }
 
-    if (user) {
-      user.password = hashedPassword;
-      await user.save();
-      res.status(200).json({ message: 'Mật khẩu đã được cập nhật' });
-    } else {
-      res.status(403).json({ message: 'Không tìm thấy tài khoản' });
-    }
+    // Hash mật khẩu mới
+    const hashedPassword = await bcrypt.hash(passNew, 10);
+
+    // Cập nhật mật khẩu cho người dùng
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Mật khẩu đã được cập nhật' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
   }
-})
+});
 app.get("/doctruyen", async (req, res) => {
   try {
     const manga = await Manga.find().lean();
