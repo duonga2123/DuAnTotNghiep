@@ -985,7 +985,7 @@
 		revenueManagerLink.addEventListener("click", function (event) {
 			event.preventDefault();
 			fetch('/revenue')
-				.then(response => response.json())
+				.then(response => response.text())
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
