@@ -1824,15 +1824,19 @@ app.post('/userdelete/:_id', async (req, res) => {
 app.post('/userput/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-    const { username, password, role } = req.body;
+    const { username, password, role,phone } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+    if (!phone || !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
+    }
 
     const user = await User.findByIdAndUpdate(
       userId,
       {
         username,
         password: hashedPassword,
-        role
+        role,
+        phone
       },
       { new: true }
     );
