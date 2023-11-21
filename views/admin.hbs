@@ -984,21 +984,8 @@
 
 		revenueManagerLink.addEventListener("click", function (event) {
 			event.preventDefault();
-			fetch('/getrevenue')
-				.then(response => response.json())
-				.then(data => {
-					const mainContent = document.querySelector("#main-content");
-					const revenueChartDiv = document.createElement('div');
-					revenueChartDiv.classList.add('revenue-chart');
-					revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-					mainContent.innerHTML = '';
-					mainContent.appendChild(revenueChartDiv);
-					const dates = data.map(item => item.date);
-					const amounts = data.map(item => item.totalAmount);
-					updateChart();
-					initializeChart();
-				})
-				.catch(error => console.error('Đã xảy ra lỗi:', error));
+			updateChart();
+			initializeChart();
 		});
 
 	   const fetchRevenueData = async (startDate, endDate) => {
