@@ -23,6 +23,7 @@
 		{{!-- <div class="revenue-chart">
 			<canvas id="revenueChart" width="800" height="400"></canvas>
 		</div> --}}
+		<div id="totalRevenue">Total Revenue: $0</div>
 	</div>
 	<div id="reve">
 
@@ -31,8 +32,6 @@
 	<script>
 		const fetchRevenueData = async (startDate, endDate) => {
 			 let url = '/getrevenue';
-            
-            // Kiểm tra nếu có ngày thì thêm vào URL
             if (startDate && endDate) {
                 url += `?startDate=${startDate}&endDate=${endDate}`;
             }
@@ -100,6 +99,10 @@
 					}
 				}
 			});
+			const totalRevenue = amounts.reduce((acc, curr) => acc + curr, 0);
+
+            // Hiển thị tổng doanh thu
+            document.getElementById('totalRevenue').textContent = `Total Revenue: ${totalRevenue.toFixed(2)}$`
 		};
 
 		// Initialize chart on page load
