@@ -719,7 +719,7 @@
 
 		const createRevenueChart = (dates, amounts) => {
 			const ctx = document.getElementById('revenueChart').getContext('2d');
-			const revenueChart = new Chart(ctx, {
+			window.revenueChart = new Chart(ctx, {
 				type: 'line',
 				data: {
 					labels: dates,
