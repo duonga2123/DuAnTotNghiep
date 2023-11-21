@@ -1953,11 +1953,18 @@ app.get("/doctruyen", async (req, res) => {
 app.get('/manga/:id/chapters', async (req, res) => {
   try {
     const mangaId = req.params.id;
-    const manga = await Manga.findById(mangaId).populate('chapters');
+    const manga = await Manga.findById(mangaId).populate({
+      path: 'chapters',
+      options: { sort: { number: 1 } }, // Sắp xếp chương theo số chương tăng dần
+      populate: { path: 'chapters', options: { sort: { number: 1 } } }
+    });
 
     if (!manga) {
       return res.status(404).json({ message: 'Truyện không tồn tại' });
     }
+    manga.chapters.forEach(chapter => {
+      chapter.number = parseInt(chapter.number);
+    });
 
     res.render('docchap', { manga });
   } catch (err) {
