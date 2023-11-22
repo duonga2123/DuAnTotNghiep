@@ -670,7 +670,7 @@ app.post('/mangapost', async (req, res) => {
 });
 
 app.get('/rendernotifi', async (req, res) => {
-  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap / } });
+  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap/ } });
   res.render('notification', { notification });
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
@@ -739,7 +739,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
 app.get('/unread-count', async (req, res) => {
   try {
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ title: { $regex: /Truyện cần duyệt|Chap cần duyệt/ } });
+    const unreadCount = await Notification.countDocuments({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap/ } });
 
     res.json({ unreadCount });
   } catch (error) {
@@ -750,10 +750,10 @@ app.get('/unread-count', async (req, res) => {
 
 app.get('/unread-count-nhomdich', async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.session.userId;
 
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ title: 'được phê duyệt' });
+    const unreadCount = await Notification.countDocuments({ userId:userId ,title: 'được phê duyệt' });
 
     res.json({ unreadCount });
   } catch (error) {
