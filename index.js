@@ -676,7 +676,7 @@ app.get('/rendernotifi', async (req, res) => {
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
   try {
-    const notifications = await Notification.find({ title: 'được phê duyệt' });
+    const notifications = await Notification.find({ title: 'Được phê duyệt' });
     res.json(notifications);
   } catch (error) {
     console.error('Lỗi khi lấy thông báo:', error);
@@ -719,7 +719,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
 
       const newNotification = new Notification({
         adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
-        title: 'được phê duyệt',
+        title: 'Được phê duyệt',
         content: `Truyện ${manga.manganame} của bạn đã được duyệt và đăng thành công, giờ đây bạn có thể đăng chap của truyện.`,
         userId: manga.userID, // Thay đổi đây thành userId tương ứng với nhóm dịch
         mangaId: mangaId
@@ -754,7 +754,7 @@ app.get('/unread-count-nhomdich', async (req, res) => {
     const userId = req.session.userId;
 
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ userId:userId ,title: 'được phê duyệt' });
+    const unreadCount = await Notification.countDocuments({ userId:userId ,title: 'Được phê duyệt' });
 
     res.json({ unreadCount });
   } catch (error) {
@@ -1442,7 +1442,7 @@ app.post('/approvechap/:chapid', async (req, res) => {
       const notify = await Notification.findOneAndDelete({ mangaId: chapterId })
       const newNotification = new Notification({
         adminId: req.session.userId, // Thay đổi đây thành adminId tương ứng
-        title: 'được phê duyệt',
+        title: 'Được phê duyệt',
         content: `Chap ${chapter.number} - truyện ${chapter.mangaName} của bạn đã được duyệt và đăng thành công`,
         userId: notify.userId, // Thay đổi đây thành userId tương ứng với nhóm dịch
         mangaId: chapterId
