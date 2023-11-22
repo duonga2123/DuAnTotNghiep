@@ -1184,7 +1184,7 @@
 			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
 
 			mangaDetailButtons.forEach(button => {
-				
+
 				button.addEventListener('click', function (event) {
 					const mangaId = this.getAttribute('data-manga-id');
 					fetch(`/manganotifi/${mangaId}`)
@@ -1220,6 +1220,8 @@
 			const titleCells = document.querySelectorAll('.titleCell');
 			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
 			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+			const chapSuaDetailButtons = document.querySelectorAll('.chapsua-detail-button');
+			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
 
 			approveMangaButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
@@ -1250,17 +1252,30 @@
 
 			mangaSuaDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt sửa truyện') {
-					button.style.display = 'initial';
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
 				}
 			});
 
 			mangaDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện') {
-					button.style.display = 'initial';
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
 				}
 			});
+			chapSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện'z) {
+				button.style.display = 'none';
+			}
+		});
+
+		chapDetailButtons.forEach((button, index) => {
+			const title = titleCells[index].textContent.trim();
+			if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				button.style.display = 'none';
+			}
+		});
 		}
 
 		function mangasua() {
