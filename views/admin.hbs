@@ -1289,9 +1289,9 @@
 						.then(data => {
 							if (data) {
 								// Hiển thị thông tin chi tiết sửa truyện trong modal
-								document.getElementById('mangaSuaDetailImage').src = data.image;
-								document.getElementById('mangaSuaDetailContent').textContent = `Thể loại : ${data.category}`;
-								document.getElementById('mangaSuaDetailAuthor').textContent = `Tác giả : ${data.author}`;
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailContent').textContent = `Thể loại : ${data.category}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả : ${data.author}`;
 								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
 								// Các trường thông tin khác nếu có
 
