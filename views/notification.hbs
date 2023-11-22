@@ -194,10 +194,10 @@
                         .then(data => {
                             if (data) {
                                 // Hiển thị thông tin chi tiết sửa truyện trong modal
-                                document.getElementById('mangaSuaDetailImage').src = data.pendingChanges.image;
-                                document.getElementById('mangaSuaDetailContent').textContent = `Thể loại : ${data.pendingChanges.category}`;
-                                document.getElementById('mangaSuaDetailAuthor').textContent = `Tác giả : ${data.pendingChanges.author}`;
-                                document.getElementById('mangaDetailmanganame').textContent = `${data.pendingChanges.manganame}`;
+                                document.getElementById('mangaSuaDetailImage').src = data.image;
+                                document.getElementById('mangaSuaDetailContent').textContent = `Thể loại : ${data.category}`;
+                                document.getElementById('mangaSuaDetailAuthor').textContent = `Tác giả : ${data.author}`;
+                                document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
                                 // Các trường thông tin khác nếu có
 
                                 // Kích hoạt modal
