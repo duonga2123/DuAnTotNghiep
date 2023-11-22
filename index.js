@@ -607,14 +607,14 @@ app.post('/approvesuatruyen/:mangaId/:id', async(req,res)=>{
     await manga.save();
 
     // Xóa thông báo chờ duyệt
-    await Notification.findByIdAndDelete(id);
+    const notification = await Notification.findByIdAndDelete(id);
 
     // Tạo thông báo cho người sửa truyện
     const newNotification = new Notification({
       adminId: req.session.userId, 
       title: 'Được phê duyệt',
       content: `Truyện ${manga.manganame} của bạn đã được duyệt và sửa thành công.`,
-      userId: manga.userID, 
+      userId: notification.userId,
       mangaId: mangaId
     });
 
