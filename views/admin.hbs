@@ -1212,25 +1212,32 @@
 			const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
 			const approveChapButtons = document.querySelectorAll('.approveChapButton');
 			const approvesuatruyen = document.querySelectorAll('.approvesuatruyen');
+			const approvesuachap = document.querySelectorAll('.approvesuachap');
 			const titleCells = document.querySelectorAll('.titleCell');
 
 			approveMangaButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
 					button.style.display = 'none';
 				}
 			});
 
 			approveChapButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
 					button.style.display = 'none';
 				}
 			});
 
 			approvesuatruyen.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			approvesuachap.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
 					button.style.display = 'none';
 				}
 			});

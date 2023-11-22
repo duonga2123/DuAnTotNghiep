@@ -671,7 +671,7 @@ app.post('/mangapost', async (req, res) => {
 });
 
 app.get('/rendernotifi', async (req, res) => {
-  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap/ } });
+  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap/ } });
   res.render('notification', { notification });
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
@@ -1487,6 +1487,53 @@ app.post('/approvechap/:chapid', async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi duyệt truyện:', error);
     res.status(500).send('Đã xảy ra lỗi khi duyệt truyện');
+  }
+});
+app.post('/approvesuachap/:chapId/:id', async(req,res)=>{
+  try {
+    const chapId = req.params.chapId;
+    const id=req.params.id
+    const chapter = await Chapter.findById(chapId);
+
+    if (!chapter) {
+      return res.status(404).json({ message: 'Không tìm thấy chap.' });
+    }
+
+    if (chapter.isApproved) {
+      return res.status(400).json({ message: 'Chap đã được duyệt, không thể duyệt lại.' });
+    }
+
+    if (chapter.pendingChanges) {
+      chapter.mangaName = chapter.pendingChanges.mangaName;
+      chapter.number = chapter.pendingChanges.number;
+      chapter.viporfree = chapter.pendingChanges.viporfree;
+      chapter.price = chapter.pendingChanges.price;
+      chapter.images = chapter.pendingChanges.images;
+      chapter.isChap = chapter.pendingChanges.isChap;
+    }
+
+    chapter.isApproved = true;
+    chapter.pendingChanges = undefined;
+    await chapter.save();
+
+    // Xóa thông báo chờ duyệt
+    const notification = await Notification.findByIdAndDelete(id);
+
+    // Tạo thông báo cho người sửa truyện
+    const newNotification = new Notification({
+      adminId: req.session.userId, 
+      title: 'Được phê duyệt',
+      content: `Chap ${chapter.number} - Truyện ${chapter.mangaName} của bạn đã được duyệt và sửa thành công.`,
+      userId: notification.userId,
+      mangaId: chapId
+    });
+
+    await newNotification.save();
+    
+    return res.status(202).json({ message: 'Duyệt thành công' });
+  } catch (error) {
+    console.error('Lỗi duyệt truyện', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
   }
 });
 
