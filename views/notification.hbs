@@ -73,30 +73,44 @@
                                     onclick="return confirm('Duyệt nha ?')" method="post">
                                     <button class="btn btn-info approveMangaButton"
                                         style="width: 100px; height:30px;  margin-top: 5px; background-color:#1E90FF ; border: none; border-radius: 5px; color: white;"
-                                        type="submit">Duyệt truyện</button>
+                                        type="submit">Duyệt thêm truyện</button>
                                 </form>
                                 <form style="margin-top: 10dp;" action="/approvechap/{{this.mangaId}}"
                                     onclick="return confirm('Duyệt nha ?')" method="post">
                                     <button class="btn btn-info approveChapButton"
                                         style="width: 100px; height:30px;  margin-top: 5px; background-color:#1E90FF ; border: none; border-radius: 5px; color: white;"
-                                        type="submit">Duyệt chap</button>
+                                        type="submit">Duyệt thêm chap</button>
+                                </form>
+                                 <form style="margin-top: 10dp;" action="/approvesuatruyen/{{this.mangaId}}"
+                                    onclick="return confirm('Duyệt nha ?')" method="post">
+                                    <button class="btn btn-info approvesuatruyen"
+                                        style="width: 100px; height:30px;  margin-top: 5px; background-color:#1E90FF ; border: none; border-radius: 5px; color: white;"
+                                        type="submit">Duyệt sửa truyện</button>
                                 </form>
                                 <script>
                                    
                                         const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
                                         const approveChapButtons = document.querySelectorAll('.approveChapButton');
+                                        const approvesuatruyen = document.querySelectorAll('.approvesuatruyen');
                                         const titleCells = document.querySelectorAll('.titleCell');
 
                                         approveMangaButtons.forEach((button, index) => {
                                             const title = titleCells[index].textContent.trim();
-                                            if (title === 'Chap cần duyệt') {
+                                            if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
                                                 button.style.display = 'none';
                                             }
                                         });
 
                                         approveChapButtons.forEach((button, index) => {
                                             const title = titleCells[index].textContent.trim();
-                                            if (title === 'Truyện cần duyệt') {
+                                            if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện') {
+                                                button.style.display = 'none';
+                                            }
+                                        });
+
+                                         approvesuatruyen.forEach((button, index) => {
+                                            const title = titleCells[index].textContent.trim();
+                                            if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap') {
                                                 button.style.display = 'none';
                                             }
                                         });

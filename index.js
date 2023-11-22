@@ -575,10 +575,33 @@ app.get('/mangas', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
-
-app.post('/mangapost/:userId', async (req, res) => {
+app.post('/approvesuatruyen/:mangaId', async(req,res)=>{
   try {
-    const userId = req.params.userId
+    const mangaId=req.params.mangaId;
+    const manga =await Manga.findByIdAndUpdate(mangaId);
+    await Notification.deleteOne({ mangaId: mangaId });
+
+      const newNotification = new Notification({
+        adminId: req.session.userId, 
+        title: 'được phê duyệt',
+        content: `Truyện ${manga.manganame} của bạn vừa sửa đã được duyệt.`,
+        userId: manga.userID, 
+        mangaId: mangaId
+      });
+
+      await newNotification.save();
+      return res.status(202).send({ message: 'Duyệt thành công' })
+
+  } catch (error) {
+    console.error('lỗi duyệt truyện',error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
+
+
+  }
+})
+app.post('/mangapost', async (req, res) => {
+  try {
+    const userId = req.session.userId
     const { manganame, author, content, category, view, like, image } = req.body;
     const categoryObject = await Category.findOne({ categoryname: category });
     const user = await User.findById(userId)
@@ -594,7 +617,7 @@ app.post('/mangapost/:userId', async (req, res) => {
     if (user.role === 'nhomdich') {
       const notification = new Notification({
         adminId: '653a20c611295a22062661f9',
-        title: 'Truyện cần duyệt',
+        title: 'Duyệt thêm truyện',
         content: `Truyện ${manganame} cần được duyệt.`,
         userId: userId,
         mangaId: manga._id
@@ -754,8 +777,14 @@ app.get("/mangaput/:_id", async (req, res) => {
 
 app.post('/mangaput/:_id', async (req, res) => {
   try {
+    const userId=req.session.userId;
     const mangaId = req.params._id;
     const { manganame, author, content, category, view, like, image } = req.body;
+    const user=await User.findById(userId);
+    if(!user || typeof userId !== 'string'){
+      console.log("Session:", req.session);
+      return res.status(403).json({ message: 'Không có id.' });
+    }
 
     const manga = await Manga.findById(mangaId);
 
@@ -784,6 +813,16 @@ app.post('/mangaput/:_id', async (req, res) => {
     manga.view = view;
     manga.like = like;
     manga.image = image;
+    if(user.role === 'nhomdich'){
+      const notification = new Notification({
+        adminId: '653a20c611295a22062661f9',
+        title: 'Duyệt sửa truyện ',
+        content: ` Truyện ${manganame} cần được duyệt để sửa .`,
+        userId: userId,
+        mangaId: manga._id
+      });
+      await notification.save();
+    }
 
     await manga.save();
 
@@ -1212,7 +1251,7 @@ app.post('/chapters', async (req, res) => {
     if (user.role === 'nhomdich') {
       const notification = new Notification({
         adminId: '653a20c611295a22062661f9',
-        title: 'Chap cần duyệt',
+        title: 'Duyệt thêm chap',
         content: `Chap ${number} - Truyện ${mangaName} cần được duyệt.`,
         userId: userId,
         mangaId: chapter._id
