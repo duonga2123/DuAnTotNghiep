@@ -14,7 +14,18 @@ const mangaSchema = new mongoose.Schema({
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     cmt: { type: String }
   }],
-  isRead:{type:Boolean}
+  isRead:{type:Boolean},
+  isApproved: { type: Boolean, default: false }, // Trường mới để đánh dấu trạng thái được duyệt hay không
+  pendingChanges: {
+    // Trường mới để lưu trữ các thay đổi đang chờ
+    manganame: { type: String },
+    author: { type: String },
+    content: { type: String },
+    category: { type: String },
+    view: { type: Number },
+    like: { type: Number },
+    image: { type: String },
+  },
 });
 
 const Manga = mongoose.model('manga', mangaSchema);

@@ -577,28 +577,54 @@ app.get('/mangas', async (req, res) => {
 });
 app.post('/approvesuatruyen/:mangaId', async(req,res)=>{
   try {
-    const mangaId=req.params.mangaId;
-    const manga =await Manga.findByIdAndUpdate(mangaId);
+    const mangaId = req.params.mangaId;
+    const manga = await Manga.findById(mangaId);
+
+    if (!manga) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
+    }
+
+    if (manga.isApproved) {
+      // Nếu truyện đã được duyệt, không thực hiện duyệt lại
+      return res.status(400).json({ message: 'Truyện đã được duyệt, không thể duyệt lại.' });
+    }
+
+    if (manga.pendingChanges) {
+      // Nếu có thay đổi đang chờ, thực hiện cập nhật nội dung mới
+      manga.manganame = manga.pendingChanges.manganame;
+      manga.author = manga.pendingChanges.author;
+      manga.content = manga.pendingChanges.content;
+      manga.category = manga.pendingChanges.category;
+      manga.view = manga.pendingChanges.view;
+      manga.like = manga.pendingChanges.like;
+      manga.image = manga.pendingChanges.image;
+    }
+
+    // Cập nhật trạng thái duyệt và lưu truyện
+    manga.isApproved = true;
+    manga.pendingChanges = undefined;
+    await manga.save();
+
+    // Xóa thông báo chờ duyệt
     await Notification.deleteOne({ mangaId: mangaId });
 
-      const newNotification = new Notification({
-        adminId: req.session.userId, 
-        title: 'được phê duyệt',
-        content: `Truyện ${manga.manganame} của bạn vừa sửa đã được duyệt.`,
-        userId: manga.userID, 
-        mangaId: mangaId
-      });
+    // Tạo thông báo cho người sửa truyện
+    const newNotification = new Notification({
+      adminId: req.session.userId, 
+      title: 'Được phê duyệt',
+      content: `Truyện ${manga.manganame} của bạn đã được duyệt và sửa thành công.`,
+      userId: manga.userID, 
+      mangaId: mangaId
+    });
 
-      await newNotification.save();
-      return res.status(202).send({ message: 'Duyệt thành công' })
-
+    await newNotification.save();
+    
+    return res.status(202).json({ message: 'Duyệt thành công' });
   } catch (error) {
-    console.error('lỗi duyệt truyện',error);
+    console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
-
-
   }
-})
+});
 app.post('/mangapost', async (req, res) => {
   try {
     const userId = req.session.userId
@@ -644,7 +670,7 @@ app.post('/mangapost', async (req, res) => {
 });
 
 app.get('/rendernotifi', async (req, res) => {
-  const notification = await Notification.find({ title: { $regex: /Truyện cần duyệt|Chap cần duyệt/ } });
+  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap / } });
   res.render('notification', { notification });
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
@@ -806,27 +832,35 @@ app.post('/mangaput/:_id', async (req, res) => {
       }
     }
 
-    manga.manganame = manganame;
-    manga.author = author;
-    manga.content = content;
-    manga.category = category;
-    manga.view = view;
-    manga.like = like;
-    manga.image = image;
+  
     if(user.role === 'nhomdich'){
+      manga.pendingChanges = {
+        manganame,
+        author,
+        content,
+        category,
+        view,
+        like,
+        image,
+      };
+      manga.isApproved = false;
       const notification = new Notification({
         adminId: '653a20c611295a22062661f9',
-        title: 'Duyệt sửa truyện ',
+        title: 'Duyệt sửa truyện',
         content: ` Truyện ${manganame} cần được duyệt để sửa .`,
         userId: userId,
-        mangaId: manga._id
+        mangaId: manga._id,
+        isRead: false,
       });
-      await notification.save();
+      await Promise.all([manga.save(), notification.save()]);
+      res.status(200).json({message:'Truyện vừa được sửa và đang đợi duyệt'})
     }
-
-    await manga.save();
-
-    res.json(manga);
+    else {
+      manga.pendingChanges = undefined;
+      manga.isApproved = true;
+      await manga.save();
+      res.status(200).json({message:'Truyện sửa thành công'})
+    }
   } catch (error) {
     console.error('Lỗi khi cập nhật truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật truyện' });
