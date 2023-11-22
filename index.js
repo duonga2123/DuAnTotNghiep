@@ -676,7 +676,8 @@ app.get('/rendernotifi', async (req, res) => {
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
   try {
-    const notifications = await Notification.find({ title: 'Được phê duyệt' });
+    const userId=req.session.userId
+    const notifications = await Notification.find({ userId:userId, title: 'Được phê duyệt' });
     res.json(notifications);
   } catch (error) {
     console.error('Lỗi khi lấy thông báo:', error);
@@ -1325,14 +1326,17 @@ app.get("/chapterput/:_id", async (req, res) => {
 
 app.post('/chapterput/:_id', async (req, res) => {
   try {
-
+    const userId=req.session.userId;
+    const user=await User.findById(userId);
+    if(!user || typeof userId !== 'string'){
+      console.log("Session:", req.session);
+      return res.status(403).json({ message: 'Không có id.' });
+    }
     const chapterId = req.params._id;
     let { mangaName, number, viporfree, price, images } = req.body;
     const imageArray = images.split('\n')
     number = number.toString();
-    const chapter = await Chapter.findByIdAndUpdate(chapterId, {
-      mangaName, number, viporfree, price, images: imageArray, isChap: true
-    }, { new: true });
+    const chapter = await Chapter.findById(chapterId);
 
     if (!chapter) {
       return res.status(404).json({ message: 'Không tìm thấy chương' });
@@ -1343,7 +1347,33 @@ app.post('/chapterput/:_id', async (req, res) => {
       manga.chapters.push(chapterId);
       await manga.save();
     }
-    res.json({ message: 'update thành công' });
+    if(user.role === 'nhomdich'){
+      chapter.pendingChanges = {
+        mangaName,
+        number,
+        viporfree,
+        price,
+        images:imageArray,
+        isChap: true
+      };
+      chapter.isApproved = false;
+      const notification = new Notification({
+        adminId: '653a20c611295a22062661f9',
+        title: 'Duyệt sửa chap',
+        content: ` Chap ${number} - Truyện ${mangaName} cần được duyệt để sửa .`,
+        userId: userId,
+        mangaId: chapterId,
+        isRead: false,
+      });
+      await Promise.all([chapter.save(), notification.save()]);
+      res.status(200).json({message:'Chap vừa được sửa và đang đợi duyệt'})
+    }
+    else {
+      chapter.pendingChanges = undefined;
+      chapter.isApproved = true;
+      await chapter.save();
+      res.status(200).json({message:'Chap sửa thành công'})
+    }
   } catch (error) {
     console.error('Lỗi khi cập nhật chương:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật chương' });
