@@ -62,6 +62,7 @@
                                                 <img id="mangaDetailImage" style="width: 200px; height:200px" alt="Ảnh truyện">
                                                 <p id="mangaDetailContent"></p>
                                                 <p id="mangaDetailAuthor"></p>
+                                                <p id="mangaDetailContent"></p>
                                                 <!-- Các trường thông tin khác nếu có -->
                                             </div>
                                             <div class="modal-footer">
@@ -201,6 +202,7 @@
                                 document.getElementById('mangaDetailContent').textContent = `Thể loại : ${data.category}`;
                                 document.getElementById('mangaDetailAuthor').textContent = `Tác giả : ${data.author}`;
                                 document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+                                document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
                                 // Các trường thông tin khác nếu có
 
                                 // Kích hoạt modal
@@ -233,6 +235,7 @@
                                 document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
                                 document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
                                 document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+                                 
                                 // Các trường thông tin khác nếu có
 
                                 // Kích hoạt modal
