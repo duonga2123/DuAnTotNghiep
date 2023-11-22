@@ -575,9 +575,10 @@ app.get('/mangas', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
-app.post('/approvesuatruyen/:mangaId', async(req,res)=>{
+app.post('/approvesuatruyen/:mangaId/:id', async(req,res)=>{
   try {
     const mangaId = req.params.mangaId;
+    const id=req.params.id
     const manga = await Manga.findById(mangaId);
 
     if (!manga) {
@@ -606,7 +607,7 @@ app.post('/approvesuatruyen/:mangaId', async(req,res)=>{
     await manga.save();
 
     // Xóa thông báo chờ duyệt
-    await Notification.deleteOne({ mangaId: mangaId });
+    await Notification.findByIdAndDelete(id);
 
     // Tạo thông báo cho người sửa truyện
     const newNotification = new Notification({
