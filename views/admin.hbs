@@ -1183,11 +1183,8 @@
 		function setupMangaPage() {
 			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
 
-			mangaDetailButtons.forEach((button, index) => {
-				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện') {
-					button.style.display = 'initial';
-				}
+			mangaDetailButtons.forEach(button => {
+				
 				button.addEventListener('click', function (event) {
 					const mangaId = this.getAttribute('data-manga-id');
 					fetch(`/manganotifi/${mangaId}`)
@@ -1221,6 +1218,8 @@
 			const approvesuatruyen = document.querySelectorAll('.approvesuatruyen');
 			const approvesuachap = document.querySelectorAll('.approvesuachap');
 			const titleCells = document.querySelectorAll('.titleCell');
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
 
 			approveMangaButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
@@ -1248,16 +1247,26 @@
 					button.style.display = 'none';
 				}
 			});
-		}
-
-		function mangasua() {
-			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
 
 			mangaSuaDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
 				if (title === 'Duyệt sửa truyện') {
 					button.style.display = 'initial';
 				}
+			});
+
+			mangaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện') {
+					button.style.display = 'initial';
+				}
+			});
+		}
+
+		function mangasua() {
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+
+			mangaSuaDetailButtons.forEach(button => {
 				button.addEventListener('click', function (event) {
 					const mangaId = this.getAttribute('data-manga-id');
 					fetch(`/manganotifysua/${mangaId}`)
