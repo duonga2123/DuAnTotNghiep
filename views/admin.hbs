@@ -1159,6 +1159,7 @@
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
 					setupMangaPage()
+					mangasua()
 					annut()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
@@ -1182,7 +1183,11 @@
 		function setupMangaPage() {
 			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
 
-			mangaDetailButtons.forEach(button => {
+			mangaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện') {
+					button.style.display = 'initial';
+				}
 				button.addEventListener('click', function (event) {
 					const mangaId = this.getAttribute('data-manga-id');
 					fetch(`/manganotifi/${mangaId}`)
@@ -1193,7 +1198,9 @@
 								document.getElementById('mangaDetailImage').src = data.image;
 								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
 								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
 								// Các trường thông tin khác nếu có
+
 								// Kích hoạt modal
 								$('#mangaDetailModal').modal('show');
 							} else {
@@ -1241,7 +1248,41 @@
 					button.style.display = 'none';
 				}
 			});
+		}
 
+		function mangasua() {
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+
+			mangaSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt sửa truyện') {
+					button.style.display = 'initial';
+				}
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifysua/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết sửa truyện trong modal
+								document.getElementById('mangaSuaDetailImage').src = data.image;
+								document.getElementById('mangaSuaDetailContent').textContent = `Nội dung : ${data.pendingChanges.content}`;
+								document.getElementById('mangaSuaDetailAuthor').textContent = `Tác giả : ${data.pendingChanges.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.pendingChanges.manganame}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaSuaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết sửa cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết sửa truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết sửa truyện.');
+						});
+				});
+			});
 		}
 
 	</script>
