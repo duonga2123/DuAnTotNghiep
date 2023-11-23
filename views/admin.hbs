@@ -1317,8 +1317,8 @@
 
 			chapDetailButtons.forEach(button => {
 				button.addEventListener('click', function (event) {
-					const chapId = this.getAttribute('data-chap-id');
-					fetch(`/chapternotify/${chapId}`)
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/chapternotify/${mangaId}`)
 						.then(response => response.json())
 						.then(data => {
 							if (data) {
