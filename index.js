@@ -177,13 +177,13 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
-        const formatdatecmt=moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
+        const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
-          date:formatdatecmt
+          date: formatdatecmt
         };
       }));
       return {
@@ -212,13 +212,13 @@ app.get('/getbaiviet', async (req, res) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = await User.findById(commentItem.userID);
-        const formatdatecmt=moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
+        const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
-          username: usercmt.username, 
-          date:formatdatecmt
+          username: usercmt.username,
+          date: formatdatecmt
         };
       }));
       return {
@@ -239,24 +239,24 @@ app.get('/getbaiviet', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
   }
 })
-app.get('/getcmtbaiviet/:baivietId', async(req,res)=>{
+app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
   try {
-    const baivietId=req.params.baivietId;
-    const baiviet=await Baiviet.findById(baivietId);
-    if(!baiviet){
-      res.status(403).json({message:'bài viết không tồn tại'})
+    const baivietId = req.params.baivietId;
+    const baiviet = await Baiviet.findById(baivietId);
+    if (!baiviet) {
+      res.status(403).json({ message: 'bài viết không tồn tại' })
     }
-    const cmt=await Promise.all(baiviet.comment.map(async (item )=>{
-      const user= await User.findById(item.userID)
-      const formatdatecmt=moment(item.date).format('DD/MM/YYYY HH:mm:ss')
+    const cmt = await Promise.all(baiviet.comment.map(async (item) => {
+      const user = await User.findById(item.userID)
+      const formatdatecmt = moment(item.date).format('DD/MM/YYYY HH:mm:ss')
       return {
         _id: item._id,
         userId: item.userID,
         cmt: item.cmt,
-        username: user.username, 
-        date:formatdatecmt
+        username: user.username,
+        date: formatdatecmt
       };
-    })) 
+    }))
     res.json(cmt);
   } catch (error) {
     console.error(error);
@@ -364,6 +364,48 @@ app.get('/notifybaiviet/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
   }
 })
+app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const baivietId = req.params.baivietId;
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+    const baiviet = await Baiviet.findById(baivietId);
+    if (!baiviet) {
+      res.status(403).json({ message: 'bài viết không tồn tại' })
+    }
+    const formattedDate = moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss');
+    const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === baivietId.toString());
+    const cmt = await Promise.all(baiviet.comment.map(async (item) => {
+      const user = await User.findById(item.userID)
+      const formatdatecmt = moment(item.date).format('DD/MM/YYYY HH:mm:ss')
+      return {
+        _id: item._id,
+        userId: item.userID,
+        cmt: item.cmt,
+        username: user.username,
+        date: formatdatecmt
+      };
+    }))
+
+    res.json({
+      _id: baivietId,
+      userId: userId,
+      username: user.username,
+      content: baiviet.content,
+      like: baiviet.like,
+      isLiked: isLiked,
+      date: formattedDate,
+      comment: cmt,
+      commentCount: baiviet.comment.length
+    })
+  } catch (error) {
+    console.error('Lỗi khi tìm bài viết:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm bài viết.' });
+  }
+})
 
 app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   try {
@@ -407,7 +449,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     const newComment = {
       userID: userId,
       cmt: comment,
-      date:vietnamTime
+      date: vietnamTime
     };
 
     baiviet.comment.push(newComment);
@@ -599,10 +641,10 @@ app.get('/mangas', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
   }
 });
-app.post('/approvesuatruyen/:mangaId/:id', async(req,res)=>{
+app.post('/approvesuatruyen/:mangaId/:id', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
-    const id=req.params.id
+    const id = req.params.id
     const manga = await Manga.findById(mangaId);
 
     if (!manga) {
@@ -635,7 +677,7 @@ app.post('/approvesuatruyen/:mangaId/:id', async(req,res)=>{
 
     // Tạo thông báo cho người sửa truyện
     const newNotification = new Notification({
-      adminId: req.session.userId, 
+      adminId: req.session.userId,
       title: 'Được phê duyệt',
       content: `Truyện ${manga.manganame} của bạn đã được duyệt và sửa thành công.`,
       userId: notification.userId,
@@ -643,7 +685,7 @@ app.post('/approvesuatruyen/:mangaId/:id', async(req,res)=>{
     });
 
     await newNotification.save();
-    
+
     return res.status(202).json({ message: 'Duyệt thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
@@ -700,8 +742,8 @@ app.get('/rendernotifi', async (req, res) => {
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
   try {
-    const userId=req.session.userId
-    const notifications = await Notification.find({ userId:userId, title: 'Được phê duyệt' });
+    const userId = req.session.userId
+    const notifications = await Notification.find({ userId: userId, title: 'Được phê duyệt' });
     res.json(notifications);
   } catch (error) {
     console.error('Lỗi khi lấy thông báo:', error);
@@ -779,7 +821,7 @@ app.get('/unread-count-nhomdich', async (req, res) => {
     const userId = req.session.userId;
 
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ userId:userId ,title: 'Được phê duyệt' });
+    const unreadCount = await Notification.countDocuments({ userId: userId, title: 'Được phê duyệt' });
 
     res.json({ unreadCount });
   } catch (error) {
@@ -850,11 +892,11 @@ app.get("/mangaput/:_id", async (req, res) => {
 
 app.post('/mangaput/:_id', async (req, res) => {
   try {
-    const userId=req.session.userId;
+    const userId = req.session.userId;
     const mangaId = req.params._id;
     const { manganame, author, content, category, view, like, image } = req.body;
-    const user=await User.findById(userId);
-    if(!user || typeof userId !== 'string'){
+    const user = await User.findById(userId);
+    if (!user || typeof userId !== 'string') {
       console.log("Session:", req.session);
       return res.status(403).json({ message: 'Không có id.' });
     }
@@ -879,8 +921,8 @@ app.post('/mangaput/:_id', async (req, res) => {
       }
     }
 
-  
-    if(user.role === 'nhomdich'){
+
+    if (user.role === 'nhomdich') {
       manga.pendingChanges = {
         manganame,
         author,
@@ -900,13 +942,13 @@ app.post('/mangaput/:_id', async (req, res) => {
         isRead: false,
       });
       await Promise.all([manga.save(), notification.save()]);
-      res.status(200).json({message:'Truyện vừa được sửa và đang đợi duyệt'})
+      res.status(200).json({ message: 'Truyện vừa được sửa và đang đợi duyệt' })
     }
     else {
       manga.pendingChanges = undefined;
       manga.isApproved = true;
       await manga.save();
-      res.status(200).json({message:'Truyện sửa thành công'})
+      res.status(200).json({ message: 'Truyện sửa thành công' })
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật truyện:', error);
@@ -1371,9 +1413,9 @@ app.get("/chapterput/:_id", async (req, res) => {
 
 app.post('/chapterput/:_id', async (req, res) => {
   try {
-    const userId=req.session.userId;
-    const user=await User.findById(userId);
-    if(!user || typeof userId !== 'string'){
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user || typeof userId !== 'string') {
       console.log("Session:", req.session);
       return res.status(403).json({ message: 'Không có id.' });
     }
@@ -1392,13 +1434,13 @@ app.post('/chapterput/:_id', async (req, res) => {
       manga.chapters.push(chapterId);
       await manga.save();
     }
-    if(user.role === 'nhomdich'){
+    if (user.role === 'nhomdich') {
       chapter.pendingChanges = {
         mangaName,
         number,
         viporfree,
         price,
-        images:imageArray,
+        images: imageArray,
         isChap: true
       };
       chapter.isApproved = false;
@@ -1411,13 +1453,13 @@ app.post('/chapterput/:_id', async (req, res) => {
         isRead: false,
       });
       await Promise.all([chapter.save(), notification.save()]);
-      res.status(200).json({message:'Chap vừa được sửa và đang đợi duyệt'})
+      res.status(200).json({ message: 'Chap vừa được sửa và đang đợi duyệt' })
     }
     else {
       chapter.pendingChanges = undefined;
       chapter.isApproved = true;
       await chapter.save();
-      res.status(200).json({message:'Chap sửa thành công'})
+      res.status(200).json({ message: 'Chap sửa thành công' })
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật chương:', error);
@@ -1534,10 +1576,10 @@ app.post('/approvechap/:chapid', async (req, res) => {
     res.status(500).send('Đã xảy ra lỗi khi duyệt truyện');
   }
 });
-app.post('/approvesuachap/:chapId/:id', async(req,res)=>{
+app.post('/approvesuachap/:chapId/:id', async (req, res) => {
   try {
     const chapId = req.params.chapId;
-    const id=req.params.id
+    const id = req.params.id
     const chapter = await Chapter.findById(chapId);
 
     if (!chapter) {
@@ -1566,7 +1608,7 @@ app.post('/approvesuachap/:chapId/:id', async(req,res)=>{
 
     // Tạo thông báo cho người sửa truyện
     const newNotification = new Notification({
-      adminId: req.session.userId, 
+      adminId: req.session.userId,
       title: 'Được phê duyệt',
       content: `Chap ${chapter.number} - Truyện ${chapter.mangaName} của bạn đã được duyệt và sửa thành công.`,
       userId: notification.userId,
@@ -1574,7 +1616,7 @@ app.post('/approvesuachap/:chapId/:id', async(req,res)=>{
     });
 
     await newNotification.save();
-    
+
     return res.status(202).json({ message: 'Duyệt thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
@@ -2034,7 +2076,7 @@ app.post('/userdelete/:_id', async (req, res) => {
 app.post('/userput/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-    const { username, password, role,phone } = req.body;
+    const { username, password, role, phone } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
@@ -2046,7 +2088,7 @@ app.post('/userput/:id', async (req, res) => {
         username,
         password: hashedPassword,
         role,
-        phone:phone.toString()
+        phone: phone.toString()
       },
       { new: true }
     );
