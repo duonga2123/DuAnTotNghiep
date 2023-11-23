@@ -66,7 +66,7 @@
                                             <div class="modal-body">
                                                 <!-- Hiển thị toàn bộ thông tin chi tiết truyện trong modal -->
                                                 <p id="mangaDetailmanganame"></p>
-                                                <img id="mangaDetailImage" style="width: 200px; height:200px"
+                                                <img id="mangaDetailImage" style="width: 200px; height:200px; border-radius: 0;"
                                                     alt="Ảnh truyện">
                                                 <p id="mangaDetailContent"></p>
                                                 <p id="mangaDetailAuthor"></p>
@@ -309,6 +309,7 @@
                                     imgElement.src = imageSrc;
                                     imgElement.style.width = '200px'; // Đảm bảo chiều rộng không vượt quá 100%
                                     imgElement.style.height = '200px';
+                                    imgElement.style.borderRadius = '0';
                                     imagesContainer.appendChild(imgElement);
                                 });
                                 // Kích hoạt modal mới

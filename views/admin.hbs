@@ -1311,7 +1311,7 @@
 				});
 			});
 		}
-		
+
 		function chapDetail() {
 			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
 
@@ -1331,7 +1331,8 @@
 									const imgElement = document.createElement('img');
 									imgElement.src = imageSrc;
 									imgElement.style.width = '200px'; // Đảm bảo chiều rộng không vượt quá 100%
-                                    imgElement.style.height = '200px';
+									imgElement.style.height = '200px';
+									imgElement.style.borderRadius = '0';
 									imagesContainer.appendChild(imgElement);
 								});
 								// Kích hoạt modal mới
