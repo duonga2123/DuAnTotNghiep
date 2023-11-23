@@ -1330,7 +1330,8 @@
 								data.images.forEach(imageSrc => {
 									const imgElement = document.createElement('img');
 									imgElement.src = imageSrc;
-									imgElement.style.width = '100%'; // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng
+									imgElement.style.width = '200px'; // Đảm bảo chiều rộng không vượt quá 100%
+                                    imgElement.style.height = '200px';
 									imagesContainer.appendChild(imgElement);
 								});
 								// Kích hoạt modal mới

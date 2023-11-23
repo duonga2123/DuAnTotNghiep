@@ -73,7 +73,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                 <!-- MODAL CHI TIẾT CHAP -->
+                                <!-- MODAL CHI TIẾT CHAP -->
                                 <div class="modal fade" id="chapDetailModal" tabindex="-1" role="dialog"
                                     aria-labelledby="chapDetailModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -283,39 +283,40 @@
         }
 
         function chapDetail() {
-        const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+            const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
 
-        chapDetailButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
-                const mangaId = this.getAttribute('data-manga-id');
-                fetch(`/chapternotify/${mangaId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data) {
-                            // Hiển thị thông tin chi tiết chap trong modal mới
-                            document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
-                            document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
-                            const imagesContainer = document.getElementById('chapDetailImages');
-                            imagesContainer.innerHTML = ""; // Xóa nội dung cũ
-                            data.images.forEach(imageSrc => {
-                                const imgElement = document.createElement('img');
-                                imgElement.src = imageSrc;
-                                imgElement.style.width = '100%'; // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng
-                                imagesContainer.appendChild(imgElement);
-                            });
-                            // Kích hoạt modal mới
-                            $('#chapDetailModal').modal('show');
-                        } else {
-                            alert('Không có thông tin chi tiết cho chap này.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi lấy chi tiết chap:', error);
-                        alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
-                    });
+            chapDetailButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const mangaId = this.getAttribute('data-manga-id');
+                    fetch(`/chapternotify/${mangaId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data) {
+                                // Hiển thị thông tin chi tiết chap trong modal mới
+                                document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
+                                document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
+                                const imagesContainer = document.getElementById('chapDetailImages');
+                                imagesContainer.innerHTML = ""; // Xóa nội dung cũ
+                                data.images.forEach(imageSrc => {
+                                    const imgElement = document.createElement('img');
+                                    imgElement.src = imageSrc;
+                                    imgElement.style.width = '200px'; // Đảm bảo chiều rộng không vượt quá 100%
+                                    imgElement.style.height = '200px';
+                                    imagesContainer.appendChild(imgElement);
+                                });
+                                // Kích hoạt modal mới
+                                $('#chapDetailModal').modal('show');
+                            } else {
+                                alert('Không có thông tin chi tiết cho chap này.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Lỗi khi lấy chi tiết chap:', error);
+                            alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
+                        });
+                });
             });
-        });
-    }
+        }
         document.addEventListener('DOMContentLoaded', function () {
             setupMangaPage();
             mangasua();
