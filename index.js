@@ -1543,7 +1543,7 @@ app.get('/chapternotify/:chapterId', async (req, res) => {
   try {
     const chapterId = req.params.chapterId;
 
-    const notification = await Notification.findOne({ mangaId: chapterId });
+    const notification = await Notification.findOne({ chapterId });
 
     if (!notification) {
       return res.status(404).json({ error: 'Không tìm thấy thông báo cho truyện này.' });
