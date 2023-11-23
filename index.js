@@ -22,7 +22,6 @@ const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
 const methodOverride = require('method-override');
 const path = require('path')
-const myId = new mongoose.Types.ObjectId();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
@@ -1540,6 +1539,48 @@ app.get('/chapterchitiet/:_id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
   }
 });
+app.get('/chapternotify/:chapterId', async (req, res) => {
+  try {
+    const chapterId = req.params.chapterId;
+
+    const notification = await Notification.findOne({ mangaId: chapterId });
+
+    if (!notification) {
+      return res.status(404).json({ error: 'Không tìm thấy thông báo cho truyện này.' });
+    }
+    const chapterDetail = await Chapter.findById(chapterId);
+
+    if (!chapterDetail) {
+      return res.status(404).json({ error: 'Không tìm thấy chi tiết chap.' });
+    }
+    const htmlToParse = '<html><head>...</head>' + chapterDetail.images + '</html>';
+
+    // Kiểm tra dữ liệu trước khi sử dụng cheerio
+    console.log('Raw HTML data:', chapterDetail.images);
+
+    const imageLinks = [];
+    const $ = cheerio.load(htmlToParse, { normalizeWhitespace: true, xmlMode: true });
+
+    $('img').each((index, element) => {
+      const src = $(element).attr('src');
+      if (src) {
+        imageLinks.push(src);
+      } else {
+        console.error('Không tìm thấy thuộc tính src trong thẻ img');
+      }
+    });
+    res.json({
+      mangaName: chapterDetail.mangaName,
+      number: chapterDetail.number,
+      viporfree: chapterDetail.viporfree,
+      price: chapterDetail.price,
+      images: imageLinks
+    })
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết chap:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết chap.' });
+  }
+})
 
 app.post('/approvechap/:chapid', async (req, res) => {
   try {

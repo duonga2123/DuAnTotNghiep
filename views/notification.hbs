@@ -43,7 +43,7 @@
                             <td>
                                 <button class="btn btn-info manga-detail-button" data-manga-id="{{this.mangaId}}">Chi
                                     tiết</button>
-                                <!-- MODAL CHI TIẾT THÊM TRUYỆN -->
+                                <!-- MODAL CHI TIẾT TRUYỆN -->
                                 <div class="modal fade" id="mangaDetailModal" tabindex="-1" role="dialog"
                                     aria-labelledby="mangaDetailModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -73,13 +73,41 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- MODAL CHI TIẾT SỬA TRUYỆN -->
+                                 <!-- MODAL CHI TIẾT CHAP -->
+                                <div class="modal fade" id="chapDetailModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="chapDetailModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="chapDetailModalLabel">Thông tin chi tiết
+                                                    chap</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Hiển thị toàn bộ thông tin chi tiết chap trong modal -->
+                                                <p id="chapDetailMangaNameAndNumber"></p>
+                                                <p id="chapDetailVipOrFreeAndPrice"></p>
+                                                <div id="chapDetailImages"></div>
+                                                <!-- Các trường thông tin khác nếu có -->
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Đóng</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NÚT CHI TIẾT SỬA TRUYỆN -->
                                 <button class="btn btn-info mangasua-detail-button" data-manga-id="{{this.mangaId}}">Chi
                                     tiết</button>
-                                <!-- MODAL CHI TIẾT THÊM CHAP -->
+                                <!-- NÚT CHI TIẾT THÊM CHAP -->
                                 <button class="btn btn-info chap-detail-button" data-manga-id="{{this.mangaId}}">Chi
                                     tiết</button>
-                                <!-- MODAL CHI TIẾT SỬA CHAP -->
+                                <!-- NÚT CHI TIẾT SỬA CHAP -->
                                 <button class="btn btn-info chapsua-detail-button" data-manga-id="{{this.mangaId}}">Chi
                                     tiết</button>
                             </td>
@@ -253,9 +281,45 @@
                 });
             });
         }
+
+        function chapDetail() {
+        const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+
+        chapDetailButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                const chapId = this.getAttribute('data-chap-id');
+                fetch(`/chapternotify/${chapId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            // Hiển thị thông tin chi tiết chap trong modal mới
+                            document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
+                            document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
+                            const imagesContainer = document.getElementById('chapDetailImages');
+                            imagesContainer.innerHTML = ""; // Xóa nội dung cũ
+                            data.images.forEach(imageSrc => {
+                                const imgElement = document.createElement('img');
+                                imgElement.src = imageSrc;
+                                imgElement.style.width = '100%'; // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng
+                                imagesContainer.appendChild(imgElement);
+                            });
+                            // Kích hoạt modal mới
+                            $('#chapDetailModal').modal('show');
+                        } else {
+                            alert('Không có thông tin chi tiết cho chap này.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy chi tiết chap:', error);
+                        alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
+                    });
+            });
+        });
+    }
         document.addEventListener('DOMContentLoaded', function () {
             setupMangaPage();
             mangasua();
+            chapDetail();
         }); 
     </script>
 </body>
