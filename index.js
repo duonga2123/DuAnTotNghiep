@@ -239,6 +239,30 @@ app.get('/getbaiviet', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
   }
 })
+app.get('/getcmtbaiviet/:baivietId', async(req,res)=>{
+  try {
+    const baivietId=req.params.baivietId;
+    const baiviet=await Baiviet.findById(baivietId);
+    if(!baiviet){
+      res.status(403).json({message:'bài viết không tồn tại'})
+    }
+    const cmt=await Promise.all(baiviet.comment.map(async (item )=>{
+      const user= await User.findById(item.userID)
+      const formatdatecmt=moment(item.date).format('DD/MM/YYYY HH:mm:ss')
+      return {
+        _id: item._id,
+        userId: item.userID,
+        cmt: item.cmt,
+        username: user.username, 
+        date:formatdatecmt
+      };
+    })) 
+    res.json(cmt);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy cmt bài viết' });
+  }
+})
 
 
 app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
