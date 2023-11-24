@@ -179,7 +179,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
-          userId: commentItem.userID._id,
+          userId: commentItem.userID,
           cmt: commentItem.cmt,
           username: usercmt.username,
           date: formatdatecmt
@@ -187,7 +187,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       }));
       return {
         _id: item._id,
-        userId: item.userId._id,
+        userId: item.userId,
         username: item.userId.username,
         content: item.content,
         like: item.like,
@@ -214,7 +214,7 @@ app.get('/getbaiviet', async (req, res) => {
         const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
-          userId: commentItem.userID._id,
+          userId: commentItem.userID,
           cmt: commentItem.cmt,
           username: usercmt.username,
           date: formatdatecmt
@@ -222,7 +222,7 @@ app.get('/getbaiviet', async (req, res) => {
       }));
       return {
         _id: item._id,
-        userId: item.userId._id,
+        userId: item.userId,
         username: item.userId.username,
         content: item.content,
         like: item.like,
