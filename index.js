@@ -2101,21 +2101,32 @@ app.post('/userdelete/:_id', async (req, res) => {
   try {
     const userId = req.params._id;
 
-    const deletebaiviet =await Baiviet.find({userId})
-    for (const post of deletebaiviet) {
-      await Baiviet.updateOne({ _id: post._id }, { $set: { comment: [] } });
+    const hasUserCmtManga = await Manga.exists({ 'comment.userID': userId });
+    const hasUserBaiviet = await Baiviet.exists({ userId: userId });
+    const hasUserCommentsBaiviet = await Baiviet.exists({ 'comment.userID': userId });
+
+    if (!hasUserCmtManga && !hasUserBaiviet && !hasUserCommentsBaiviet) {
+      const deletedUser = await User.findByIdAndRemove(userId);
+      if (!deletedUser) {
+        return res.status(404).json({ message: 'Người dùng không tồn tại.' });
+      }
+
+      return res.json({ message: 'Người dùng đã được xóa thành công.' });
     }
 
-    await Baiviet.deleteMany({ userId });
     await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
+    await Baiviet.deleteMany({ userId: userId });
+    await Baiviet.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
+
     const deletedUser = await User.findByIdAndRemove(userId);
     if (!deletedUser) {
-      return res.status(404).json({ message: 'user không tồn tại.' });
+      return res.status(404).json({ message: 'Người dùng không tồn tại.' });
     }
-    res.json({ message: 'user đã được xóa thành công.' });
+
+    res.json({ message: 'Xóa user thành công' });
   } catch (error) {
-    console.error('Lỗi khi xóa user:', error);
-    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa user.' });
+    console.error('Lỗi khi xóa người dùng:', error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa người dùng.' });
   }
 });
 
