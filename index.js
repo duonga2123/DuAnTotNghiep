@@ -179,7 +179,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
-          userId: commentItem.userID,
+          userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
           date: formatdatecmt
@@ -187,7 +187,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       }));
       return {
         _id: item._id,
-        userId: item.userId,
+        userId: item.userId._id,
         username: item.userId.username,
         content: item.content,
         like: item.like,
@@ -2101,9 +2101,14 @@ app.post('/userdelete/:_id', async (req, res) => {
   try {
     const userId = req.params._id;
 
+    const deletebaiviet =await Baiviet.find({userId})
+    for (const post of deletebaiviet) {
+      await Baiviet.updateOne({ _id: post._id }, { $set: { comment: [] } });
+    }
 
+    await Baiviet.deleteMany({ userId });
+    await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
     const deletedUser = await User.findByIdAndRemove(userId);
-
     if (!deletedUser) {
       return res.status(404).json({ message: 'user không tồn tại.' });
     }
