@@ -45,7 +45,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
-const uri = "mongodb+srv://totnghiepduan2023:MaNXmiIny7im1yjG@cluster0.tzx1qqh.mongodb.net/DuanTotNghiep?retryWrites=true&w=majority";
+const uri = "mongodb+srv://totnghiepduan2023:qs49jTtYwyQcsZ6i@cluster0.tzx1qqh.mongodb.net/DuanTotNghiep?retryWrites=true&w=majority";
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
