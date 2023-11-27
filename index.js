@@ -1042,13 +1042,15 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
 
     const allComments = [];
     for (const com of comment) {
+      const formatdatecmt = moment(com.date).format('DD/MM/YYYY HH:mm:ss')
       const userComment = await User.findById(com.userID);
       const username = userComment.username;
       const commentInfo = {
         cmt_id: com._id,
         userID: com.userID,
         username: username,
-        cmt: com.cmt
+        cmt: com.cmt,
+        date:formatdatecmt
       };
       allComments.push(commentInfo);
     }
@@ -1224,6 +1226,7 @@ app.post('/postcomment/:userId/:mangaId', async (req, res) => {
     const userId = req.params.userId
     const mangaId = req.params.mangaId
     const { comment } = req.body;
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
     const user = await User.findById(userId)
     if (!user) {
       res.status(404).json({ message: 'không tìm thấy user' })
@@ -1234,7 +1237,8 @@ app.post('/postcomment/:userId/:mangaId', async (req, res) => {
     }
     const newComment = {
       userID: userId,
-      cmt: comment
+      cmt: comment,
+      date:vietnamTime
     };
     manga.comment.push(newComment)
     await manga.save()

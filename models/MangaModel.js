@@ -12,7 +12,8 @@ const mangaSchema = new mongoose.Schema({
   like: Number,
   comment: [{
     userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
-    cmt: { type: String }
+    cmt: { type: String },
+    date:{type:Date}
   }],
   isRead:{type:Boolean},
   isApproved: { type: Boolean, default: false }, // Trường mới để đánh dấu trạng thái được duyệt hay không
