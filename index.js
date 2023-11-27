@@ -999,8 +999,9 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
 
     manga.chapters.forEach(chapter => {
       chapter.number = parseInt(chapter.number);
-      chapter.sort((a, b) => a.number - b.number);
+      
     });
+    manga.chapters.sort((a, b) => a.number - b.number); 
 
     if (!manga) {
       return res.status(404).json({ message: 'Không tìm thấy truyện.' });
