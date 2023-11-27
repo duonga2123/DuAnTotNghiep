@@ -1473,6 +1473,12 @@ app.post('/chapterput/:_id', async (req, res) => {
     else {
       chapter.pendingChanges = undefined;
       chapter.isApproved = true;
+      chapter.mangaName=mangaName,
+      chapter.number=number,
+      chapter.viporfree=viporfree,
+      chapter.price=price,
+      chapter.images=imageArray,
+      chapter.isChap = true
       await chapter.save();
       res.status(200).json({ message: 'Chap sửa thành công' })
     }
