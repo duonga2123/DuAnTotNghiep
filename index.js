@@ -999,6 +999,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
 
     manga.chapters.forEach(chapter => {
       chapter.number = parseInt(chapter.number);
+      chapter.sort((a, b) => a.number - b.number);
     });
 
     if (!manga) {
