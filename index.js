@@ -222,7 +222,7 @@ app.get('/getbaiviet', async (req, res) => {
       }));
       return {
         _id: item._id,
-        userId: item.userId,
+        userId: item.userId._id,
         username: item.userId.username,
         content: item.content,
         like: item.like,
@@ -2314,6 +2314,11 @@ app.get('/chapter/:_id/images', async (req, res) => {
 });
 
 
-app.listen(8080, () =>
-  console.log("Server is running on port 8080...")
+app.listen(8080, () =>{
+  try {
+  console.log('kết nối thành công 8080')
+  } catch (error) {
+    console.log('kết nối thất bại 8080',error)
+  }
+}
 );
