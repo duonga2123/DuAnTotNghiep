@@ -946,6 +946,13 @@ app.post('/mangaput/:_id', async (req, res) => {
     else {
       manga.pendingChanges = undefined;
       manga.isApproved = true;
+      manga.manganame=manganame;
+      manga.author=author;
+      manga.content=content;
+      manga.category=category;
+      manga.view=view;
+      manga.like=like;
+      manga.image=image;
       await manga.save();
       res.status(200).json({ message: 'Truyện sửa thành công' })
     }
