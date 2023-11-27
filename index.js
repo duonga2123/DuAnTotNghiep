@@ -1121,7 +1121,10 @@ app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const mangaId = req.params.mangaId;
-
+    const manga=await Manga.findById(mangaId);
+    if (!manga) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
+    }
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
@@ -1130,6 +1133,8 @@ app.post('/user/addFavoriteManga/:userId/:mangaId', async (req, res) => {
     const mangaIndex = user.favoriteManga.findIndex(manga => manga._id === mangaId);
 
     if (mangaIndex === -1) {
+      manga.like+=1;
+      await manga.save()
       user.favoriteManga.push({ mangaId, isLiked: true });
     } else {
       user.favoriteManga[mangaIndex].isLiked = true;
@@ -1181,17 +1186,21 @@ app.post('/user/removeFavoriteManga/:userId/:mangaId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const mangaId = req.params.mangaId;
+    const manga=await Manga.findById(mangaId);
+    if (!manga) {
+      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
+    }
 
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
-
     if (!user.favoriteManga.some(manga => manga.mangaId.toString() === mangaId)) {
       return res.status(400).json({ message: 'Truyện không tồn tại trong danh sách yêu thích.' });
     }
-
+    manga.like-=1;
+    await manga.save()
     user.favoriteManga = user.favoriteManga.filter(manga => manga.mangaId.toString() !== mangaId); // Xóa truyện yêu thích khỏi danh sách
 
     await user.save();
@@ -1766,12 +1775,13 @@ app.post('/pay/:_userId', async (req, res) => {
     const userId = req.params._userId;
     let coin = totalAmount * 10;
     const success = "đợi thanh toán";
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
     const paymentData = new Payment({
       userID: userId,
       currency: currency,
       totalAmount: totalAmount,
       coin: coin,
-      date: new Date(),
+      date: vietnamTime,
       success: success
     });
 
@@ -1884,19 +1894,21 @@ app.get('/paymentdetail/:userid', async (req, res) => {
     if (!paymentDetails || paymentDetails.length === 0) {
       return res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
     }
-
+    
     // Phản hồi với dữ liệu theo cấu trúc mô hình
-    const formattedPaymentDetails = paymentDetails.map(paymentDetail => ({
-      userID: paymentDetail.userID,
-      currency: paymentDetail.currency,
-      totalAmount: paymentDetail.totalAmount,
-      coin: paymentDetail.coin,
-      date: paymentDetail.date,
-      success: paymentDetail.success
-    }));
+    const formattedPaymentDetails = paymentDetails.map(paymentDetail => {
+      const formattedDate = moment(paymentDetail.date).format('DD/MM/YYYY HH:mm:ss');
+      return{
+        userID: paymentDetail.userID,
+        currency: paymentDetail.currency,
+        totalAmount: paymentDetail.totalAmount,
+        coin: paymentDetail.coin,
+        date: formattedDate,
+        success: paymentDetail.success
+      }
+    });
 
     res.json(formattedPaymentDetails);
-
   }
   catch (error) {
     console.error('Lỗi lấy lịch sử giao dịch:', error);
