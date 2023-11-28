@@ -1218,24 +1218,6 @@
 				$('.huymangaButton').click(function () {
 					$('#huymangaModal').modal('show');
 				});
-				$('#huymangaForm').submit(function (event) {
-					event.preventDefault();
-					const mangaId = $(this).data('manga-id');
-					const notifyId = $(this).data('notify-id');
-					const reason = $('#reason').val();
-					$.ajax({
-						type: 'POST',
-						url: `/huymanga/${mangaId}/${notifyId}`,
-						data: { reason: reason },
-						success: function (response) {
-							console.log(response);
-							$('#huymangaModal').modal('hide');
-						},
-						error: function (error) {
-							console.error(error);
-						}
-					});
-				});
 			});
 
 			const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
