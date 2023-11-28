@@ -106,7 +106,7 @@ app.get('/nhomdich', checkAuth, async (req, res) => {
 })
 
 //api get, post bài viết 
-app.post('/postbaiviet/:userId', upload.array('images', 2), async (req, res) => {
+app.post('/postbaiviet/:userId', upload.array('images', 10), async (req, res) => {
   try {
     const userId = req.params.userId;
     const { content } = req.body;
