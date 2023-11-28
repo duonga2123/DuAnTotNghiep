@@ -141,15 +141,9 @@ app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
       return res.status(403).json({ message: 'Bạn không có quyền đăng bài viết' });
     }
 
-    const images = [];
-
-    // Lặp qua mảng các tệp đã tải lên và lưu chúng vào mảng images
     const currentDate = moment().utc();
 
-    for (const file of req.files) {
-      // Thêm đường dẫn tạm thời (buffer) của ảnh vào mảng images
-      images.push(file.buffer);
-    }
+    const images = req.files.map((file) => file.buffer.toString('base64'));
 
     const baiviet = new Baiviet({ userId, content, like: 0, images, date: currentDate });
     await baiviet.save();
