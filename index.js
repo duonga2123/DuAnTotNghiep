@@ -106,31 +106,55 @@ app.get('/nhomdich', checkAuth, async (req, res) => {
 })
 
 //api get, post bài viết 
-app.post('/postbaiviet/:userId',upload.array('images', 2), async (req, res) => {
+app.post('/postbaiviet/:userId', upload.array('images', 2), async (req, res) => {
   try {
-    const userId = req.params.userId
-    const { content } = req.body
+    const userId = req.params.userId;
+    const { content } = req.body;
+
+    if (!req.files) {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'Không tìm thấy user' });
+      }
+
+      const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+
+      const baiviet = new Baiviet({ userId, content, like: 0, images: [], date: vietnamTime });
+      
+      await baiviet.save();
+      
+      user.baiviet.push(baiviet._id);
+      await user.save();
+
+      return res.status(200).json({ message: 'Đăng bài viết thành công' });
+    }
+
     const images = req.files.map((file) => file.buffer.toString('base64'));
+
     if (images.length > 2) {
       return res.status(400).json({ message: 'Chỉ được phép tải lên tối đa 2 ảnh.' });
     }
-    const user = await User.findById(userId)
-    if (!user) {
-      return res.status(404).json({ message: 'không tìm thấy user' })
-    }
-    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
-    const baiviet = new Baiviet({ userId, content, like: 0, images: images || [],date: vietnamTime })
-    await baiviet.save()
-    user.baiviet.push(baiviet._id)
-    await user.save()
-    return res.status(200).json({ message: 'post bài viết thành công' })
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy user' });
+    }
+
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+
+    const baiviet = new Baiviet({ userId, content, like: 0, images, date: vietnamTime });
+
+    await baiviet.save();
+
+    user.baiviet.push(baiviet._id);
+    await user.save();
+
+    return res.status(200).json({ message: 'Đăng bài viết thành công' });
   } catch (err) {
     console.error('Lỗi khi đăng bài viết:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
   }
-
-})
+});
 app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
   try {
     const userId = req.params.userId;
