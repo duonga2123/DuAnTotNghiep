@@ -119,7 +119,7 @@ app.post('/postbaiviet/:userId',upload.array('images', 2), async (req, res) => {
       return res.status(404).json({ message: 'không tìm thấy user' })
     }
     const vietnamTime = momenttimezone().add(7, 'hours').toDate();
-    const baiviet = new Baiviet({ userId, content, like: 0, images,date: vietnamTime })
+    const baiviet = new Baiviet({ userId, content, like: 0, images: images || [],date: vietnamTime })
     await baiviet.save()
     user.baiviet.push(baiviet._id)
     await user.save()
@@ -149,7 +149,7 @@ app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
 
     const images = req.files.map((file) => file.buffer.toString('base64'));
 
-    const baiviet = new Baiviet({ userId, content, like: 0, images, date: currentDate });
+    const baiviet = new Baiviet({ userId, content, like: 0, images: images || [], date: currentDate });
     await baiviet.save();
     user.baiviet.push(baiviet._id);
     await user.save();
