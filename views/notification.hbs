@@ -65,12 +65,12 @@
                                             </div>
                                             <div class="modal-body">
                                                 <!-- Hiển thị toàn bộ thông tin chi tiết truyện trong modal -->
-                                                <p id="mangaDetailmanganame"></p>
-                                                 <p style="margin-top: 30px;" id="mangaDetailCategory"></p>
+                                                <h5 id="mangaDetailmanganame"></h5>
+
                                                 <img id="mangaDetailImage"
                                                     style="width: 200px; height:200px; margin: 0 auto; max-width: 100%;"
                                                     alt="Ảnh truyện">
-                                               
+                                                <p style="margin-top: 30px;" id="mangaDetailCategory"></p>
                                                 <p id="mangaDetailAuthor"></p>
                                                 <p id="mangaDetailContent"></p>
                                                 <!-- Các trường thông tin khác nếu có -->
@@ -309,7 +309,7 @@
                             if (data) {
                                 // Hiển thị thông tin chi tiết truyện trong modal
                                 document.getElementById('mangaDetailImage').src = data.image;
-                                 document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
+                                document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
                                 document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
                                 document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
                                 document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
