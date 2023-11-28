@@ -241,7 +241,7 @@ app.get('/getbaiviet', async (req, res) => {
 app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
   try {
     const baivietId = req.params.baivietId;
-    const baiviet = await Baiviet.findById(baivietId);
+    const baiviet = await Baiviet.findById(baivietId).sort({ date: -1 });
     if (!baiviet) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
@@ -345,7 +345,7 @@ app.post('/removefavoritebaiviet/:userId/:baivietId', async (req, res) => {
 app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
     const userID = req.params.userId
-    const notify = await NotificationBaiviet.find({ userId: userID }).lean()
+    const notify = await NotificationBaiviet.find({ userId: userID }).sort({date: -1}).lean()
     const formatnotify = notify.map((item) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       return {
