@@ -1601,7 +1601,7 @@ app.get('/chapternotify/:chapterId', async (req, res) => {
     const notification = await Notification.findOne({ mangaId: chapterId });
 
     if (!notification) {
-      return res.status(404).json({ error: 'Không tìm thấy thông báo cho truyện này.' });
+      return res.status(404).json({ error: 'Không tìm thấy thông báo cho chap này.' });
     }
     const chapterDetail = await Chapter.findById(chapterId);
 
@@ -1636,6 +1636,48 @@ app.get('/chapternotify/:chapterId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết chap.' });
   }
 })
+app.get('/chapternotifysua/:chapterId', async (req, res) => {
+  try {
+    const chapterId = req.params.chapterId;
+
+    const notification = await Notification.findOne({ mangaId: chapterId });
+
+    if (!notification) {
+      return res.status(404).json({ error: 'Không tìm thấy thông báo cho chap này.' });
+    }
+    const chapterDetail = await Chapter.findById( chapterId);
+
+    if (!chapterDetail) {
+      return res.status(404).json({ error: 'Không tìm thấy chap chi tiết.' });
+    }
+    const htmlToParse = '<html><head>...</head>' + chapterDetail.pendingChanges.images + '</html>';
+
+    // Kiểm tra dữ liệu trước khi sử dụng cheerio
+    console.log('Raw HTML data:', chapterDetail.pendingChanges.images);
+
+    const imageLinks = [];
+    const $ = cheerio.load(htmlToParse, { normalizeWhitespace: true, xmlMode: true });
+
+    $('img').each((index, element) => {
+      const src = $(element).attr('src');
+      if (src) {
+        imageLinks.push(src);
+      } else {
+        console.error('Không tìm thấy thuộc tính src trong thẻ img');
+      }
+    });
+    res.json({
+      mangaName: chapterDetail.pendingChanges.mangaName,
+      number: chapterDetail.pendingChanges.number,
+      viporfree: chapterDetail.pendingChanges.viporfree,
+      price: chapterDetail.pendingChanges.price,
+      images: imageLinks
+    });
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết truyện:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
+  }
+});
 
 app.post('/approvechap/:chapid', async (req, res) => {
   try {
