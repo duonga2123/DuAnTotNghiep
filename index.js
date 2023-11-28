@@ -241,10 +241,11 @@ app.get('/getbaiviet', async (req, res) => {
 app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
   try {
     const baivietId = req.params.baivietId;
-    const baiviet = await Baiviet.findById(baivietId).sort({ date: -1 }).lean();
+    const baiviet = await Baiviet.findById(baivietId).lean();
     if (!baiviet) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
+    baiviet.comment.sort((a, b) => b.date - a.date);
     const cmt = await Promise.all(baiviet.comment.map(async (item) => {
       const user = await User.findById(item.userID)
       const formatdatecmt = moment(item.date).format('DD/MM/YYYY HH:mm:ss')
