@@ -216,7 +216,8 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         isLiked: isLiked,
         date: formattedDate,
         comment: comments,
-        commentCount: item.comment.length
+        commentCount: item.comment.length,
+        images:item.images
       };
     }));
     res.json(formattedBaiviet);
@@ -251,7 +252,8 @@ app.get('/getbaiviet', async (req, res) => {
         isLiked: item.isLiked,
         date: formattedDate,
         comment: comments,
-        commentCount: item.comment.length
+        commentCount: item.comment.length,
+        images:item.images
       };
     }));
     res.json(formattedBaiviet);
