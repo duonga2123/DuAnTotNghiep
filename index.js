@@ -1323,7 +1323,7 @@ app.get("/addchap", async (req, res) => {
 });
 
 app.get("/getchap", async (req, res) => {
-  const data = await Chapter.find({ isChap: true }).lean();
+  const data = await Chapter.find({ isChap: true }).sort({ mangaName: 1 }).lean();
   console.log("Session:", req.session);
   res.render("chapter", { data, userId: req.session.userId });
 });
