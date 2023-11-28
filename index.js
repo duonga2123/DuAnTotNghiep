@@ -621,7 +621,7 @@ app.get('/getmanga', async (req, res) => {
 
 app.get('/mangas', async (req, res) => {
   try {
-    const mangaList = await Manga.find({ isRead: true }).select('manganame image category chapters').populate('chapters', 'number').exec();
+    const mangaList = await Manga.find({ isRead: true }).select('manganame image category chapters author view').populate('chapters', 'number').exec();
     const formattedMangaList = mangaList.map(manga => ({
       id: manga._id,
       manganame: manga.manganame,
