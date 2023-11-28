@@ -718,6 +718,30 @@ app.post('/approvesuatruyen/:mangaId/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
   }
 });
+app.post('/huymanga/:mangaId/:id',async(req,res)=>{
+  try {
+    const mangaId=req.params.mangaId;
+    const notifyId=req.params.id;
+    const {reason}=req.body
+    const manga=await Manga.findByIdAndDelete(mangaId);
+    const notify=await Notification.findByIdAndDelete(notifyId);
+
+    const newNotification = new Notification({
+      adminId: req.session.userId,
+      title: 'Hủy truyện',
+      content: `Truyện ${manga.manganame} của bạn đã bị hủy - lí do: ${reason}.`,
+      userId: notify.userId,
+      mangaId: mangaId
+    });
+    await newNotification.save();
+
+    return res.status(202).json({ message: 'Hủy thành công' });
+  } catch (error) {
+    console.error('Lỗi duyệt truyện', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
+  }
+})
+
 app.post('/mangapost', async (req, res) => {
   try {
     const userId = req.session.userId
@@ -903,6 +927,7 @@ app.get('/manganotifysua/:mangaId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
   }
 });
+
 
 app.get("/mangaput/:_id", async (req, res) => {
   const id = req.params._id;

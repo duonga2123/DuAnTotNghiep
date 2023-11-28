@@ -66,7 +66,8 @@
                                             <div class="modal-body">
                                                 <!-- Hiển thị toàn bộ thông tin chi tiết truyện trong modal -->
                                                 <p id="mangaDetailmanganame"></p>
-                                                <img id="mangaDetailImage" style="width: 200px; height:200px; margin: 0 auto; max-width: 100%;"
+                                                <img id="mangaDetailImage"
+                                                    style="width: 200px; height:200px; margin: 0 auto; max-width: 100%;"
                                                     alt="Ảnh truyện">
                                                 <p id="mangaDetailContent"></p>
                                                 <p id="mangaDetailAuthor"></p>
@@ -107,6 +108,32 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Modal Nhập Lí Do Hủy Truyện -->
+                                <div class="modal fade" id="huymangaModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="huymangaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="huymangaModalLabel">Lí do hủy truyện</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="huymangaForm">
+                                                    <div class="form-group">
+                                                        <label for="reason">Lí do:</label>
+                                                        <input type="text" class="form-control" id="reason"
+                                                            name="reason">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Hủy truyện</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <!-- NÚT CHI TIẾT SỬA TRUYỆN -->
                                 <button class="btn btn-info mangasua-detail-button" data-manga-id="{{this.mangaId}}">Chi
@@ -124,6 +151,9 @@
                                     <button class="btn btn-info approveMangaButton"
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Duyệt thêm truyện</button>
+                                    <button class="btn btn-info huymangaButton" 
+                                        style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                        type="submit" data-manga-id="{{this.mangaId}}" data-notify-id="{{this._id}}">Hủy</button>
                                 </form>
                                 <form style="margin-top: 10dp;" action="/approvechap/{{this.mangaId}}"
                                     onclick="return confirm('Duyệt nha ?')" method="post">
@@ -145,6 +175,29 @@
                                         type="submit">Duyệt sửa chap</button>
                                 </form>
                                 <script>
+                                    $(document).ready(function () {
+                                        $('.huymangaButton').click(function () {
+                                            $('#huymangaModal').modal('show');
+                                        });
+                                        $('#huymangaForm').submit(function (event) {
+                                            event.preventDefault();
+                                            const mangaId = $(this).data('manga-id'); 
+                                            const notifyId = $(this).data('notify-id');
+                                            const reason = $('#reason').val();                                          
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: `/huymanga/${mangaId}/${notifyId}`,
+                                                data: { reason: reason },
+                                                success: function (response) {
+                                                    console.log(response);
+                                                    $('#huymangaModal').modal('hide');
+                                                },
+                                                error: function (error) {                                                  
+                                                   console.error(error);                                                  
+                                                }
+                                            });
+                                        });
+                                    });
 
                                     const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
                                     const approveChapButtons = document.querySelectorAll('.approveChapButton');
@@ -310,7 +363,7 @@
                                     imgElement.style.width = '500px'; // Đảm bảo chiều rộng không vượt quá 100%
                                     imgElement.style.height = '500px';
                                     imgElement.style.borderRadius = '0';
-                                    imgElement.style.margin='0 auto'
+                                    imgElement.style.margin = '0 auto'
                                     imgElement.style.maxWidth = '100%'
                                     imagesContainer.appendChild(imgElement);
                                 });
@@ -327,7 +380,7 @@
                 });
             });
         }
-         function chapDetailsua() {
+        function chapDetailsua() {
             const chapDetailButtons = document.querySelectorAll('.chapsua-detail-button');
 
             chapDetailButtons.forEach(button => {
@@ -348,7 +401,7 @@
                                     imgElement.style.width = '500px'; // Đảm bảo chiều rộng không vượt quá 100%
                                     imgElement.style.height = '500px';
                                     imgElement.style.borderRadius = '0';
-                                    imgElement.style.margin='0 auto'
+                                    imgElement.style.margin = '0 auto'
                                     imgElement.style.maxWidth = '100%'
                                     imagesContainer.appendChild(imgElement);
                                 });
