@@ -728,7 +728,7 @@ app.post('/huymanga/:mangaId/:id',async(req,res)=>{
 
     const newNotification = new Notification({
       adminId: req.session.userId,
-      title: 'Hủy truyện',
+      title: 'Đã bị hủy',
       content: `Truyện ${manga.manganame} của bạn đã bị hủy - lí do: ${reason}.`,
       userId: notify.userId,
       mangaId: mangaId
@@ -793,7 +793,7 @@ app.get('/rendernotifi', async (req, res) => {
 app.get('/rendernotifinhomdich', async (req, res) => {
   try {
     const userId = req.session.userId
-    const notifications = await Notification.find({ userId: userId, title: 'Được phê duyệt' });
+    const notifications = await Notification.find({ userId: userId, title: { $regex: /Được phê duyệt|Đã bị hủy/ } });
     res.json(notifications);
   } catch (error) {
     console.error('Lỗi khi lấy thông báo:', error);
