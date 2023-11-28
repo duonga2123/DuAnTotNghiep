@@ -625,9 +625,11 @@ app.get('/mangas', async (req, res) => {
     const formattedMangaList = mangaList.map(manga => ({
       id: manga._id,
       manganame: manga.manganame,
+      author:manga.author,
       image: manga.image,
       category: manga.category,
-      totalChapters: manga.chapters.length
+      totalChapters: manga.chapters.length,
+      view:manga.view
     }));
     res.json(formattedMangaList);
   } catch (error) {
