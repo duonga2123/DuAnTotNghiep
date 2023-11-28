@@ -241,7 +241,7 @@ app.get('/getbaiviet', async (req, res) => {
 app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
   try {
     const baivietId = req.params.baivietId;
-    const baiviet = await Baiviet.findById(baivietId).sort({ date: -1 });
+    const baiviet = await Baiviet.findById(baivietId).sort({ date: -1 }).lean();
     if (!baiviet) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
