@@ -2013,6 +2013,10 @@ app.post('/register', async (req, res) => {
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Tên người dùng đã tồn tại' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
