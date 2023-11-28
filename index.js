@@ -896,10 +896,12 @@ app.get('/manganotifi/:mangaId', async (req, res) => {
     }
 
     res.json({
+      manganame:mangaDetail.manganame,
       title: notification.title,
       image: mangaDetail.image,
       content: mangaDetail.content,
       author: mangaDetail.author,
+      category:mangaDetail.category
     });
   } catch (error) {
     console.error('Lỗi khi lấy chi tiết truyện:', error);
