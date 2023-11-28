@@ -308,6 +308,7 @@
                             if (data) {
                                 // Hiển thị thông tin chi tiết truyện trong modal
                                 document.getElementById('mangaDetailImage').src = data.image;
+                                 document.getElementById('mangaDetailContent').textContent = `Thể loại : ${data.category}`;
                                 document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
                                 document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
                                 document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
