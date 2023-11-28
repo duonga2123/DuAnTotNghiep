@@ -106,16 +106,20 @@ app.get('/nhomdich', checkAuth, async (req, res) => {
 })
 
 //api get, post bài viết 
-app.post('/postbaiviet/:userId', async (req, res) => {
+app.post('/postbaiviet/:userId',upload.array('images', 2), async (req, res) => {
   try {
     const userId = req.params.userId
     const { content } = req.body
+    const images = req.files.map((file) => file.buffer.toString('base64'));
+    if (images.length > 2) {
+      return res.status(400).json({ message: 'Chỉ được phép tải lên tối đa 2 ảnh.' });
+    }
     const user = await User.findById(userId)
     if (!user) {
       return res.status(404).json({ message: 'không tìm thấy user' })
     }
     const vietnamTime = momenttimezone().add(7, 'hours').toDate();
-    const baiviet = new Baiviet({ userId, content, like: 0, date: vietnamTime })
+    const baiviet = new Baiviet({ userId, content, like: 0, images,date: vietnamTime })
     await baiviet.save()
     user.baiviet.push(baiviet._id)
     await user.save()
