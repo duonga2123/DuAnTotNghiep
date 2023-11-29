@@ -2337,7 +2337,8 @@ app.get('/user/:userId', async (req, res) => {
       userId: userId,
       username: user.username,
       role: user.role,
-      coin: user.coin
+      coin: user.coin,
+      avatar:user.avatar
     })
   } catch (err) {
     console.error('Lỗi khi tìm user:', err);
