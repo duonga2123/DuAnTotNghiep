@@ -1431,8 +1431,6 @@
 			// Xử lý cho form $('#huymangaForm')
 			const huymangaForm = document.getElementById('huymangaForm');
 			huymangaForm.addEventListener('submit', function (event) {
-				event.preventDefault();
-
 				const mangaId = this.getAttribute('data-manga-id');
 				const notifyId = this.getAttribute('data-notify-id');
 				const reason = document.getElementById('reason').value;

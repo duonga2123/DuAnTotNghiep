@@ -131,9 +131,7 @@
                                                     </div>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Đóng</button>
-                                                    <button type="submit" class="btn btn-primary"
-                                                        data-manga-id="{{this.mangaId}}"
-                                                        data-notify-id="{{this._id}}">Hủy truyện</button>
+                                                    <button type="submit" class="btn btn-primary" data-manga-id="{{this.mangaId}}" data-notify-id="{{this._id}}">Hủy truyện</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -459,8 +457,6 @@
             // Xử lý cho form $('#huymangaForm')
             const huymangaForm = document.getElementById('huymangaForm');
             huymangaForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-
                 const mangaId = this.getAttribute('data-manga-id');
                 const notifyId = this.getAttribute('data-notify-id');
                 const reason = document.getElementById('reason').value;
