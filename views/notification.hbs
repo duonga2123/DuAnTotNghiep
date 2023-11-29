@@ -123,7 +123,7 @@
                                             </div>
 
                                             <div class="modal-body">
-                                                <form id="huymangaForm">
+                                                <form id="huymangaForm" data-manga-id="{{this.mangaId}}" data-notify-id="{{this._id}}" >
                                                     <div class="form-group">
                                                         <label for="reason">Lí do:</label>
                                                         <input type="text" class="form-control" id="reason"
@@ -131,9 +131,7 @@
                                                     </div>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Đóng</button>
-                                                    <button type="submit" class="btn btn-primary"
-                                                        data-manga-id="{{this.mangaId}}"
-                                                        data-notify-id="{{this._id}}">Hủy truyện</button>
+                                                    <button type="submit" class="btn btn-primary">Hủy truyện</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -159,7 +157,7 @@
                                         type="submit">Duyệt thêm truyện</button>
                                 </form>
 
-                                <button class="btn btn-info huymangaButton"
+                                <button class="btn btn-info huymangaButton" 
                                     style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                     type="button">Hủy</button>
 
@@ -459,7 +457,7 @@
 
             // Xử lý cho form $('#huymangaForm')
             const huymangaForm = document.getElementById('huymangaForm');
-            huymangaForm.addEventListener('click', function (event) {
+            huymangaForm.addEventListener('submit', function (event) {
                 event.preventDefault();
 
                 const mangaId = this.getAttribute('data-manga-id');

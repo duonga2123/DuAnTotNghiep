@@ -1430,7 +1430,7 @@
 		function mangahuy() {
 			// Xử lý cho form $('#huymangaForm')
 			const huymangaForm = document.getElementById('huymangaForm');
-			huymangaForm.addEventListener('click', function (event) {
+			huymangaForm.addEventListener('submit', function (event) {
 				event.preventDefault();
 
 				const mangaId = this.getAttribute('data-manga-id');
