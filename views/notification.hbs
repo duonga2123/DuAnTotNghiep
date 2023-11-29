@@ -198,29 +198,6 @@
                                     type="button">Hủy</button>
 
                                 <script>
-                                    jQuery(document).ready(function ($) {
-                                        $('.huymangaButton').click(function () {
-                                            $('#huymangaModal').modal('show');
-                                        });
-                                        $('#huymangaForm').submit(function (event) {
-                                            event.preventDefault();
-                                            const mangaId = $(this).data('manga-id'); 
-                                            const notifyId = $(this).data('notify-id'); 
-                                            const reason = $('#reason').val();
-                                            $.ajax({
-                                                type: 'POST',
-                                                url: `/huymanga/${mangaId}/${notifyId}`,
-                                                data: { reason: reason },
-                                                success: function (response) {
-                                                    console.log(response);
-                                                    $('#huymangaModal').modal('hide');
-                                                },
-                                                error: function (error) {
-                                                    console.error(error);
-                                                }
-                                            });
-                                        });
-                                    });
 
                                     const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
                                     const approveChapButtons = document.querySelectorAll('.approveChapButton');
@@ -473,11 +450,47 @@
                 });
             });
         }
+        function mangahuy() {
+            const huymangaButtons = document.querySelectorAll('.huymangaButton');
+            huymangaButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    document.getElementById('huymangaModal').style.display = 'block';
+                });
+            });
+
+            // Xử lý cho form $('#huymangaForm')
+            const huymangaForm = document.getElementById('huymangaForm');
+            huymangaForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const mangaId = this.getAttribute('data-manga-id');
+                const notifyId = this.getAttribute('data-notify-id');
+                const reason = document.getElementById('reason').value;
+
+                // Gửi request sử dụng Fetch API
+                fetch(`/huymanga/${mangaId}/${notifyId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reason: reason }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById('huymangaModal').style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        }
         document.addEventListener('DOMContentLoaded', function () {
             setupMangaPage();
             mangasua();
             chapDetail();
             chapDetailsua();
+            mangahuy()
         }); 
     </script>
 </body>
