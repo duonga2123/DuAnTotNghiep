@@ -2241,6 +2241,7 @@ app.post('/login', async (req, res) => {
             password: user.password,
             role: user.role,
             coin: user.coin,
+            avatar:user.avatar,
             __v: user.__v,
           },
         ],
