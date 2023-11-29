@@ -896,7 +896,7 @@ app.get('/unread-count-nhomdich', async (req, res) => {
     const userId = req.session.userId;
 
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ userId: userId, title: 'Được phê duyệt' });
+    const unreadCount = await Notification.countDocuments({ userId: userId, title: { $regex: /Được phê duyệt|Đã bị hủy/ } });
 
     res.json({ unreadCount });
   } catch (error) {
@@ -1730,7 +1730,54 @@ app.get('/chapternotifysua/:chapterId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
   }
 });
+app.post('/huychap/:chapterId/:id', async (req, res) => {
+  try {
+    const chapterId = req.params.chapterId;
+    const notifyId = req.params.id;
+    const { reason } = req.body
+    const chapter = await Chapter.findByIdAndDelete(chapterId);
+    const notify = await Notification.findByIdAndDelete(notifyId);
 
+    const newNotification = new Notification({
+      adminId: req.session.userId,
+      title: 'Đã bị hủy',
+      content: `Chap ${chapter.number} - Truyện ${chapter.mangaName} của bạn đã bị hủy - lí do: ${reason}.`,
+      userId: notify.userId,
+      mangaId: chapterId
+    });
+    await newNotification.save();
+
+    return res.status(202).json({ message: 'Hủy thành công' });
+  } catch (error) {
+    console.error('Lỗi duyệt truyện', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
+  }
+})
+app.post('/huychapput/:chapterId/:id', async(req,res)=>{
+  try {
+    const chapterId = req.params.chapterId;
+    const notifyId = req.params.id;
+    const { reason } = req.body
+    const chapter = await Chapter.findById(chapterId);
+    const notify = await Notification.findByIdAndDelete(notifyId);
+    chapter.pendingChanges=undefined;
+    await chapter.save();
+
+    const newNotification = new Notification({
+      adminId: req.session.userId,
+      title: 'Đã bị hủy',
+      content: `Chap ${chapter.number} - Truyện ${chapter.mangaName} của bạn đã bị hủy - lí do: ${reason}.`,
+      userId: notify.userId,
+      mangaId: chapterId
+    });
+    await newNotification.save();
+
+    return res.status(202).json({ message: 'Hủy thành công' });
+  } catch (error) {
+    console.error('Lỗi duyệt truyện', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
+  }
+})
 app.post('/approvechap/:chapid', async (req, res) => {
   try {
     const chapterId = req.params.chapid;
