@@ -123,7 +123,8 @@
                                             </div>
 
                                             <div class="modal-body">
-                                                <form id="huymangaForm" data-manga-id="{{this.mangaId}}" data-notify-id="{{this._id}}" >
+                                                <form id="huymangaForm" method="post"
+                                                    action="/huymanga/{{this.mangaId}}/{{this._id}}">
                                                     <div class="form-group">
                                                         <label for="reason">Lí do:</label>
                                                         <input type="text" class="form-control" id="reason"
@@ -131,7 +132,92 @@
                                                     </div>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Đóng</button>
-                                                    <button type="submit" class="btn btn-primary">Hủy truyện</button>
+                                                    <button type="submit" class="btn btn-primary">Hủy duyệt</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Nhập Lí Do Hủy Sửa Truyện -->
+                                <div class="modal fade" id="huysuamangaModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="huymangaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="huymangaModalLabel">Lí do hủy truyện</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <form id="huymangaForm" method="post"
+                                                    action="/huymangaput/{{this.mangaId}}/{{this._id}}">
+                                                    <div class="form-group">
+                                                        <label for="reason">Lí do:</label>
+                                                        <input type="text" class="form-control" id="reason"
+                                                            name="reason">
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Hủy duyệt</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Nhập Lí Do Hủy Chap -->
+                                <div class="modal fade" id="huychapModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="huymangaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="huymangaModalLabel">Lí do hủy truyện</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <form id="huymangaForm" method="post" action="">
+                                                    <div class="form-group">
+                                                        <label for="reason">Lí do:</label>
+                                                        <input type="text" class="form-control" id="reason"
+                                                            name="reason">
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Hủy duyệt</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Nhập Lí Do Hủy Sửa Chap -->
+                                <div class="modal fade" id="huysuachapModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="huymangaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="huymangaModalLabel">Lí do hủy truyện</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <form id="huymangaForm" method="post" action="">
+                                                    <div class="form-group">
+                                                        <label for="reason">Lí do:</label>
+                                                        <input type="text" class="form-control" id="reason"
+                                                            name="reason">
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Hủy duyệt</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -157,7 +243,7 @@
                                         type="submit">Duyệt thêm truyện</button>
                                 </form>
 
-                                <button class="btn btn-info huymangaButton" 
+                                <button class="btn btn-info huymangaButton"
                                     style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                     type="button">Hủy</button>
 
@@ -199,6 +285,15 @@
                                     $(document).ready(function () {
                                         $('.huymangaButton').click(function () {
                                             $('#huymangaModal').modal('show');
+                                        });
+                                        $('.huysuamangaButton').click(function () {
+                                            $('#huysuamangaModal').modal('show');
+                                        });
+                                        $('.huychapButton').click(function () {
+                                            $('#huychapModal').modal('show');
+                                        });
+                                        $('.huysuachapButton').click(function () {
+                                            $('#huysuachapModal').modal('show');
                                         });
                                     })
 
@@ -453,39 +548,11 @@
                 });
             });
         }
-        function mangahuy() {
-
-            // Xử lý cho form $('#huymangaForm')
-            const huymangaForm = document.getElementById('huymangaForm');
-            huymangaForm.addEventListener('submit', function (event) {
-                const mangaId = this.getAttribute('data-manga-id');
-                const notifyId = this.getAttribute('data-notify-id');
-                const reason = document.getElementById('reason').value;
-
-                // Gửi request sử dụng Fetch API
-                fetch(`/huymanga/${mangaId}/${notifyId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ reason: reason }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        document.getElementById('huymangaModal').style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            });
-        }
         document.addEventListener('DOMContentLoaded', function () {
             setupMangaPage();
             mangasua();
             chapDetail();
             chapDetailsua();
-            mangahuy()
         }); 
     </script>
 </body>

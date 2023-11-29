@@ -1163,7 +1163,6 @@
 					annut()
 					chapDetail()
 					chapDetailsua()
-					mangahuy()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
@@ -1219,6 +1218,15 @@
 			$(document).ready(function () {
 				$('.huymangaButton').click(function () {
 					$('#huymangaModal').modal('show');
+				});
+				$('.huysuamangaButton').click(function () {
+					$('#huysuamangaModal').modal('show');
+				});
+				$('.huychapButton').click(function () {
+					$('#huychapModal').modal('show');
+				});
+				$('.huysuachapButton').click(function () {
+					$('#huysuachapModal').modal('show');
 				});
 			})
 
@@ -1425,32 +1433,6 @@
 							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
 						});
 				});
-			});
-		}
-		function mangahuy() {
-			// Xử lý cho form $('#huymangaForm')
-			const huymangaForm = document.getElementById('huymangaForm');
-			huymangaForm.addEventListener('submit', function (event) {
-				const mangaId = this.getAttribute('data-manga-id');
-				const notifyId = this.getAttribute('data-notify-id');
-				const reason = document.getElementById('reason').value;
-
-				// Gửi request sử dụng Fetch API
-				fetch(`/huymanga/${mangaId}/${notifyId}`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ reason: reason }),
-				})
-					.then(response => response.json())
-					.then(data => {
-						console.log(data);
-						document.getElementById('huymangaModal').style.display = 'none';
-					})
-					.catch(error => {
-						console.error(error);
-					});
 			});
 		}
 	</script>
