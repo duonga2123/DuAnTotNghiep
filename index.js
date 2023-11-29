@@ -2468,6 +2468,27 @@ app.get('/chapter/:_id/images', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
   }
 });
+app.post('/doiavatar/:userId',upload.single('avatar'), async(req,res)=>{
+  try {
+    const userId=req.params.userId;
+    const user=await User.findById(userId);
+    if(!user){
+      res.status(403).json({message:'không tìm thấy user'})
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: 'Vui lòng chọn một file ảnh.' });
+    }
+
+    const avatar = req.file.buffer.toString('base64');
+    user.avatar = avatar;
+    await user.save();
+    
+    return res.status(200).json({ message: 'Đổi avatar thành công.' });
+  } catch (error) {
+    console.error('Lỗi khi đổi avatar:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi avatar.' });
+  }
+})
 
 
 app.listen(8080, () => {
