@@ -741,6 +741,31 @@ app.post('/huymanga/:mangaId/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
   }
 })
+app.post('/huymangaput/:mangaId/:id', async(req,res)=>{
+  try {
+    const mangaId = req.params.mangaId;
+    const notifyId = req.params.id;
+    const { reason } = req.body
+    const manga = await Manga.findById(mangaId);
+    const notify = await Notification.findByIdAndDelete(notifyId);
+    manga.pendingChanges=undefined;
+    await manga.save();
+
+    const newNotification = new Notification({
+      adminId: req.session.userId,
+      title: 'Đã bị hủy',
+      content: `Truyện ${manga.manganame} của bạn đã bị hủy sửa - lí do: ${reason}.`,
+      userId: notify.userId,
+      mangaId: mangaId
+    });
+    await newNotification.save();
+
+    return res.status(202).json({ message: 'Hủy thành công' });
+  } catch (error) {
+    console.error('Lỗi duyệt truyện', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
+  }
+})
 
 app.post('/mangapost', async (req, res) => {
   try {

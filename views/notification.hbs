@@ -123,8 +123,7 @@
                                             </div>
 
                                             <div class="modal-body">
-                                                <form id="huymangaForm" method="post"
-                                                    action="/huymanga/{{this.mangaId}}/{{this._id}}">
+                                                <form id="huymangaForm">
                                                     <div class="form-group">
                                                         <label for="reason">Lí do:</label>
                                                         <input type="text" class="form-control" id="reason"
@@ -132,7 +131,9 @@
                                                     </div>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Đóng</button>
-                                                    <button type="submit" class="btn btn-primary">Hủy truyện</button>
+                                                    <button type="submit" class="btn btn-primary"
+                                                        data-manga-id="{{this.mangaId}}"
+                                                        data-notify-id="{{this._id}}">Hủy truyện</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -157,21 +158,33 @@
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Duyệt thêm truyện</button>
                                 </form>
+
                                 <button class="btn btn-info huymangaButton"
                                     style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                     type="button">Hủy</button>
+
                                 <form style="margin-top: 10dp;" action="/approvechap/{{this.mangaId}}"
                                     onclick="return confirm('Duyệt nha ?')" method="post">
                                     <button class="btn btn-info approveChapButton"
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Duyệt thêm chap</button>
                                 </form>
+
+                                <button class="btn btn-info huychapButton"
+                                    style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                    type="button">Hủy</button>
+
                                 <form style="margin-top: 10dp;" action="/approvesuatruyen/{{this.mangaId}}/{{this._id}}"
                                     onclick="return confirm('Duyệt nha ?')" method="post">
                                     <button class="btn btn-info approvesuatruyen"
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Duyệt sửa truyện</button>
                                 </form>
+
+                                <button class="btn btn-info huysuamangaButton"
+                                    style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                    type="button">Hủy</button>
+
                                 <form style="margin-top: 10dp; text-align: center;"
                                     action="/approvesuachap/{{this.mangaId}}/{{this._id}}"
                                     onclick="return confirm('Duyệt nha ?')" method="post">
@@ -179,10 +192,33 @@
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Duyệt sửa chap</button>
                                 </form>
+
+                                <button class="btn btn-info huysuachapButton"
+                                    style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                    type="button">Hủy</button>
+
                                 <script>
                                     $(document).ready(function () {
                                         $('.huymangaButton').click(function () {
                                             $('#huymangaModal').modal('show');
+                                        });
+                                        $('#huymangaForm').submit(function (event) {
+                                            event.preventDefault();
+                                            const mangaId = $(this).data('manga-id'); 
+                                            const notifyId = $(this).data('notify-id'); 
+                                            const reason = $('#reason').val();
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: `/huymanga/${mangaId}/${notifyId}`,
+                                                data: { reason: reason },
+                                                success: function (response) {
+                                                    console.log(response);
+                                                    $('#huymangaModal').modal('hide');
+                                                },
+                                                error: function (error) {
+                                                    console.error(error);
+                                                }
+                                            });
                                         });
                                     });
 
@@ -195,6 +231,10 @@
                                     const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
                                     const chapSuaDetailButtons = document.querySelectorAll('.chapsua-detail-button');
                                     const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+                                    const huymangaButton = document.querySelectorAll('.huymangaButton');
+                                    const huychapButton = document.querySelectorAll('.huychapButton');
+                                    const huysuachapButton = document.querySelectorAll('.huysuachapButton');
+                                    const huysuamangaButton = document.querySelectorAll('.huysuamangaButton');
 
                                     approveMangaButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
@@ -244,6 +284,33 @@
                                     });
 
                                     chapDetailButtons.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+
+                                    huysuamangaButton.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+
+                                    huymangaButton.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+                                    huysuachapButton.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+
+                                    huychapButton.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
                                         if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
                                             button.style.display = 'none';
