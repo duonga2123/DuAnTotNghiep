@@ -198,6 +198,11 @@
                                     type="button">Hủy</button>
 
                                 <script>
+                                    $(document).ready(function () {
+                                        $('.huymangaButton').click(function () {
+                                            $('#huymangaModal').modal('show');
+                                        });
+                                    })
 
                                     const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
                                     const approveChapButtons = document.querySelectorAll('.approveChapButton');
@@ -451,13 +456,6 @@
             });
         }
         function mangahuy() {
-            const huymangaButtons = document.querySelectorAll('.huymangaButton');
-            huymangaButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    document.getElementById('huymangaModal').style.display = 'block';
-                });
-            });
-
             // Xử lý cho form $('#huymangaForm')
             const huymangaForm = document.getElementById('huymangaForm');
             huymangaForm.addEventListener('submit', function (event) {
