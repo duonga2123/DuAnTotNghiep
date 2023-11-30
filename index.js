@@ -1100,7 +1100,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    const { manganame, author, content, image, category, view, like, chapters, comment } = manga;
+    const { manganame, author, content, image, category, view, like, chapters, comment, link } = manga;
 
     const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
     const uniqueChapters = [];
@@ -1155,6 +1155,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       category: category,
       view: view,
       like: like,
+      linktruyen:link,
       totalChapters: uniqueChapters.length,
       chapters: uniqueChapters.map(chapter => ({
         idchap: chapter._id,
