@@ -134,7 +134,7 @@
                         </div>
                          <div class="form-group">
                             <label for="editphone">phone:</label>
-                            <input type="text" class="form-control" id="editphone" name="phone">
+                            <input type="text" class="form-control" id="editphone" name="phone" value="">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -159,7 +159,7 @@
 
                 var id = $(this).closest("tr").find(".user-id").text();
                 var username = $(this).closest("tr").find(".user-username").text();
-                var phone = $(this).closest("tr").find(".user-phone").text();
+                var phone = $(this).closest("tr").find(".user-phone").val();
                 var role = $(this).closest("tr").find(".user-role").text();
 
                 $("#editusername").val(username);
