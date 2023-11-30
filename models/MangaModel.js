@@ -26,7 +26,9 @@ const mangaSchema = new mongoose.Schema({
     view: { type: Number },
     like: { type: Number },
     image: { type: String },
+    link:{type:String}
   },
+  link:{type:String}
 });
 
 const Manga = mongoose.model('manga', mangaSchema);

@@ -979,7 +979,7 @@ app.post('/mangaput/:_id', async (req, res) => {
   try {
     const userId = req.session.userId;
     const mangaId = req.params._id;
-    const { manganame, author, content, category, view, like, image } = req.body;
+    const { manganame, author, content, category, view, like, image,link } = req.body;
     const user = await User.findById(userId);
     if (!user || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -1016,6 +1016,7 @@ app.post('/mangaput/:_id', async (req, res) => {
         view,
         like,
         image,
+        link
       };
       manga.isApproved = false;
       const notification = new Notification({
@@ -1039,6 +1040,7 @@ app.post('/mangaput/:_id', async (req, res) => {
       manga.view = view;
       manga.like = like;
       manga.image = image;
+      manga.link=link
       await manga.save();
       res.status(200).json({ message: 'Truyện sửa thành công' })
     }
