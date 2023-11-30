@@ -1132,15 +1132,14 @@
 
 				$(".editCategoryButton").click(function () {
 
-					var id = $(this).closest("tr").find("td:first").text();
-					var username = $(this).closest("tr").find("td:nth-child(2)").text();
-					var password = $(this).closest("tr").find("td:nth-child(3)").text();
-					var role = $(this).closest("tr").find("td:nth-child(4)").text();
+				 var id = $(this).closest("tr").find(".user-id").text();
+                var username = $(this).closest("tr").find(".user-username").text();
+                var phone = $(this).closest("tr").find(".user-phone").val();
+                var role = $(this).closest("tr").find(".user-role").text();
 
-					$("#editusername").val(username);
-					$("#editpassword").val(username);
-					$("#editrole").val(role);
-
+                $("#editusername").val(username);
+                $("#editphone").val(phone);
+                $("#editrole").val(role);
 
 					$("#editCategoryForm").attr("action", "/userput/" + id);
 
