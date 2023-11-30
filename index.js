@@ -208,11 +208,12 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           date: formatdatecmt
         };
       }));
+      const user =await User.findById(item.userId);
       return {
         _id: item._id,
-        userId: item.userId._id,
-        username: item.userId.username,
-        avatar:item.userId.avatar || '',
+        userId: item.userId,
+        username: user.username,
+        avatar:user.avatar || '',
         content: item.content,
         like: item.like,
         isLiked: isLiked,
@@ -246,11 +247,12 @@ app.get('/getbaiviet', async (req, res) => {
           date: formatdatecmt
         };
       }));
+      const user =await User.findById(item.userId);
       return {
         _id: item._id,
-        userId: item.userId._id,
-        username: item.userId.username,
-        avatar:item.userId.avatar || '',
+        userId: item.userId,
+        username: user.username,
+        avatar:user.avatar || '',
         content: item.content,
         like: item.like,
         isLiked: item.isLiked,
