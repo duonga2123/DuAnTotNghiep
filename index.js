@@ -2159,7 +2159,7 @@ app.get('/topUsers', async (req, res) => {
 
     const extendedTopUsers = await Promise.all(
       topUsers.map(async (user) => {
-        const userInfo = await User.findById(user._id).select('username role');;
+        const userInfo = await User.findById(user._id).select('username role avatar');;
 
         return {
           userID: user._id,
