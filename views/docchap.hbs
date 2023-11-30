@@ -98,8 +98,8 @@
                 <p style="margin-top: 10px; margin-left: 50px;"><strong>Lượt xem:</strong> {{manga.view}}</p>
                 <p style="margin-top: 10px; margin-left: 50px;"><strong>{{manga.like}}</strong> người theo dõi</p>
                 <div  class="button-container">
-                    <button class="button" type="submit">Đọc từ đầu </button>
-                    <button class="button" type="submit">Đọc mới nhất </button>
+                    <button onclick="readFromStart()" class="button" type="submit">Đọc từ đầu </button>
+                    <button onclick="readLatest()" class="button" type="submit">Đọc mới nhất </button>
                 </div>
             </div>
         </div>
@@ -109,7 +109,7 @@
         <ul class="chapter-list">
             {{#each manga.chapters}}
             <li class="chapter-item">
-                <a href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
+                <a id="chapter-{{this.number}}" href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
                     Chương {{this.number}}
                 </a>
             </li>
@@ -120,6 +120,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+     <script>
+        function readFromStart() {
+            window.location.href = document.getElementById('chapter-1').getAttribute('href');
+        }
+
+        function readLatest() {
+            var latestChapterNumber = {{manga.chapters.length}};
+            window.location.href = document.getElementById('chapter-' + latestChapterNumber).getAttribute('href');
+        }
+    </script>
 </body>
 
 </html>
