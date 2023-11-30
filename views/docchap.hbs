@@ -25,6 +25,22 @@
             margin-bottom: 20px;
         }
 
+        .manga-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .manga-info img {
+            width: 200px;
+            height: 280px;
+            border-radius: 8px;
+        }
+
+        .manga-details {
+            flex: 1;
+        }
+
         .chapter-list {
             list-style: none;
             padding: 0;
@@ -53,17 +69,24 @@
 
     <div class="container">
         <h2 class="manga-title">{{manga.manganame}}</h2>
-        <p><strong>Author:</strong> {{manga.author}}</p>
-        <p><strong>Category:</strong> {{manga.category}}</p>
-        <p><strong>Content:</strong> {{manga.content}}</p>
+        <div class="manga-info">
+            <img src="{{manga.image}}" alt="{{manga.manganame}}">
+            <div class="manga-details">
+                <p><strong>Author:</strong> {{manga.author}}</p>
+                <p><strong>Category:</strong> {{manga.category}}</p>
+                <p><strong>Lượt xem:</strong> {{manga.view}}</p>
+                <p><strong>{{manga.like}}</strong> người theo dõi</p>
+                <p><strong>Content:</strong> {{manga.content}}</p>
+            </div>
+        </div>
         <h3>Danh Sách Chương</h3>
         <ul class="chapter-list">
             {{#each manga.chapters}}
-                <li class="chapter-item">
-                    <a href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
-                        Chương {{this.number}}
-                    </a>
-                </li>
+            <li class="chapter-item">
+                <a href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
+                    Chương {{this.number}}
+                </a>
+            </li>
             {{/each}}
         </ul>
     </div>
