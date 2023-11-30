@@ -2483,6 +2483,11 @@ app.get('/manga/:id/chapters', async (req, res) => {
       path: 'chapters',
       options: { sort: { number: 1 } }, // Sắp xếp chương theo số chương tăng dần
     });
+    manga.chapters.forEach(chapter => {
+      chapter.number = parseInt(chapter.number);
+
+    });
+    manga.chapters.sort((a, b) => a.number - b.number);
 
     if (!manga) {
       return res.status(404).json({ message: 'Truyện không tồn tại' });
