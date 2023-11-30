@@ -204,6 +204,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
+          avatar:usercmt.avatar || '',
           date: formatdatecmt
         };
       }));
@@ -240,6 +241,7 @@ app.get('/getbaiviet', async (req, res) => {
           userId: commentItem.userID,
           cmt: commentItem.cmt,
           username: usercmt.username,
+          avatar:usercmt.avatar || '',
           date: formatdatecmt
         };
       }));
@@ -278,6 +280,7 @@ app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
         userId: item.userID,
         cmt: item.cmt,
         username: user.username,
+        avatar:user.avatar || '',
         date: formatdatecmt
       };
     }))
@@ -1130,6 +1133,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         cmt_id: com._id,
         userID: com.userID,
         username: username,
+        avatar:userComment.avatar || '',
         cmt: com.cmt,
         date: formatdatecmt
       };
