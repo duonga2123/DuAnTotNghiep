@@ -211,7 +211,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       const user =await User.findById(item.userId);
       return {
         _id: item._id,
-        userId: item.userId,
+        userId: item.userId._id,
         username: user.username,
         avatar:user.avatar || '',
         content: item.content,
@@ -250,7 +250,7 @@ app.get('/getbaiviet', async (req, res) => {
       const user =await User.findById(item.userId);
       return {
         _id: item._id,
-        userId: item.userId,
+        userId: item.userId._id,
         username: user.username,
         avatar:user.avatar || '',
         content: item.content,
