@@ -49,11 +49,12 @@
         .button-container {
             display: flex;
             gap: 10px;
+            margin-left: 50px;
         }
 
         .button {
-            width: 100px;
-            height: 30px;
+            width: 120px;
+            height: 50px;
             background-color: rgb(237, 167, 4);
             border: none;
             border-radius: 5px;
@@ -91,11 +92,11 @@
         <div class="manga-info">
             <img src="{{manga.image}}" alt="{{manga.manganame}}">
             <div class="manga-details">
-                <p><strong>Author:</strong> {{manga.author}}</p>
-                <p><strong>Category:</strong> {{manga.category}}</p>
-                <p><strong>Lượt xem:</strong> {{manga.view}}</p>
-                <p><strong>{{manga.like}}</strong> người theo dõi</p>
-                <div class="button-container">
+                <p style="margin-top: 20px; margin-left: 50px;"><strong>Author:</strong> {{manga.author}}</p>
+                <p style="margin-top: 20px; margin-left: 50px;"><strong>Category:</strong> {{manga.category}}</p>
+                <p style="margin-top: 20px; margin-left: 50px;"><strong>Lượt xem:</strong> {{manga.view}}</p>
+                <p style="margin-top: 20px; margin-left: 50px;"><strong>{{manga.like}}</strong> người theo dõi</p>
+                <div  class="button-container">
                     <button class="button" type="submit">Đọc từ đầu </button>
                     <button class="button" type="submit">Đọc mới nhất </button>
                 </div>
