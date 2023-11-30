@@ -2241,7 +2241,7 @@ app.post('/login', async (req, res) => {
             password: user.password,
             role: user.role,
             coin: user.coin,
-            avatar:user.avatar,
+            avatar:user.avatar || '',
             __v: user.__v,
           },
         ],
@@ -2386,7 +2386,7 @@ app.get('/user/:userId', async (req, res) => {
       username: user.username,
       role: user.role,
       coin: user.coin,
-      avatar:user.avatar
+      avatar:user.avatar || ''
     })
   } catch (err) {
     console.error('Lỗi khi tìm user:', err);
