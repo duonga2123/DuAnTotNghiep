@@ -1,44 +1,71 @@
-<!-- views/chapters.hbs -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Chương</title>
+    <title>{{manga.manganame}}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .manga-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .chapter-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .chapter-item {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
         .chapter-link {
             display: block;
-            padding: 10px;
+            color: #212529;
             text-decoration: none;
-            color: #000;
-            transition: background-color 0.3s;
+            transition: color 0.3s;
         }
 
         .chapter-link:hover {
-            background-color: #f8f9fa;
+            color: #007bff;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container mt-4">
-        <h2>Danh Sách Chương - {{manga.manganame}}</h2>
-        <table>
-            <tbody>
-                {{#each manga.chapters}}
-                    <tr>
-                        <td>
-                            <a href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
-                                <span>Chương {{this.number}}</span>
-                            </a>
-                        </td>
-                    </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <div class="container">
+        <h2 class="manga-title">{{manga.manganame}}</h2>
+        <p><strong>Author:</strong> {{manga.author}}</p>
+        <p><strong>Category:</strong> {{manga.category}}</p>
+        <p><strong>Content:</strong> {{manga.content}}</p>
+        <h3>Danh Sách Chương</h3>
+        <ul class="chapter-list">
+            {{#each manga.chapters}}
+                <li class="chapter-item">
+                    <a href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
+                        Chương {{this.number}}
+                    </a>
+                </li>
+            {{/each}}
+        </ul>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
