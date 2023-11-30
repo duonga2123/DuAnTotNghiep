@@ -2165,6 +2165,7 @@ app.get('/topUsers', async (req, res) => {
           userID: user._id,
           username: userInfo.username,
           role: userInfo.role,
+          avatar:userInfo.avatar || '',
           totalAmount: user.totalAmount,
           coin: user.totalAmount * 10
         };
