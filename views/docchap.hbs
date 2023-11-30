@@ -39,7 +39,6 @@
 
         .manga-details {
             flex: 1;
-            margin-left: 30px;
             font-size: 20px;
             display: flex;
             flex-direction: column;
@@ -59,6 +58,7 @@
             border: none;
             border-radius: 5px;
             color: white;
+            font-size: 1em; /* hoặc sử dụng các giá trị khác như 1rem, tùy thuộc vào thiết kế mong muốn */
         }
 
         .chapter-list {
@@ -93,9 +93,9 @@
             <img src="{{manga.image}}" alt="{{manga.manganame}}">
             <div class="manga-details">
                 <p style="margin-top: 20px; margin-left: 50px;"><strong>Author:</strong> {{manga.author}}</p>
-                <p style="margin-top: 20px; margin-left: 50px;"><strong>Category:</strong> {{manga.category}}</p>
-                <p style="margin-top: 20px; margin-left: 50px;"><strong>Lượt xem:</strong> {{manga.view}}</p>
-                <p style="margin-top: 20px; margin-left: 50px;"><strong>{{manga.like}}</strong> người theo dõi</p>
+                <p style="margin-top: 10px; margin-left: 50px;"><strong>Category:</strong> {{manga.category}}</p>
+                <p style="margin-top: 10px; margin-left: 50px;"><strong>Lượt xem:</strong> {{manga.view}}</p>
+                <p style="margin-top: 10px; margin-left: 50px;"><strong>{{manga.like}}</strong> người theo dõi</p>
                 <div  class="button-container">
                     <button class="button" type="submit">Đọc từ đầu </button>
                     <button class="button" type="submit">Đọc mới nhất </button>
