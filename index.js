@@ -2193,6 +2193,11 @@ app.post('/register', async (req, res) => {
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
+    const exitphone=await User.findOne({phone});
+    if (exitphone) {
+      return res.status(400).json({ message: 'số điện thoại đã được đăng kí' });
+    }
+
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: 'Tên người dùng đã tồn tại' });
