@@ -910,6 +910,7 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
+					window.location.href = '#mangaManagerLink';
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
