@@ -407,7 +407,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
     if (!baiviet) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
-    const formattedDate = moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss');
+    const formattedDate = baiviet.date ? moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định';
     const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === baivietId.toString());
     const cmt = await Promise.all(baiviet.comment.map(async (item) => {
       const user = await User.findById(item.userID)
