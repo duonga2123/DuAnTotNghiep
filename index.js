@@ -811,7 +811,8 @@ app.post('/mangapost', async (req, res) => {
     categoryObject.manga.push(manga._id);
     await categoryObject.save();
 
-    res.status(201).json(manga);
+    const redirectScript = `<script>window.location.href = '/admin#mangaManagerLink';</script>`;
+    res.status(200).send(redirectScript);
   } catch (error) {
     console.error('Lỗi khi tạo truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo truyện' });
@@ -2325,8 +2326,9 @@ app.post('/userdelete/:_id', async (req, res) => {
     const hasUserCmtManga = await Manga.exists({ 'comment.userID': userId });
     const hasUserBaiviet = await Baiviet.exists({ userId: userId });
     const hasUserCommentsBaiviet = await Baiviet.exists({ 'comment.userID': userId });
+    const haspayment=await Payment.exists({userID:userId})
 
-    if (!hasUserCmtManga && !hasUserBaiviet && !hasUserCommentsBaiviet) {
+    if (!hasUserCmtManga && !hasUserBaiviet && !hasUserCommentsBaiviet && !haspayment) {
       const deletedUser = await User.findByIdAndRemove(userId);
       if (!deletedUser) {
         return res.status(404).json({ message: 'Người dùng không tồn tại.' });
@@ -2338,6 +2340,7 @@ app.post('/userdelete/:_id', async (req, res) => {
     await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
     await Baiviet.deleteMany({ userId: userId });
     await Baiviet.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
+    await Payment.deleteMany({userID:userId});
 
     const deletedUser = await User.findByIdAndRemove(userId);
     if (!deletedUser) {
