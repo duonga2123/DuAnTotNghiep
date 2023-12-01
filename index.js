@@ -750,7 +750,7 @@ app.post('/huymanga/:mangaId/:id', async (req, res) => {
     });
     await newNotification.save();
 
-    return res.status(202).json({ message: 'Hủy thành công' });
+    res.render('successadmin', { message: 'Hủy thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
@@ -775,7 +775,7 @@ app.post('/huymangaput/:mangaId/:id', async (req, res) => {
     });
     await newNotification.save();
 
-    return res.status(202).json({ message: 'Hủy thành công' });
+    res.render('successadmin', { message: 'Hủy thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
@@ -1784,8 +1784,7 @@ app.post('/huychap/:chapterId/:id', async (req, res) => {
       mangaId: chapterId
     });
     await newNotification.save();
-
-    return res.status(202).json({ message: 'Hủy thành công' });
+    res.render('successadmin', { message: 'Hủy thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
@@ -1810,7 +1809,7 @@ app.post('/huychapput/:chapterId/:id', async (req, res) => {
     });
     await newNotification.save();
 
-    return res.status(202).json({ message: 'Hủy thành công' });
+    res.render('successadmin', { message: 'Hủy thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
