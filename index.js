@@ -807,7 +807,7 @@ app.post('/mangapost', async (req, res) => {
       categoryObject.manga.push(manga._id);
       await categoryObject.save();
   
-      res.redirect('/successadmin',{message:'Truyện của bạn đã thêm thành công và đang đợi xét duyệt'});
+      res.render('successadmin',{message:'Truyện của bạn đã thêm thành công và đang đợi xét duyệt'});
     }
     else {
       manga.isRead = true
@@ -816,7 +816,7 @@ app.post('/mangapost', async (req, res) => {
       categoryObject.manga.push(manga._id);
       await categoryObject.save();
   
-      res.redirect('/successnhomdich',{message:'Thêm truyện thành công'});
+      res.render('successnhomdich', { message: 'Thêm truyện thành công' });
     }
   
   } catch (error) {
