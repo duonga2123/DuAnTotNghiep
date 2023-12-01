@@ -421,6 +421,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
         userId: item.userID,
         cmt: item.cmt,
         username: userbaiviet.username,
+        avatar:userbaiviet.avatar || '',
         date: formatdatecmt
       };
     }))
@@ -431,6 +432,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       username: user.username,
       avatar:user.avatar || '',
       content: baiviet.content,
+      image:baiviet.images,
       like: baiviet.like,
       isLiked: isLiked,
       date: formattedDate,
