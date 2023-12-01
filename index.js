@@ -411,7 +411,8 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
     const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === baivietId.toString());
     const cmt = await Promise.all(baiviet.comment.map(async (item) => {
       const user = await User.findById(item.userID)
-      const formatdatecmt = moment(item.date).format('DD/MM/YYYY HH:mm:ss')
+
+      const formatdatecmt = item.date ? moment(item.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định'
       return {
         _id: item._id,
         userId: item.userID,
