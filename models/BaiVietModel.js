@@ -5,7 +5,15 @@ userId:{type:mongoose.Schema.Types.ObjectId, ref:'user'},
 content:String,
 like:Number,
 content:String,
-comment:String
+comment:String,
+isLiked:{type:Boolean,default:false},
+comment: [{
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+    cmt: { type: String },
+    date:{type:Date}
+  }],
+  images: [String],
+  date: { type: Date }
 });
 
 const Baiviet = mongoose.model('baiviet', baivietSchema);

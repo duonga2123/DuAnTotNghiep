@@ -1,0 +1,62 @@
+<!-- views/anhchap.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Ảnh Chap</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Thêm CSS tùy chỉnh */
+        body {
+            background-color: #000; /* Màu đen cho nền */
+            color: rgb(75, 179, 243); /* Màu xanh da trời cho chữ */
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column; /* Chỉnh chiều dọc */
+            align-items: center; /* Căn giữa theo chiều ngang */
+        }
+
+        .image-item {
+            width: 100%; /* Ảnh sẽ chiếm full width của container */
+            max-width: 500px; /* Hoặc bạn có thể đặt giới hạn chiều rộng tối đa */
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 16px; /* Khoảng cách giữa các ảnh */
+        }
+
+        .image-item img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center; /* Căn giữa theo chiều ngang */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <h2> {{chapter.mangaName}} Chương {{chapter.number}}</h2>
+        <div class="image-container">
+            {{#each imageLinks}}
+                <div class="image-item">
+                    <img src="{{this}}" alt="Ảnh {{@index}}">
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
