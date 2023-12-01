@@ -661,7 +661,13 @@
 				</a>
 			</li>
 			<li>
-				<a href="#categoryManagerLink+" id="categoryManagerLink">
+				<a href="#" id="userManagerLink">
+					<i class='bx bxs-user'></i>
+					<span class="text">User Management</span>
+				</a>
+			</li>
+			<li>
+				<a href="#" id="categoryManagerLink">
 					<i class='bx bxs-category'></i>
 					<span class="text">Category Manager</span>
 				</a>
@@ -905,6 +911,7 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
@@ -918,6 +925,7 @@
 		const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
+			 event.preventDefault(); 
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {

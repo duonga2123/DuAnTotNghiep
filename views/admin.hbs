@@ -662,25 +662,41 @@
 				</a>
 			</li>
 			<li>
+<<<<<<< HEAD
 				<a href="#userManagerLink" id="userManagerLink">
+=======
+				<a href="" id="userManagerLink">
+>>>>>>> f533b403127f4ce42d01acc1a4939eeaa166b03e
 					<i class='bx bxs-user'></i>
 					<span class="text">User Management</span>
 				</a>
 			</li>
 			<li>
+<<<<<<< HEAD
 				<a href="#categoryManagerLink" id="categoryManagerLink">
+=======
+				<a href="" id="categoryManagerLink">
+>>>>>>> f533b403127f4ce42d01acc1a4939eeaa166b03e
 					<i class='bx bxs-category'></i>
 					<span class="text">Category Manager</span>
 				</a>
 			</li>
 			<li>
+<<<<<<< HEAD
 				<a id="mangaManagerLink" href="#mangaManagerLink">
+=======
+				<a id="mangaManagerLink" href="">
+>>>>>>> f533b403127f4ce42d01acc1a4939eeaa166b03e
 					<i class='bx bxs-book-bookmark'></i>
 					<span class="text">Manga Manager</span>
 				</a>
 			</li>
 			<li>
+<<<<<<< HEAD
 				<a id="chapterManagerLink" href="#chapterManagerLink">
+=======
+				<a id="chapterManagerLink" href="">
+>>>>>>> f533b403127f4ce42d01acc1a4939eeaa166b03e
 					<i class='bx bx bxs-file'></i>
 					<span class="text">Chapter Manager</span>
 				</a>
@@ -1132,6 +1148,7 @@
 
 				$(".editCategoryButton").click(function () {
 
+<<<<<<< HEAD
 				 var id = $(this).closest("tr").find(".user-id").text();
                 var username = $(this).closest("tr").find(".user-username").text();
                 var phone = $(this).closest("tr").find(".user-phone").text();
@@ -1140,9 +1157,20 @@
                 $("#editusername").val(username);
                 $("#editphone").val(phone);
                 $("#editrole").val(role);
+=======
+					var id = $(this).closest("tr").find("td:first").text();
+					var username = $(this).closest("tr").find("td:nth-child(2)").text();
+					var password = $(this).closest("tr").find("td:nth-child(3)").text();
+					var role = $(this).closest("tr").find("td:nth-child(4)").text();
+
+					$("#editusername").val(username);
+					$("#editpassword").val(username);
+					$("#editrole").val(role);
+>>>>>>> f533b403127f4ce42d01acc1a4939eeaa166b03e
 
 					$("#editCategoryForm").attr("action", "/userput/" + id);
 
+<<<<<<< HEAD
 					$("#editCategoryModal").modal("show");
 				});
 
@@ -1432,8 +1460,176 @@
 							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
 						});
 				});
+=======
+					$("#editCategoryForm").attr("action", "/userput/" + id);
+
+					$("#editCategoryModal").modal("show");
+				});
+
+>>>>>>> f533b403127f4ce42d01acc1a4939eeaa166b03e
 			});
 		}
+
+		const notificationManagerLink = document.getElementById('notification');
+		notificationManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/rendernotifi')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setupMangaPage()
+					mangasua()
+					annut()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+
+
+		fetch('/unread-count')
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
+				const notificationSpan = document.querySelector('.num');
+				notificationSpan.innerText = data.unreadCount.toString();
+			})
+			.catch(error => console.error(error));
+
+		function setupMangaPage() {
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+
+			mangaDetailButtons.forEach(button => {
+
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifi/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+						});
+				});
+			});
+		}
+		function annut() {
+
+			const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
+			const approveChapButtons = document.querySelectorAll('.approveChapButton');
+			const approvesuatruyen = document.querySelectorAll('.approvesuatruyen');
+			const approvesuachap = document.querySelectorAll('.approvesuachap');
+			const titleCells = document.querySelectorAll('.titleCell');
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+			const chapSuaDetailButtons = document.querySelectorAll('.chapsua-detail-button');
+			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+
+			approveMangaButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			approveChapButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			approvesuatruyen.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			approvesuachap.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			mangaSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			mangaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			chapSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+				button.style.display = 'none';
+			}
+		});
+
+		chapDetailButtons.forEach((button, index) => {
+			const title = titleCells[index].textContent.trim();
+			if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				button.style.display = 'none';
+			}
+		});
+		}
+
+		function mangasua() {
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+
+			mangaSuaDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifysua/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết sửa truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailContent').textContent = `Thể loại : ${data.category}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả : ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết sửa cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết sửa truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết sửa truyện.');
+						});
+				});
+			});
+		}
+
 	</script>
 </body>
 
