@@ -802,17 +802,23 @@ app.post('/mangapost', async (req, res) => {
       await notification.save();
 
       manga.isRead = false;
+      await manga.save();
+
+      categoryObject.manga.push(manga._id);
+      await categoryObject.save();
+  
+      res.redirect('/successadmin',{message:'Truyện của bạn đã thêm thành công và đang đợi xét duyệt'});
     }
     else {
       manga.isRead = true
+      await manga.save();
+
+      categoryObject.manga.push(manga._id);
+      await categoryObject.save();
+  
+      res.redirect('/successnhomdich',{message:'Thêm truyện thành công'});
     }
-    await manga.save();
-
-    categoryObject.manga.push(manga._id);
-    await categoryObject.save();
-
-    const redirectScript = `<script>window.location.href = '/admin#mangaManagerLink';</script>`;
-    res.status(200).send(redirectScript);
+  
   } catch (error) {
     console.error('Lỗi khi tạo truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo truyện' });
@@ -2340,7 +2346,7 @@ app.post('/userdelete/:_id', async (req, res) => {
     await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
     await Baiviet.deleteMany({ userId: userId });
     await Baiviet.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
-    await Payment.deleteMany({userID:userId});
+    await Payment.deleteMany({userID:userId})
 
     const deletedUser = await User.findByIdAndRemove(userId);
     if (!deletedUser) {
