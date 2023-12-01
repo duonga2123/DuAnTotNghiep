@@ -1119,9 +1119,6 @@ app.get('/userscreen', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách người dùng' });
   }
 });
-
-
-
 app.listen(8080, () =>
   console.log("Server is running on port 8080...")
 );
