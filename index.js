@@ -1046,7 +1046,6 @@ app.post('/mangaput/:_id', async (req, res) => {
       res.status(200).json({ message: 'Truyện vừa được sửa và đang đợi duyệt' })
     }
     else {
-      manga.userID='654b3d88d0411938859bd81b',
       manga.pendingChanges = undefined;
       manga.isApproved = true;
       manga.manganame = manganame;
