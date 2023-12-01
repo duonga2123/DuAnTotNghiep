@@ -7,47 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Template</title>
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-            font-family: 'Arial', sans-serif;
-        }
-
-        p {
-            font-weight: bold;
-            font-size: 50px;
-            color: #1E90FF;
-            text-align: center;
-            margin-bottom: 20px; 
-        }
-
-        button {
-            width: 150px;
-            height: 40px;
-            background-color: #1E90FF;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            display: inline-block;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     </style>
 </head>
 
-<body>
-    <p>{{message}}</p>
+<body class="d-flex justify-content-center align-items-center vh-100">
+    <p class="font-weight-bold display-4 text-primary">{{message}}</p>
+
+    <!-- Sử dụng lớp Bootstrap cho button -->
     <form action="/admin" method="get">
-        <button type="submit">Quay lại trang chủ</button>
+        <button class="btn btn-primary btn-lg" type="submit">Quay lại trang chủ</button>
     </form>
 </body>
 
