@@ -2102,7 +2102,7 @@ app.get('/paymentdetail/:userid', async (req, res) => {
     const userid = req.params.userid
     const user = await User.findById(userid);
     if (!user) {
-      return res.status(404).json({ message: 'Người dùng không tồn tại' });
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
     }
     const paymentDetails = await Payment.find({ userID: userid, success: 'thanh toán thành công' });
 
