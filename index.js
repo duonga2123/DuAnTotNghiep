@@ -429,7 +429,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       _id: baivietId,
       userId: userId,
       username: user.username,
-      avatar:user.avatar,
+      avatar:user.avatar || '',
       content: baiviet.content,
       like: baiviet.like,
       isLiked: isLiked,
