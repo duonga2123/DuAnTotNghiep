@@ -9,23 +9,12 @@ const cheerio = require('cheerio');
 const moment = require('moment');
 const momenttimezone = require('moment-timezone');
 const session = require('express-session');
-const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken');
-const paypal = require('paypal-rest-sdk');
-const cheerio = require('cheerio');
-const moment = require('moment');
-const momenttimezone = require('moment-timezone');
-const session = require('express-session');
 const Category = require('./models/CategoryModel')
 const multer = require('multer')
 const Manga = require('./models/MangaModel')
 const Chapter = require('./models/ChapterModel')
 const Payment = require('./models/PaymentModel')
-const Chapter = require('./models/ChapterModel')
-const Payment = require('./models/PaymentModel')
 const Baiviet = require('./models/BaiVietModel')
-const Notification = require('./models/NotifyModel')
-const NotificationBaiviet = require('./models/NotifyBaiVietModel')
 const Notification = require('./models/NotifyModel')
 const NotificationBaiviet = require('./models/NotifyBaiVietModel')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
@@ -68,7 +57,7 @@ const mongoStoreOptions = {
 };
 
 
-app.use(cookieParser());
+
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
