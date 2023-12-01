@@ -400,11 +400,14 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
     const userId = req.params.userId;
     const baivietId = req.params.baivietId;
     const user = await User.findById(userId)
+    if (!baivietId) {
+      return res.status(400).json({ message: 'Thiếu thông tin bài viết.' });
+    }
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
     const baiviet = await Baiviet.findById(baivietId);
-    if (!baiviet) {
+    if (!baiviet ) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
     const formattedDate = baiviet.date ? moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định';
