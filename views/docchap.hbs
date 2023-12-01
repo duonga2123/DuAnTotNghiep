@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{manga.manganame}}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .manga-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .manga-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .manga-info img {
+            width: 200px;
+            height: 300px;
+            border-radius: 8px;
+        }
+
+        .manga-details {
+            flex: 1;
+            font-size: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-left: 50px;
+        }
+
+        .button {
+            width: 120px;
+            height: 40px;
+            background-color: rgb(237, 167, 4);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 13px; 
+        }
+
+        .chapter-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .chapter-item {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        .chapter-link {
+            display: block;
+            color: #212529;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .chapter-link:hover {
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 class="manga-title">{{manga.manganame}}</h2>
+        <div class="manga-info">
+            <img src="{{manga.image}}" alt="{{manga.manganame}}">
+            <div class="manga-details">
+                <p style="margin-left: 50px;"><strong>Author:</strong> {{manga.author}}</p>
+                <p style="margin-top: 10px; margin-left: 50px;"><strong>Category:</strong> {{manga.category}}</p>
+                <p style="margin-top: 10px; margin-left: 50px;"><strong>Lượt xem:</strong> {{manga.view}}</p>
+                <p style="margin-top: 10px; margin-left: 50px;"><strong>{{manga.like}}</strong> người theo dõi</p>
+                <div  class="button-container">
+                    <button onclick="readFromStart()" class="button" type="submit">Đọc từ đầu </button>
+                    <button onclick="readLatest()" class="button" type="submit">Đọc mới nhất </button>
+                </div>
+            </div>
+        </div>
+        <h3 style="margin-top: 20px;">Content:</h3>
+        <p>{{manga.content}}</p>
+        <h3>Danh Sách Chương</h3>
+        <ul class="chapter-list">
+            {{#each manga.chapters}}
+            <li class="chapter-item">
+                <a id="chapter-{{this.number}}" href="/chapter/{{this._id}}/images" target="_blank" rel="noopener" class="chapter-link">
+                    Chương {{this.number}}
+                </a>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+     <script>
+        function readFromStart() {
+            window.location.href = document.getElementById('chapter-1').getAttribute('href');
+        }
+
+        function readLatest() {
+            var latestChapterNumber = {{manga.chapters.length}};
+            window.location.href = document.getElementById('chapter-' + latestChapterNumber).getAttribute('href');
+        }
+    </script>
+</body>
+
+</html>
