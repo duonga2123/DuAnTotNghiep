@@ -921,13 +921,32 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
+					window.location.hash = 'mangaManagerLink'; // Sử dụng location.hash thay vì window.location.href
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+
+		// Thêm sự kiện hashchange để xử lý khi hash thay đổi
+		window.addEventListener("hashchange", function () {
+			const currentHash = window.location.hash;
+
+			if (currentHash === '#mangaManagerLink') {
+				// Xử lý sự kiện khi hash là #mangaManagerLink
+				fetch('/mangass')
+					.then(response => response.text())
+					.then(data => {
+						const mainContent = document.querySelector("#content main");
+						mainContent.innerHTML = data;
+					})
+					.catch(error => console.error('Đã xảy ra lỗi:', error));
+			}
 		});
 
 		const chapterManagerLink = document.getElementById('chapterManagerLink');
@@ -1130,14 +1149,14 @@
 
 				$(".editCategoryButton").click(function () {
 
-				 var id = $(this).closest("tr").find(".user-id").text();
-                var username = $(this).closest("tr").find(".user-username").text();
-                var phone = $(this).closest("tr").find(".user-phone").text();
-                var role = $(this).closest("tr").find(".user-role").text();
+					var id = $(this).closest("tr").find(".user-id").text();
+					var username = $(this).closest("tr").find(".user-username").text();
+					var phone = $(this).closest("tr").find(".user-phone").text();
+					var role = $(this).closest("tr").find(".user-role").text();
 
-                $("#editusername").val(username);
-                $("#editphone").val(phone);
-                $("#editrole").val(role);
+					$("#editusername").val(username);
+					$("#editphone").val(phone);
+					$("#editrole").val(role);
 
 					$("#editCategoryForm").attr("action", "/userput/" + id);
 
