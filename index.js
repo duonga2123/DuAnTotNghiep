@@ -444,6 +444,7 @@ app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
     const baivietid = req.params.baivietid
     const userId = req.params.userId
     const baiviet = await Baiviet.findByIdAndDelete(baivietid)
+    await NotificationBaiviet.deleteMany({baivietId:baivietid})
     const user = await User.findById(userId)
     if (!user) {
       return res.status(404).json("không tìm thấy user")
@@ -2347,7 +2348,7 @@ app.post('/userdelete/:_id', async (req, res) => {
     await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
     await Baiviet.deleteMany({ userId: userId });
     await Baiviet.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
-    await Payment.deleteMany({userID:userId})
+    await Payment.deleteMany({userID:userId});
 
     const deletedUser = await User.findByIdAndRemove(userId);
     if (!deletedUser) {
