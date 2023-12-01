@@ -1115,7 +1115,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    const { manganame, author, content, image, category, view, like, chapters, comment, link } = manga;
+    const { manganame, author, content, image, category, view, like, chapters, comment, link,userID } = manga;
 
     const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
     const uniqueChapters = [];
@@ -1160,7 +1160,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       };
       allComments.push(commentInfo);
     }
-
+const nhomdich=await User.findById(userID);
     const response = {
       mangaID: mangaId,
       manganame: manganame,
@@ -1168,6 +1168,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       content: content,
       image: image,
       category: category,
+      nhomdich:nhomdich.username,
       view: view,
       like: like,
       linktruyen:link,
@@ -2577,7 +2578,30 @@ app.post('/doiavatar/:userId',upload.single('avatar'), async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi avatar.' });
   }
 })
-
+app.get('/getnhomdich/:nhomdichId',async(req,res)=>{
+  try {
+    const nhomdichId=req.params.nhomdichId;
+    const nhomdich=await User.findById(nhomdichId);
+    if(!nhomdich){
+      res.status(403).json({message:'không tìm thấy nhóm dịch'})
+    }
+    const manga=await Manga.find({userID:nhomdichId});
+    if(!manga){
+      res.status(404).json({message:'không tìm thấy manga'})
+    }
+    res.json({
+      userId:nhomdichId,
+      username:nhomdich.username,
+      avatar:nhomdich.avatar || '',
+      phone:nhomdich.phone,
+      baiviet:nhomdich.baiviet,
+      manga:manga
+    })
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin nhóm dịch:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
+  }
+})
 
 app.listen(8080, () => {
   try {
