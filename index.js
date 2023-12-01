@@ -204,16 +204,16 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
-          avatar:usercmt.avatar || '',
+          avatar: usercmt.avatar || '',
           date: formatdatecmt
         };
       }));
-      const userbaiviet =await User.findById(item.userId);
+      const userbaiviet = await User.findById(item.userId);
       return {
         _id: item._id,
         userId: item.userId._id,
         username: userbaiviet.username,
-        avatar:userbaiviet.avatar || '',
+        avatar: userbaiviet.avatar || '',
         content: item.content,
         like: item.like,
         isLiked: isLiked,
@@ -243,16 +243,16 @@ app.get('/getbaiviet', async (req, res) => {
           userId: commentItem.userID,
           cmt: commentItem.cmt,
           username: usercmt.username,
-          avatar:usercmt.avatar || '',
+          avatar: usercmt.avatar || '',
           date: formatdatecmt
         };
       }));
-      const user =await User.findById(item.userId);
+      const user = await User.findById(item.userId);
       return {
         _id: item._id,
         userId: item.userId._id,
         username: user.username,
-        avatar:user.avatar || '',
+        avatar: user.avatar || '',
         content: item.content,
         like: item.like,
         isLiked: item.isLiked,
@@ -284,7 +284,7 @@ app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
         userId: item.userID,
         cmt: item.cmt,
         username: user.username,
-        avatar:user.avatar || '',
+        avatar: user.avatar || '',
         date: formatdatecmt
       };
     }))
@@ -407,7 +407,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
     const baiviet = await Baiviet.findById(baivietId);
-    if (!baiviet ) {
+    if (!baiviet) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
     const formattedDate = baiviet.date ? moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định';
@@ -421,7 +421,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
         userId: item.userID,
         cmt: item.cmt,
         username: userbaiviet.username,
-        avatar:userbaiviet.avatar || '',
+        avatar: userbaiviet.avatar || '',
         date: formatdatecmt
       };
     }))
@@ -430,9 +430,9 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       _id: baivietId,
       userId: userId,
       username: user.username,
-      avatar:user.avatar || '',
+      avatar: user.avatar || '',
       content: baiviet.content,
-      image:baiviet.images,
+      image: baiviet.images,
       like: baiviet.like,
       isLiked: isLiked,
       date: formattedDate,
@@ -450,7 +450,7 @@ app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
     const baivietid = req.params.baivietid
     const userId = req.params.userId
     const baiviet = await Baiviet.findByIdAndDelete(baivietid)
-    await NotificationBaiviet.deleteMany({baivietId:baivietid})
+    await NotificationBaiviet.deleteMany({ baivietId: baivietid })
     const user = await User.findById(userId)
     if (!user) {
       return res.status(404).json("không tìm thấy user")
@@ -756,14 +756,14 @@ app.post('/huymanga/:mangaId/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
   }
 })
-app.post('/huymangaput/:mangaId/:id', async(req,res)=>{
+app.post('/huymangaput/:mangaId/:id', async (req, res) => {
   try {
     const mangaId = req.params.mangaId;
     const notifyId = req.params.id;
     const { reason } = req.body
     const manga = await Manga.findById(mangaId);
     const notify = await Notification.findByIdAndDelete(notifyId);
-    manga.pendingChanges=undefined;
+    manga.pendingChanges = undefined;
     await manga.save();
 
     const newNotification = new Notification({
@@ -812,7 +812,7 @@ app.post('/mangapost', async (req, res) => {
       await manga.save();
       categoryObject.manga.push(manga._id);
       await categoryObject.save();
-      res.render('successnhomdich',{message:'Truyện của bạn đã thêm thành công và đang đợi xét duyệt'});
+      res.render('successnhomdich', { message: 'Truyện của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
       manga.isRead = true
@@ -821,7 +821,7 @@ app.post('/mangapost', async (req, res) => {
       await categoryObject.save();
       res.render('successadmin', { message: 'Thêm truyện thành công' });
     }
-  
+
   } catch (error) {
     console.error('Lỗi khi tạo truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo truyện' });
@@ -989,7 +989,7 @@ app.post('/mangaput/:_id', async (req, res) => {
   try {
     const userId = req.session.userId;
     const mangaId = req.params._id;
-    const { manganame, author, content, category, view, like, image,link } = req.body;
+    const { manganame, author, content, category, view, like, image, link } = req.body;
     const user = await User.findById(userId);
     if (!user || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -1038,7 +1038,7 @@ app.post('/mangaput/:_id', async (req, res) => {
         isRead: false,
       });
       await Promise.all([manga.save(), notification.save()]);
-      res.render('successnhomdich',{message:'Truyện của bạn vừa được sửa và đang đợi duyệt'});
+      res.render('successnhomdich', { message: 'Truyện của bạn vừa được sửa và đang đợi duyệt' });
     }
     else {
       manga.pendingChanges = undefined;
@@ -1050,9 +1050,9 @@ app.post('/mangaput/:_id', async (req, res) => {
       manga.view = view;
       manga.like = like;
       manga.image = image;
-      manga.link=link
+      manga.link = link
       await manga.save();
-      res.render('successadmin',{message:'Sửa truyện thành công'});
+      res.render('successadmin', { message: 'Sửa truyện thành công' });
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật truyện:', error);
@@ -1061,8 +1061,12 @@ app.post('/mangaput/:_id', async (req, res) => {
 });
 app.post('/mangadelete/:_id', async (req, res) => {
   try {
+    const userId = req.session.userId;
     const mangaId = req.params._id;
-
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'user không tồn tại.' });
+    }
 
     const deletedManga = await Manga.findByIdAndRemove(mangaId);
 
@@ -1076,8 +1080,11 @@ app.post('/mangadelete/:_id', async (req, res) => {
       category.manga = category.manga.filter((id) => id.toString() !== mangaId);
       await category.save();
     }
-
-    res.json({ message: 'truyện đã được xóa thành công.' });
+    if (user.role === 'nhomdich') {
+      res.render('successnhomdich', { message: 'Xóa truyện thành công' });
+    } else {
+      res.render('successadmin', { message: 'Xóa truyện thành công' });
+    }
   } catch (error) {
     console.error('Lỗi khi xóa truyện:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa truyện.' });
@@ -1110,7 +1117,7 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
 
-    const { manganame, author, content, image, category, view, like, chapters, comment, link,userID } = manga;
+    const { manganame, author, content, image, category, view, like, chapters, comment, link, userID } = manga;
 
     const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
     const uniqueChapters = [];
@@ -1149,13 +1156,13 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         cmt_id: com._id,
         userID: com.userID,
         username: username,
-        avatar:userComment.avatar || '',
+        avatar: userComment.avatar || '',
         cmt: com.cmt,
         date: formatdatecmt
       };
       allComments.push(commentInfo);
     }
-const nhomdich=await User.findById(userID);
+    const nhomdich = await User.findById(userID);
     const response = {
       mangaID: mangaId,
       manganame: manganame,
@@ -1163,11 +1170,11 @@ const nhomdich=await User.findById(userID);
       content: content,
       image: image,
       category: category,
-      nhomdichId:userID,
-      nhomdich:nhomdich.username,
+      nhomdichId: userID,
+      nhomdich: nhomdich.username,
       view: view,
       like: like,
-      linktruyen:link,
+      linktruyen: link,
       totalChapters: uniqueChapters.length,
       chapters: uniqueChapters.map(chapter => ({
         idchap: chapter._id,
@@ -1508,14 +1515,14 @@ app.post('/chapters', async (req, res) => {
       await chapter.save();
       manga.chapters.push(chapter._id);
       await manga.save();
-      res.render('successnhomdich',{message:'Chap của bạn đã thêm thành công và đang đợi xét duyệt'});
+      res.render('successnhomdich', { message: 'Chap của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
       chapter.isChap = true
       await chapter.save();
       manga.chapters.push(chapter._id);
       await manga.save();
-      res.render('successadmin',{message:'Thêm chap thành công'});
+      res.render('successadmin', { message: 'Thêm chap thành công' });
     }
   } catch (error) {
     console.error('Lỗi khi tạo chương:', error);
@@ -1577,7 +1584,7 @@ app.post('/chapterput/:_id', async (req, res) => {
         isRead: false,
       });
       await Promise.all([chapter.save(), notification.save()]);
-      res.render('successnhomdich',{message:'Chap của bạn vừa được sửa và đang đợi duyệt'});
+      res.render('successnhomdich', { message: 'Chap của bạn vừa được sửa và đang đợi duyệt' });
     }
     else {
       chapter.pendingChanges = undefined;
@@ -1589,7 +1596,7 @@ app.post('/chapterput/:_id', async (req, res) => {
         chapter.images = imageArray,
         chapter.isChap = true
       await chapter.save();
-      res.render('successadmin',{message:'Chap sửa thành công'});
+      res.render('successadmin', { message: 'Chap sửa thành công' });
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật chương:', error);
@@ -1600,8 +1607,11 @@ app.post('/chapterput/:_id', async (req, res) => {
 app.post('/chapterdelete/:_id', async (req, res) => {
   try {
     const chapterId = req.params._id;
-
-
+    const user=await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'user không tồn tại.' });
+    }
+   
     const deletedChapter = await Chapter.findByIdAndRemove(chapterId);
 
     if (!deletedChapter) {
@@ -1615,7 +1625,11 @@ app.post('/chapterdelete/:_id', async (req, res) => {
       await manga.save();
     }
 
-    res.redirect("/admin")
+    if(user.role === 'nhomdich'){
+      res.render('successnhomdich',{message:'Xóa chap thành công'});
+    }else{
+      res.render('successadmin',{message:'Xóa chap thành công'});
+    }
   } catch (error) {
     console.error('Lỗi khi xóa chương:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa chương.' });
@@ -1777,14 +1791,14 @@ app.post('/huychap/:chapterId/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
   }
 })
-app.post('/huychapput/:chapterId/:id', async(req,res)=>{
+app.post('/huychapput/:chapterId/:id', async (req, res) => {
   try {
     const chapterId = req.params.chapterId;
     const notifyId = req.params.id;
     const { reason } = req.body
     const chapter = await Chapter.findById(chapterId);
     const notify = await Notification.findByIdAndDelete(notifyId);
-    chapter.pendingChanges=undefined;
+    chapter.pendingChanges = undefined;
     await chapter.save();
 
     const newNotification = new Notification({
@@ -2181,7 +2195,7 @@ app.get('/topUsers', async (req, res) => {
           userID: user._id,
           username: userInfo.username,
           role: userInfo.role,
-          avatar:userInfo.avatar || '',
+          avatar: userInfo.avatar || '',
           totalAmount: user.totalAmount,
           coin: user.totalAmount * 10
         };
@@ -2204,7 +2218,7 @@ app.post('/register', async (req, res) => {
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
-    const exitphone=await User.findOne({phone});
+    const exitphone = await User.findOne({ phone });
     if (exitphone) {
       return res.status(400).json({ message: 'số điện thoại đã được đăng kí' });
     }
@@ -2269,7 +2283,7 @@ app.post('/login', async (req, res) => {
             password: user.password,
             role: user.role,
             coin: user.coin,
-            avatar:user.avatar || '',
+            avatar: user.avatar || '',
             __v: user.__v,
           },
         ],
@@ -2336,7 +2350,7 @@ app.post('/userdelete/:_id', async (req, res) => {
     const hasUserCmtManga = await Manga.exists({ 'comment.userID': userId });
     const hasUserBaiviet = await Baiviet.exists({ userId: userId });
     const hasUserCommentsBaiviet = await Baiviet.exists({ 'comment.userID': userId });
-    const haspayment=await Payment.exists({userID:userId})
+    const haspayment = await Payment.exists({ userID: userId })
 
     if (!hasUserCmtManga && !hasUserBaiviet && !hasUserCommentsBaiviet && !haspayment) {
       const deletedUser = await User.findByIdAndRemove(userId);
@@ -2350,7 +2364,7 @@ app.post('/userdelete/:_id', async (req, res) => {
     await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
     await Baiviet.deleteMany({ userId: userId });
     await Baiviet.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
-    await Payment.deleteMany({userID:userId});
+    await Payment.deleteMany({ userID: userId });
 
     const deletedUser = await User.findByIdAndRemove(userId);
     if (!deletedUser) {
@@ -2416,7 +2430,7 @@ app.get('/user/:userId', async (req, res) => {
       username: user.username,
       role: user.role,
       coin: user.coin,
-      avatar:user.avatar || ''
+      avatar: user.avatar || ''
     })
   } catch (err) {
     console.error('Lỗi khi tìm user:', err);
@@ -2552,12 +2566,12 @@ app.get('/chapter/:_id/images', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách ảnh chap.' });
   }
 });
-app.post('/doiavatar/:userId',upload.single('avatar'), async(req,res)=>{
+app.post('/doiavatar/:userId', upload.single('avatar'), async (req, res) => {
   try {
-    const userId=req.params.userId;
-    const user=await User.findById(userId);
-    if(!user){
-      res.status(403).json({message:'không tìm thấy user'})
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
     }
     if (!req.file) {
       return res.status(400).json({ message: 'Vui lòng chọn một file ảnh.' });
@@ -2566,31 +2580,31 @@ app.post('/doiavatar/:userId',upload.single('avatar'), async(req,res)=>{
     const avatar = req.file.buffer.toString('base64');
     user.avatar = avatar;
     await user.save();
-    
+
     return res.status(200).json({ message: 'Đổi avatar thành công.' });
   } catch (error) {
     console.error('Lỗi khi đổi avatar:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi avatar.' });
   }
 })
-app.get('/getnhomdich/:nhomdichId',async(req,res)=>{
+app.get('/getnhomdich/:nhomdichId', async (req, res) => {
   try {
-    const nhomdichId=req.params.nhomdichId;
-    const nhomdich=await User.findById(nhomdichId);
-    if(!nhomdich){
-      res.status(403).json({message:'không tìm thấy nhóm dịch'})
+    const nhomdichId = req.params.nhomdichId;
+    const nhomdich = await User.findById(nhomdichId);
+    if (!nhomdich) {
+      res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
     }
-    const manga=await Manga.find({userID:nhomdichId});
-    if(!manga){
-      res.status(404).json({message:'không tìm thấy manga'})
+    const manga = await Manga.find({ userID: nhomdichId });
+    if (!manga) {
+      res.status(404).json({ message: 'không tìm thấy manga' })
     }
     res.json({
-      userId:nhomdichId,
-      username:nhomdich.username,
-      avatar:nhomdich.avatar || '',
-      phone:nhomdich.phone,
-      baiviet:nhomdich.baiviet,
-      manga:manga
+      userId: nhomdichId,
+      username: nhomdich.username,
+      avatar: nhomdich.avatar || '',
+      phone: nhomdich.phone,
+      baiviet: nhomdich.baiviet,
+      manga: manga
     })
   } catch (error) {
     console.error('Lỗi khi lấy thông tin nhóm dịch:', error);
