@@ -806,24 +806,19 @@ app.post('/mangapost', async (req, res) => {
         mangaId: manga._id
       });
 
-
       await notification.save();
 
       manga.isRead = false;
       await manga.save();
-
       categoryObject.manga.push(manga._id);
       await categoryObject.save();
-  
       res.render('successnhomdich',{message:'Truyện của bạn đã thêm thành công và đang đợi xét duyệt'});
     }
     else {
       manga.isRead = true
       await manga.save();
-
       categoryObject.manga.push(manga._id);
       await categoryObject.save();
-  
       res.render('successadmin', { message: 'Thêm truyện thành công' });
     }
   
@@ -1043,7 +1038,7 @@ app.post('/mangaput/:_id', async (req, res) => {
         isRead: false,
       });
       await Promise.all([manga.save(), notification.save()]);
-      res.status(200).json({ message: 'Truyện vừa được sửa và đang đợi duyệt' })
+      res.render('successnhomdich',{message:'Truyện của bạn vừa được sửa và đang đợi duyệt'});
     }
     else {
       manga.pendingChanges = undefined;
@@ -1057,7 +1052,7 @@ app.post('/mangaput/:_id', async (req, res) => {
       manga.image = image;
       manga.link=link
       await manga.save();
-      res.status(200).json({ message: 'Truyện sửa thành công' })
+      res.render('successadmin',{message:'Sửa truyện thành công'});
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật truyện:', error);
@@ -1510,17 +1505,18 @@ app.post('/chapters', async (req, res) => {
       await notification.save();
 
       chapter.isChap = false;
+      await chapter.save();
+      manga.chapters.push(chapter._id);
+      await manga.save();
+      res.render('successnhomdich',{message:'Chap của bạn đã thêm thành công và đang đợi xét duyệt'});
     }
     else {
       chapter.isChap = true
+      await chapter.save();
+      manga.chapters.push(chapter._id);
+      await manga.save();
+      res.render('successadmin',{message:'Thêm chap thành công'});
     }
-    await chapter.save();
-
-
-    manga.chapters.push(chapter._id);
-    await manga.save();
-
-    res.status(201).json(chapter);
   } catch (error) {
     console.error('Lỗi khi tạo chương:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo chương' });
@@ -1581,7 +1577,7 @@ app.post('/chapterput/:_id', async (req, res) => {
         isRead: false,
       });
       await Promise.all([chapter.save(), notification.save()]);
-      res.status(200).json({ message: 'Chap vừa được sửa và đang đợi duyệt' })
+      res.render('successnhomdich',{message:'Chap của bạn vừa được sửa và đang đợi duyệt'});
     }
     else {
       chapter.pendingChanges = undefined;
@@ -1593,7 +1589,7 @@ app.post('/chapterput/:_id', async (req, res) => {
         chapter.images = imageArray,
         chapter.isChap = true
       await chapter.save();
-      res.status(200).json({ message: 'Chap sửa thành công' })
+      res.render('successadmin',{message:'Chap sửa thành công'});
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật chương:', error);
@@ -2198,8 +2194,6 @@ app.get('/topUsers', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy top người dùng' });
   }
 });
-
-
 
 //api đăng kí
 app.post('/register', async (req, res) => {
