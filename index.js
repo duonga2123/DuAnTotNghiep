@@ -413,14 +413,14 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
     const formattedDate = baiviet.date ? moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định';
     const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === baivietId.toString());
     const cmt = await Promise.all(baiviet.comment.map(async (item) => {
-      const user = await User.findById(item.userID)
+      const userbaiviet = await User.findById(item.userID)
 
       const formatdatecmt = item.date ? moment(item.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định'
       return {
         _id: item._id,
         userId: item.userID,
         cmt: item.cmt,
-        username: user.username,
+        username: userbaiviet.username,
         date: formatdatecmt
       };
     }))
