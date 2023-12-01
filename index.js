@@ -1168,6 +1168,7 @@ const nhomdich=await User.findById(userID);
       content: content,
       image: image,
       category: category,
+      nhomdichId:userID,
       nhomdich:nhomdich.username,
       view: view,
       like: like,
