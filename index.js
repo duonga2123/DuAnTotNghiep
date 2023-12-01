@@ -56,8 +56,6 @@ const mongoStoreOptions = {
   collection: 'sessions', // Tên collection lưu trữ session trong MongoDB
 };
 
-
-
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
