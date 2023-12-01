@@ -7,16 +7,50 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Template</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h3 {
+            font-size: 24px;
+            color: #1E90FF;
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        button {
+            width: 150px;
+            height: 40px;
+            margin-top: 10px;
+            background-color: #1E90FF;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 
 <body>
     <h3>{{message}}</h3>
     <form action="/admin" method="get">
-        <button
-            style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
-            type="submit">Quay lại trang chủ</button>
+        <button type="submit">Quay lại trang chủ</button>
     </form>
-
 </body>
 
 </html>
