@@ -2676,6 +2676,79 @@ app.get('/getfollow/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện yêu thích.' });
   }
 });
+app.post('/unfollow/:nhomdichId/:userId', async(req,res)=>{
+  try {
+    const nhomdichId=req.params.nhomdichId
+    const userId=req.params.userId
+    const nhomdich=await User.findById(nhomdichId);
+    if(!nhomdich){
+      res.status(403).json({message:'nhóm dịch không tồn tại'})
+    }
+    const user= await User.findById(userId)
+    if(!user){
+      res.status(403).json({message:'user không tồn tại'})
+    }
+  
+    if (!user.follow.some(nhomdich => nhomdich._id.toString() === nhomdichId)) {
+      return res.status(400).json({ message: 'Nhóm dịch không tồn tại trong danh sách follow.' });
+    }
+   
+    user.follow = user.follow.filter(nhomdich => nhomdich._id.toString() !== nhomdichId); // Xóa truyện yêu thích khỏi danh sách
+
+    await user.save();
+ 
+    res.json({ message: `bạn đã unfollow nhóm dịch ${nhomdich.username}` });
+
+  } catch (error) {
+    console.error('Lỗi khi unfollow nhóm dịch:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi unfollow nhóm dịch.' });
+  }
+})
+app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
+  try {
+    const nhomdichId = req.params.nhomdichId;
+    const userId=req.params.userId
+    const nhomdich = await User.findById(nhomdichId);
+    if (!nhomdich) {
+      res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
+    }
+    const manga = await Manga.find({ userID: nhomdichId });
+    if (!manga) {
+      res.status(404).json({ message: 'không tìm thấy manga' })
+    }
+    const user= await User.findById(userId)
+    if(!user){
+      res.status(403).json({message:'user không tồn tại'})
+    }
+    let isFollow = false;
+    user.follow.forEach(follow => {
+      if (follow.nhomdichId.toString() === nhomdichId) {
+        isFollow = follow.isfollow;
+      }
+    });
+    const formatmanga=manga.map(manga =>({
+      id: manga._id,
+      manganame: manga.manganame,
+      author: manga.author,
+      image: manga.image,
+      category: manga.category,
+      totalChapters: manga.chapters.length,
+      view: manga.view
+    }))
+    res.json({
+      userId: nhomdichId,
+      username: nhomdich.username,
+      avatar: nhomdich.avatar || '',
+      phone: nhomdich.phone,
+      isfollow:isFollow,
+      manga: formatmanga
+    })
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin nhóm dịch:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
+  }
+})
+
 
 
 app.listen(8080, () => {
