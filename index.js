@@ -2616,6 +2616,67 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
+app.post('/follow/:nhomdichId/:userId', async(req,res)=>{
+  try {
+    const nhomdichId=req.params.nhomdichId
+    const userId=req.params.userId
+    const nhomdich=await User.findById(nhomdichId);
+    if(!nhomdich){
+      res.status(403).json({message:'nhóm dịch không tồn tại'})
+    }
+    const user= await User.findById(userId)
+    if(!user){
+      res.status(403).json({message:'user không tồn tại'})
+    }
+    const nhomdichIndex = user.follow.findIndex(nhomdich => nhomdich._id === nhomdichId);
+
+    if (nhomdichIndex === -1) {
+      user.follow.push({ nhomdichId, isfollow: true });
+    } else {
+      user.follow[nhomdichIndex].isfollow = true;
+    }
+    await user.save();
+
+    res.json({ message: `bạn đã follow nhóm dịch ${nhomdich.username}` });
+
+  } catch (error) {
+    console.error('Lỗi khi follow nhóm dịch:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi follow nhóm dịch.' });
+  }
+})
+app.get('/getfollow/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Tìm người dùng dựa trên userId
+    const user = await User.findById(userId).populate({
+      path: 'follow',
+      populate: {
+        path: 'nhomdichId',
+        model: 'user'
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
+    const favoriteMangaList = user.follow.map(follow => {
+      return {
+        id: follow.nhomdichId._id,
+        username: follow.nhomdichId.username,
+        avatar: follow.nhomdichId.avatar,
+        phone: follow.nhomdichId.phone
+      };
+    });
+
+    res.json(favoriteMangaList);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách truyện yêu thích:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện yêu thích.' });
+  }
+});
+
 
 app.listen(8080, () => {
   try {

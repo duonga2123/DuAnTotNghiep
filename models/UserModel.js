@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
   favoriteBaiviet:[{
     baivietId: { type: mongoose.Schema.Types.ObjectId, ref: 'baiviet' },
     isLiked: { type: Boolean, default: false },
+  }],
+  follow:[{
+    nhomdichId: {type:mongoose.Schema.Types.ObjectId,ref:'user'},
+    isfollow:{type:Boolean, default:false}
   }]
 });
 
