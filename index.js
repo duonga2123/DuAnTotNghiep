@@ -2180,7 +2180,7 @@ app.get('/topUsers', async (req, res) => {
         $sort: { totalAmount: -1 },
       },
       {
-        $limit: 5,
+        $limit: 10,
       },
     ]);
 
