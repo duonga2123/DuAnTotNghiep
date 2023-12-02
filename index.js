@@ -2611,7 +2611,6 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
       username: nhomdich.username,
       avatar: nhomdich.avatar || '',
       phone: nhomdich.phone,
-      baiviet: nhomdich.baiviet,
       manga: formatmanga
     })
   } catch (error) {
