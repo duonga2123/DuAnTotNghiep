@@ -726,8 +726,7 @@ app.post('/approvesuatruyen/:mangaId/:id', async (req, res) => {
     });
 
     await newNotification.save();
-
-    return res.status(202).json({ message: 'Duyệt thành công' });
+    return res.render('successadmin', { message: 'Duyệt thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
@@ -886,7 +885,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
 
 
       await newNotification.save();
-      return res.status(202).send({ message: 'Duyệt thành công' })
+      return res.render('successadmin', { message: 'Duyệt thành công' });
     } else {
       return res.status(200).send('Truyện đã được duyệt trước đó');
     }
@@ -1841,7 +1840,7 @@ app.post('/approvechap/:chapid', async (req, res) => {
 
 
       await newNotification.save();
-      return res.status(202).send({ message: 'Duyệt thành công' })
+      return res.render('successadmin', { message: 'Duyệt thành công' });
     } else {
       return res.status(200).send('Truyện đã được duyệt trước đó');
     }
@@ -1891,7 +1890,7 @@ app.post('/approvesuachap/:chapId/:id', async (req, res) => {
 
     await newNotification.save();
 
-    return res.status(202).json({ message: 'Duyệt thành công' });
+    return res.render('successadmin', { message: 'Duyệt thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
