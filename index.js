@@ -2609,6 +2609,7 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
       username: nhomdich.username,
       avatar: nhomdich.avatar || '',
       phone: nhomdich.phone,
+      follownumber:nhomdich.follownumber || 0,
       manga: formatmanga
     })
   } catch (error) {
@@ -2631,6 +2632,8 @@ app.post('/follow/:nhomdichId/:userId', async(req,res)=>{
     const nhomdichIndex = user.follow.findIndex(nhomdich => nhomdich._id === nhomdichId);
 
     if (nhomdichIndex === -1) {
+      nhomdich.follownumber += 1;
+      await nhomdich.save();
       user.follow.push({ nhomdichId, isfollow: true });
     } else {
       user.follow[nhomdichIndex].isfollow = true;
@@ -2692,7 +2695,8 @@ app.post('/unfollow/:nhomdichId/:userId', async(req,res)=>{
     if (!user.follow.some(nhomdich => nhomdich.nhomdichId.toString() === nhomdichId)) {
       return res.status(400).json({ message: 'Nhóm dịch không tồn tại trong danh sách follow.' });
     }
-   
+   nhomdich.follownumber -= 1 ;
+   await nhomdich.save();
     user.follow = user.follow.filter(nhomdich => nhomdich.nhomdichId.toString() !== nhomdichId); // Xóa truyện yêu thích khỏi danh sách
 
     await user.save();
@@ -2741,6 +2745,7 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       avatar: nhomdich.avatar || '',
       phone: nhomdich.phone,
       isfollow:isFollow,
+      follownumber:nhomdich.follownumber || 0,
       manga: formatmanga
     })
   } catch (error) {

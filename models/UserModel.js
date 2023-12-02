@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema({
   follow:[{
     nhomdichId: {type:mongoose.Schema.Types.ObjectId,ref:'user'},
     isfollow:{type:Boolean, default:false}
-  }]
+  }],
+  follownumber:{type:Number}
 });
 
 const User = mongoose.model('user', userSchema);
