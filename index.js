@@ -2597,13 +2597,22 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
     if (!manga) {
       res.status(404).json({ message: 'không tìm thấy manga' })
     }
+    const formatmanga=manga.map(manga =>({
+      id: manga._id,
+      manganame: manga.manganame,
+      author: manga.author,
+      image: manga.image,
+      category: manga.category,
+      totalChapters: manga.chapters.length,
+      view: manga.view
+    }))
     res.json({
       userId: nhomdichId,
       username: nhomdich.username,
       avatar: nhomdich.avatar || '',
       phone: nhomdich.phone,
       baiviet: nhomdich.baiviet,
-      manga: manga
+      manga: formatmanga
     })
   } catch (error) {
     console.error('Lỗi khi lấy thông tin nhóm dịch:', error);
