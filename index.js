@@ -2689,11 +2689,11 @@ app.post('/unfollow/:nhomdichId/:userId', async(req,res)=>{
       res.status(403).json({message:'user không tồn tại'})
     }
   
-    if (!user.follow.some(nhomdich => nhomdich._id.toString() === nhomdichId)) {
+    if (!user.follow.some(nhomdich => nhomdich.nhomdichId.toString() === nhomdichId)) {
       return res.status(400).json({ message: 'Nhóm dịch không tồn tại trong danh sách follow.' });
     }
    
-    user.follow = user.follow.filter(nhomdich => nhomdich._id.toString() !== nhomdichId); // Xóa truyện yêu thích khỏi danh sách
+    user.follow = user.follow.filter(nhomdich => nhomdich.nhomdichId.toString() !== nhomdichId); // Xóa truyện yêu thích khỏi danh sách
 
     await user.save();
  
