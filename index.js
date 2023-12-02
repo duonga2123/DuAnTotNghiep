@@ -2665,7 +2665,7 @@ app.get('/getfollow/:userId', async (req, res) => {
       return {
         id: follow.nhomdichId._id,
         username: follow.nhomdichId.username,
-        avatar: follow.nhomdichId.avatar,
+        avatar: follow.nhomdichId.avatar || '',
         phone: follow.nhomdichId.phone
       };
     });
