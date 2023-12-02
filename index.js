@@ -2629,6 +2629,10 @@ app.post('/follow/:nhomdichId/:userId', async(req,res)=>{
     if(!user){
       res.status(403).json({message:'user không tồn tại'})
     }
+    if (typeof nhomdich.follownumber !== 'number' || isNaN(nhomdich.follownumber)) {
+      nhomdich.follownumber = 0;
+    }
+
     const nhomdichIndex = user.follow.findIndex(nhomdich => nhomdich._id === nhomdichId);
 
     if (nhomdichIndex === -1) {
@@ -2753,8 +2757,6 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
-
-
 
 app.listen(8080, () => {
   try {
