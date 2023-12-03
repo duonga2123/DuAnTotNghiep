@@ -644,8 +644,8 @@
 <body>
     <div class="jumbotron text-center">
         <h1>Chapter</h1>
-        <form method="get" action="/addchap">
-            <button type="submit">thêm chap</button>
+        <form method="get" action="/addchap?userId={{userId}}">
+            <button type="submit">Thêm chap</button>
         </form>
         <hr>
         <h2>Danh sách chap</h2> <br>
@@ -671,11 +671,10 @@
                     <tbody>
                         {{#each data}}
                         <tr>
-                            <td>{{this._id}}</td>
-                            <td>{{this.mangaName}}</td>
-                            <td>{{this.number}}</td>
-                            <td>{{this.viporfree}}</td>
-                            <td>{{this.price}}</td>
+                            <td style="text-align: center;">{{this.mangaName}}</td>
+                            <td style="text-align: center;">{{this.number}}</td>
+                            <td style="text-align: center;">{{this.viporfree}}</td>
+                            <td style="text-align: center;">{{this.price}}</td>
                             <td>
                                 <form style="margin-top: 10px;" action="/chapterput/{{_id}}" method="get">
                                     <button
@@ -683,7 +682,7 @@
                                         type="submit">Edit</button>
                                 </form>
                                 <form style="margin-top: 10dp;" action="/chapterdelete/{{this._id}}"
-                                    onclick="return confirm('ban co muon xoa khong ?')" method="post">
+                                    onclick="return confirm('Bạn có muốn xóa không')" method="post">
                                     <button
                                         style="width: 100px; height:30px;  margin-top: 5px; background-color:#FF0000 ; border: none; border-radius: 5px; color: white;"
                                         type="submit">Delete</button>
