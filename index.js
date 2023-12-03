@@ -447,11 +447,10 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
 app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
   try {
     const baivietid = req.params.baivietid
-    const userId = req.params.userId
-    const baiviet = await Baiviet.findByIdAndDelete(baivietid)
-    await NotificationBaiviet.deleteMany({ baivietId: baivietid })
-    const user = await User.findById(userId)
-    if (!user) {
+    const userId=req.params.userId
+    await Baiviet.findByIdAndDelete(baivietid)
+    const user=await User.findById(userId)
+    if(!user){
       return res.status(404).json("không tìm thấy user")
     }
     const baivietIndex = user.baiviet.indexOf(baivietid);
@@ -1086,109 +1085,6 @@ app.post('/mangadelete/:_id', async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi xóa truyện:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa truyện.' });
-  }
-});
-
-
-app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
-  try {
-    const mangaId = req.params.mangaId;
-    const userId = req.params.userId;
-    const manga = await Manga.findById(mangaId).populate({
-      path: 'chapters',
-      select: 'number viporfree price',
-      options: { sort: { number: 1 } }
-    }).exec();
-
-    manga.chapters.forEach(chapter => {
-      chapter.number = parseInt(chapter.number);
-
-    });
-    manga.chapters.sort((a, b) => a.number - b.number);
-
-    if (!manga) {
-      return res.status(404).json({ message: 'Không tìm thấy truyện.' });
-    }
-
-    const user = await User.findById(userId)
-    if (!user) {
-      return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
-    }
-
-    const { manganame, author, content, image, category, view, like, chapters, comment, link, userID } = manga;
-
-    const chapterSet = new Set(); // Sử dụng Set để lưu tránh chapter bị lặp
-    const uniqueChapters = [];
-
-    manga.chapters.forEach(chapter => {
-      if (!chapterSet.has(chapter._id)) {
-        chapterSet.add(chapter._id);
-        uniqueChapters.push(chapter);
-        let viporfree = chapter.viporfree;
-        let price = chapter.price;
-        user.purchasedChapters.forEach(purchased => {
-          if (purchased.chapterId.toString() === chapter._id.toString()) {
-            viporfree = "free"
-            price = 0
-          }
-        });
-        chapter.viporfree = viporfree
-        chapter.price = price
-      }
-    });
-
-    let isLiked = false;
-    user.favoriteManga.forEach(favorite => {
-      if (favorite.mangaId.toString() === mangaId) {
-        isLiked = favorite.isLiked;
-
-      }
-    });
-
-    const allComments = [];
-    for (const com of comment) {
-      const formatdatecmt = moment(com.date).format('DD/MM/YYYY HH:mm:ss')
-      const userComment = await User.findById(com.userID);
-      const username = userComment.username;
-      const commentInfo = {
-        cmt_id: com._id,
-        userID: com.userID,
-        username: username,
-        avatar: userComment.avatar || '',
-        cmt: com.cmt,
-        date: formatdatecmt
-      };
-      allComments.push(commentInfo);
-    }
-    const nhomdich = await User.findById(userID);
-    const response = {
-      mangaID: mangaId,
-      manganame: manganame,
-      author: author,
-      content: content,
-      image: image,
-      category: category,
-      nhomdichId: userID,
-      nhomdich: nhomdich.username,
-      view: view,
-      like: like,
-      linktruyen: link,
-      totalChapters: uniqueChapters.length,
-      chapters: uniqueChapters.map(chapter => ({
-        idchap: chapter._id,
-        namechap: chapter.number,
-        viporfree: chapter.viporfree,
-        price: chapter.price
-      })),
-      isLiked: isLiked,
-      comments: allComments,
-      totalcomment: allComments.length
-    };
-
-    res.json(response);
-  } catch (error) {
-    console.error('Lỗi khi lấy chi tiết truyện:', error);
-    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy chi tiết truyện.' });
   }
 });
 
