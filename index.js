@@ -1972,9 +1972,9 @@ app.get('/chapter/:_id/:userid/images', async (req, res) => {
 });
 
 app.post('/search', async (req, res) => {
-  const { mangaName } = req.body;
-  const data = await Chapter.find({ mangaName });
-  res.render('chapter', { data });
+  const {mangaName} = req.body.mangaName;
+  const data = await Chapter.find({mangaName});
+  res.render('chapter', data);
 });
 
 //api thanh toán

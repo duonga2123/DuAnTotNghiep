@@ -27,19 +27,17 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: center;">id</th>
-                            <th style="text-align: center;">username</th>
-                            <th style="text-align: center;">phone</th>
-                            <th style="text-align: center;">role</th>
-                            <th style="text-align: center;">coin</th>
-                            <th style="text-align: center;">nút</th>
+                            <th style="text-align: center;">Username</th>
+                            <th style="text-align: center;">Phone</th>
+                            <th style="text-align: center;">Role</th>
+                            <th style="text-align: center;">Coin</th>
+                            <th style="text-align: center;">Option</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {{#each user}}
                         <tr>
-                            <td style="text-align: center;" class="user-id">{{this._id}}</td>
                             <td style="text-align: center;" class="user-username">{{this.username}}</td>
                             <td style="text-align: center;" class="user-phone">{{this.phone}}</td>
                             <td style="text-align: center;" class="user-role">{{this.role}}</td>
@@ -51,7 +49,7 @@
                                         type="button" class="editCategoryButton">Edit</button>
                                 </form>
                                 <form style="margin-top: 10px;" action="/userdelete/{{this._id}}"
-                                    onclick="return confirm('ban co muon xoa khong ?" method="post">
+                                    onclick="return confirm('Bạn có muốn xóa người dùng này?" method="post">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
                                         type="submit">Delete</button>
