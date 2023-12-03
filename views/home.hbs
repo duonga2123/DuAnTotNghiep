@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Comic</title>
+  <title>Manga</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -638,34 +638,34 @@
 
 <body>
   <div class="jumbotron text-center">
-    <h1>Comic</h1>
+    <h1>Manga</h1>
     <form method="get" action="/add">
-      <button type="submit">thêm truyện</button>
+      <button type="submit">Thêm truyện</button>
     </form>
     <hr>
     <h2>Danh sách Truyện</h2>
     <div class="table-data">
       <div class="order">
            
-    <table >
-      <thead>
+    <table class="table" >
+      <thead class="thead-dark">
         <tr>
-          <th style="text-align: center;">manganame</th>
-          <th style="text-align: center;">image</th>
-          <th style="text-align: center;">author</th>
-          <th style="text-align: center;">content</th>
-          <th style="text-align: center;">category </th>
-          <th style="text-align: center;">view</th>
-          <th style="text-align: center;">like</th>
-          <th style="text-align: center;">nút</th>
+          <th style="text-align: center;">Image</th>
+          <th style="text-align: center;">Manganame</th>
+          <th style="text-align: center;">Author</th>
+          <th style="text-align: center;">Content</th>
+          <th style="text-align: center;">Category </th>
+          <th style="text-align: center;">View</th>
+          <th style="text-align: center;">Like</th>
+          <th style="text-align: center;">Option</th>
         </tr>
       </thead>
 
       <tbody>
         {{#each manga}}
         <tr>
-          <td>{{this.manganame}}</td>
           <td><img src="{{this.image}}" style="width: 100px;height: 100px;" loading="lazy"></td>
+          <td>{{this.manganame}}</td>
           <td>{{this.author}}</td>
           <td>{{this.content}}</td>
           <td>{{this.category}}</td>

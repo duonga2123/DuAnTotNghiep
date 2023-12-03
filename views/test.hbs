@@ -1,0 +1,17 @@
+<!-- your_template.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Template</title>
+</head>
+<body>
+
+{{#each images}}
+    <img src="data:image/jpeg;base64,{{this.toString 'base64'}}" alt="Image">
+{{/each}}
+
+</body>
+</html>

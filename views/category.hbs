@@ -26,25 +26,23 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: center;">id</th>
-                            <th style="text-align: center;">categoryname</th>
-                            <th style="text-align: center;">nút</th>
+                            <th style="text-align: center;">Category Name</th>
+                            <th style="text-align: center;">Option</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {{#each category}}
                         <tr>
-                            <td>{{this._id}}</td>
                             <td>{{this.categoryname}}</td>
                             <td>
-                                <form style="margin-top: 10px;" action="/categoryput/{{this._id}}" method="get">
+                                <form style="margin-top: 10px; text-align: center;" action="/categoryput/{{this._id}}" method="get">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
                                         type="button" class="editCategoryButton">Edit</button>
                                 </form>
                                 <form style="margin-top: 10px;" action="/categorydelete/{{this._id}}"
-                                    onclick="return confirm('ban co muon xoa khong ?" method="post">
+                                    onclick="return confirm('Bạn có muốn xóa Thể loại này?" method="post">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
                                         type="submit">Delete</button>
