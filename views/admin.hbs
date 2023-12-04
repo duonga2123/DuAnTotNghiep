@@ -1450,18 +1450,10 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
-					openModal()
-					closeModal()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-		 function openModal() {
-            $('#myModal').modal('show');
-        }
-
-        function closeModal() {
-            $('#myModal').modal('hide');
-        }
+		 
 	</script>
 </body>
 
