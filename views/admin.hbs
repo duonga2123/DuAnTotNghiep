@@ -1466,6 +1466,7 @@
                 reader.onload = function (e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
+					img.id='images'
                     preview.innerHTML = '';
                     preview.appendChild(img);
                 };

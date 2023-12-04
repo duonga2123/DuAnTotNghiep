@@ -170,16 +170,15 @@
             </div>
             <div class="modal-body">
                 <form action="/postbaiviet" method="post">
-                    <div class="modalbody">
-                        <input type="text" id="content" class="form-control" name="content" placeholder="bạn đang nghĩ gì?">
-                    </div>
                     <div class="image-input-container">
+                        <input type="text" id="content" class="form-control" name="content" placeholder="bạn đang nghĩ gì?">
                         <p>Thêm vào bài viết của bạn</p>
                         <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
                             alt="Choose Image" class="image-input-label"
-                            onclick="document.getElementById('images').click()">
+                            onclick="document.getElementById('images').click()" id="images">
                         <input type="file" id="images" name="images" class="images" accept="image/*"
                             onchange="previewImage()">
+                            
                     </div>
                     <div class="image-preview" id="imagePreview"></div>
                     <button
@@ -209,7 +208,7 @@
                 reader.onload = function (e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.name = 'images'
+                    img.id='images'
                     preview.innerHTML = '';
                     preview.appendChild(img);
                 };
