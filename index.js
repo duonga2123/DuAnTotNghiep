@@ -2750,13 +2750,15 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       phone: nhomdich.phone,
       isfollow:isFollow,
       follownumber:nhomdich.follownumber || 0,
-      manga: formatmanga
+      manga: formatmanga,
+      manganumber:formatmanga.length
     })
   } catch (error) {
     console.error('Lỗi khi lấy thông tin nhóm dịch:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
+
 
 app.listen(8080, () => {
   try {
