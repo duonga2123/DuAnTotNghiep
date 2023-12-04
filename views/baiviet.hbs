@@ -3,13 +3,13 @@
 
 <head>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Đăng Bài Viết</title>
     <style>
         body {
@@ -114,6 +114,17 @@
             justify-content: center;
         }
 
+        .modalbody {
+            width: 300px;
+            height: 50px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .image-input-container p {
             margin: 0;
         }
@@ -126,6 +137,7 @@
             width: 50px;
             height: 45px;
         }
+
         .close-btn {
             position: absolute;
             top: 10px;
@@ -136,8 +148,6 @@
             font-size: 24px;
             color: #000;
         }
-
-        
     </style>
 </head>
 
@@ -153,28 +163,35 @@
     <div tabindex="-1" class="modal" id="myModal" aria-hidden="true" role="dialog">
         <div class="modal-content">
             <div class="header">
-                <img style="border-radius: 50%; width: 50px; height: 50px;"
-                    src="data:image/jpeg;base64,{{user.avatar}}" alt="">
+                <img style="border-radius: 50%; width: 50px; height: 50px;" src="data:image/jpeg;base64,{{user.avatar}}"
+                    alt="">
                 <h2>{{user.username}}</h2>
                 <button type="button" class="close-btn" onclick="closeModal()" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form style="align-items: center; justify-content: center;" action="/postbaiviet" method="post">
-            <input style="width:300px; height: 200px; font-size: 20px; border: 0; " id="content" class="content" name="content"
-                placeholder="bạn đang nghĩ gì?">
 
-            <div class="image-input-container">
-                <p>Thêm vào bài viết của bạn</p>
-                <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
-                    alt="Choose Image" class="image-input-label"
-                    onclick="document.getElementById('images').click()">
-                <input type="file" id="images" name="images" class="images" accept="image/*" onchange="previewImage()">
-            </div>
-            <div class="image-preview" id="imagePreview"></div>
-            <button style="width: 300px; height: 50px; background-color: rgb(0, 200, 255); color: #f4f4f4; border: 0; border-radius: 10px; font-size: 20px;" type="submit">Đăng</button>
-                </form>
+            <form style="align-items: center; justify-content: center;" action="/postbaiviet" method="post">
+                <div class="modalbody">
+                    <input style="width:300px; height: 200px; font-size: 20px; border: 0; " id="content" class="content"
+                        name="content" placeholder="bạn đang nghĩ gì?">
+                </div>
+
+                <div class="image-input-container">
+                    <p>Thêm vào bài viết của bạn</p>
+                    <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
+                        alt="Choose Image" class="image-input-label"
+                        onclick="document.getElementById('images').click()">
+                    <input type="file" id="images" name="images" class="images" accept="image/*"
+                        onchange="previewImage()">
+                </div>
+                <div class="image-preview" id="imagePreview"></div>
+                <button
+                    style="width: 300px; height: 50px; background-color: rgb(0, 200, 255); color: #f4f4f4; border: 0; border-radius: 10px; font-size: 20px;"
+                    type="submit">Đăng</button>
+            </form>
         </div>
+
     </div>
 
     <script>
