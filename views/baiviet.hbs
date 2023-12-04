@@ -110,7 +110,7 @@
         }
 
         .image-input-container {
-            width: 00px;
+            width: 300px;
             height: 50px;
             border-radius: 10px;
             border: 1px solid #ccc;
@@ -167,7 +167,7 @@
                 </button>
             </div>
             <form action="/postbaiviet" method="post">
-            <input style="width:300px; height: 200px; font-size: 20px; border: 0;" id="content" class="content"
+            <input style="width:300px; height: 200px; font-size: 20px; border: 0;" id="content" class="content" name="content"
                 placeholder="bạn đang nghĩ gì?">
               
             <div class="image-input-container">
@@ -175,7 +175,7 @@
                 <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
                     alt="Choose Image" class="image-input-label"
                     onclick="document.getElementById('images').click()">
-                <input type="file" id="images" class="images" accept="image/*" onchange="previewImage()">
+                <input type="file" id="images" name="images" class="images" accept="image/*" onchange="previewImage()">
             </div>
             <div class="image-preview" id="imagePreview"></div>
             <button
