@@ -1455,12 +1455,12 @@
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-		function openModal() {
-            document.getElementById('myModal').style.display = 'flex';
+		 function openModal() {
+            $('#myModal').modal('show');
         }
 
         function closeModal() {
-            document.getElementById('myModal').style.display = 'none';
+            $('#myModal').modal('hide');
         }
 	</script>
 </body>
