@@ -570,20 +570,23 @@ app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => 
   }
 });
 
-app.get('/renderbaiviet',async(req,res)=>{
+app.get('/renderbaiviet', async (req, res) => {
   try {
-    const userId=req.session.userId;
-    const user=await User.findById(userId);
-    if(!user){
-      res.status(403).json({message:'không tìm thấy user'})
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      res.status(403).json({ message: 'Không tìm thấy user' });
+      return; // Important to return or use else block to avoid further execution
     }
-    const baiviet=await Baiviet.find({userId});
-    res.render("baiviet",{baiviet},{user});
+
+    const baiviet = await Baiviet.find({ userId });
+    res.render('baiviet', { baiviet }, { user });
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách bài viêt:', error);
+    console.error('Lỗi khi lấy danh sách bài viết:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
   }
-})
+});
 app.get('/baiviet',async(req,res)=>{
   res.render("baiviet");
 })
