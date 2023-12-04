@@ -54,8 +54,8 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            width: 500px;
-            height: 700px;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
@@ -69,7 +69,8 @@
             align-items: center;
             background-color: #fff;
             border-radius: 10px;
-            width: 500px;
+            width: 80%;
+            max-width: 400px;
             text-align: center;
             position: relative;
         }
@@ -160,8 +161,10 @@
                 </button>
             </div>
             <form action="/postbaiviet" method="post">
-            <input style="width:300px; height: 200px; font-size: 20px; border: 0;" id="content" class="content" name="content"
+            <input style="width:300px; height: 200px; font-size: 20px; border: 0; align-items: center;
+            justify-content: center;" id="content" class="content" name="content"
                 placeholder="bạn đang nghĩ gì?">
+
             <div class="image-input-container">
                 <p>Thêm vào bài viết của bạn</p>
                 <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
