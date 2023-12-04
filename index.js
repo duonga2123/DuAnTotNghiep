@@ -2761,12 +2761,12 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
 app.post('/banking/:nhomdichId', async(req,res) =>{
   try {
     const nhomdichId=req.params.nhomdichId
-    const {phuongthuc,sotaikhoan} =req.body;
+    const {phuongthuc,sotaikhoan,hovaten} =req.body;
     const nhomdich=await User.findById(nhomdichId)
     if(!nhomdichId){
       res.status(403).json({message: 'không tìm thấy nhóm dịch'})
     }
-    nhomdich.banking.push({ phuongthuc, sotaikhoan });
+    nhomdich.banking.push({hovaten, phuongthuc, sotaikhoan });
     await nhomdich.save();
 
     res.json({ message: 'Cập nhật thông tin tài khoản ngân hàng thành công' });
@@ -2784,14 +2784,12 @@ app.get('/bank/:nhomdichId', async(req,res) =>{
     }
     const formatbank= nhomdich.banking.map(bank =>{
       return{
+        hovaten:bank.hovaten || 'chưa tích hợp',
         phuongthuc:bank.phuongthuc || 'chưa tích hợp',
         sotaikhoan:bank.sotaikhoan || 'chưa tích hợp'
       }
     })
-    res.json({
-      nhomdichname:nhomdich.username,
-      bank:formatbank
-    })
+    res.json({formatbank})
   } catch (error) {
     console.error('Lỗi khi lấy danh sách tài khoản ngân hàng:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.' });

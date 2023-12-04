@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
   }],
   follownumber:{type:Number},
   banking:[{
+    hovaten:{type:String},
     phuongthuc:{type:String},
     sotaikhoan:{type:String}
   }]
