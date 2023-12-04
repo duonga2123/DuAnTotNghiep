@@ -577,7 +577,7 @@ app.get('/renderbaiviet',async(req,res)=>{
     if(!user){
       res.status(403).json({message:'không tìm thấy user'})
     }
-    const baiviet=await Baiviet.find(userId);
+    const baiviet=await Baiviet.find({userId});
     res.render("baiviet",{baiviet},{user});
   } catch (error) {
     console.error('Lỗi khi lấy danh sách bài viêt:', error);
