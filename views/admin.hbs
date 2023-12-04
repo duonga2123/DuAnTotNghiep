@@ -686,6 +686,12 @@
 				</a>
 			</li>
 			<li>
+				<a id="baivietManagerLink" href="#baivietManagerLink">
+					<i class='bx bx bxs-file'></i>
+					<span class="text">Baiviet Manager</span>
+				</a>
+			</li>
+			<li>
 				<a href="" id="revenueManagerLink">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
@@ -1434,6 +1440,47 @@
 				});
 			});
 		}
+
+		const baivietManagerLink = document.getElementById('baivietManagerLink');
+
+		baivietManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/renderbaiviet')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					openModal();
+					closeModal();
+					previewImage();
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		 function openModal() {
+            document.getElementById('myModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        function previewImage() {
+            const input = document.getElementById('images');
+            const preview = document.getElementById('imagePreview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.innerHTML = '';
+                    preview.appendChild(img);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 	</script>
 </body>
 

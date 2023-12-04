@@ -155,26 +155,46 @@ app.post('/postbaiviet/:userId', upload.array('images', 10), async (req, res) =>
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
   }
 });
-app.post('/post/:userId', upload.array('images', 3), async (req, res) => {
+app.post('/postbaiviet', upload.array('images', 3), async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.session.userId;
     const { content } = req.body;
-    const user = await User.findById(userId);
 
+    if (!req.files) {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'Không tìm thấy user' });
+      }
+
+      const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+
+      const baiviet = new Baiviet({ userId, content, like: 0, images: [], date: vietnamTime });
+
+      await baiviet.save();
+
+      user.baiviet.push(baiviet._id);
+      await user.save();
+
+      return res.status(200).json({ message: 'Đăng bài viết thành công' });
+    }
+
+    const images = req.files.map((file) => file.buffer.toString('base64'));
+
+    if (images.length > 2) {
+      return res.status(400).json({ message: 'Chỉ được phép tải lên tối đa 2 ảnh.' });
+    }
+
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy user' });
     }
 
-    if (user.role === 'user') {
-      return res.status(403).json({ message: 'Bạn không có quyền đăng bài viết' });
-    }
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
 
-    const currentDate = moment().utc();
+    const baiviet = new Baiviet({ userId, content, like: 0, images, date: vietnamTime });
 
-    const images = req.files.map((file) => file.buffer.toString('base64'));
-
-    const baiviet = new Baiviet({ userId, content, like: 0, images: images || [], date: currentDate });
     await baiviet.save();
+
     user.baiviet.push(baiviet._id);
     await user.save();
 
@@ -558,7 +578,7 @@ app.get('/renderbaiviet',async(req,res)=>{
       res.status(403).json({message:'không tìm thấy user'})
     }
     const baiviet=await Baiviet.find(userId);
-    res.render("baiviet",{baiviet});
+    res.render("baiviet",{baiviet},{user});
   } catch (error) {
     console.error('Lỗi khi lấy danh sách bài viêt:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
