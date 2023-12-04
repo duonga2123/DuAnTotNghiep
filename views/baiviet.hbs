@@ -77,17 +77,6 @@
             display: none;
         }
 
-        .form-group {
-            width: 300px;
-            height: 50px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .image-input-container p {
             margin: 0;
         }
@@ -113,7 +102,7 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal" id="myModal" aria-hidden="true" role="dialog">
+    <div class="modal fade" id="myModal" aria-hidden="true" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -127,8 +116,7 @@
                 <div class="modal-body">
                     <form action="/postbaiviet" method="post">
                         <div class="form-group">
-                            <textarea style="width:300px; height: 200px; font-size: 20px; border: 0;" id="content"
-                                class="content" placeholder="bạn đang nghĩ gì?"></textarea>
+                            <input id="content" class="form-control" placeholder="bạn đang nghĩ gì?">
                         </div>
                         <div class="form-group">
                             <p>Thêm vào bài viết của bạn</p>
