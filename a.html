@@ -2,13 +2,18 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng bài</title>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <title>Đăng Bài Viết</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +21,7 @@
             background-color: #f4f4f4;
         }
 
-        .container {
+        #container {
             max-width: 600px;
             margin: auto;
             margin-top: 20px;
@@ -35,22 +40,18 @@
             border-radius: 20px;
             font-size: 16px;
         }
-
-        
     </style>
 </head>
 
 <body>
-
-    <div class="container">
+    <div id="container" class="jumbotron text-center">
         <h2>Đăng Bài Viết</h2>
-        <div class="post-form" on>
+        <div class="post-form">
             <input placeholder="Bạn đang nghĩ gì?" id="postContent" readonly>
         </div>
     </div>
 
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal"
-        aria-hidden="true">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -61,13 +62,13 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form thêm thể loại -->
-                    <form action="/postbaiviet" method="post">
+                    <form action="/postbaiviet" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="content">content:</label>
                             <input type="text" class="form-control" id="content" name="content">
                         </div>
                         <div class="form-group">
-                            <input type="file" class="form-control" id="images" name="images">
+                            <input type="file" class="form-control" id="images" name="images" multiple>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -79,7 +80,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         $(document).ready(function () {
             $("#postContent").click(function () {
