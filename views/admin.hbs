@@ -1456,25 +1456,6 @@
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-        function previewImage() {
-            const input = document.getElementById('images');
-            const preview = document.getElementById('imagePreview');
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-					img.id='images'
-                    preview.innerHTML = '';
-                    preview.appendChild(img);
-                };
-
-                reader.readAsDataURL(input.files[0]);
-				
-            }
-        }
 		function openModal() {
             document.getElementById('myModal').style.display = 'flex';
         }
