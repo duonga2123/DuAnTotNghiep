@@ -1450,6 +1450,8 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
+					openModal()
+					closeModal()
 					previewImage();
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
@@ -1471,7 +1473,13 @@
                 reader.readAsDataURL(input.files[0]);
 				
             }
-			$('#myModal').modal('show');
+        }
+		function openModal() {
+            document.getElementById('myModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
         }
 	</script>
 </body>
