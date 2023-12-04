@@ -2789,7 +2789,7 @@ app.get('/bank/:nhomdichId', async(req,res) =>{
         sotaikhoan:bank.sotaikhoan || 'chưa tích hợp'
       }
     })
-    res.json({formatbank})
+    res.json(formatbank)
   } catch (error) {
     console.error('Lỗi khi lấy danh sách tài khoản ngân hàng:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.' });
