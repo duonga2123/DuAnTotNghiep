@@ -113,6 +113,16 @@
             justify-content: center;
         }
 
+        #content {
+            width: 100%;
+            /* Đặt chiều rộng về 100% để đối tượng input chiếm hết chiều rộng của .modalbody */
+            height: 200px;
+            font-size: 20px;
+            border: 0;
+            margin: 0;
+            /* Loại bỏ margin để tránh lệch về bên phải */
+        }
+
         .image-input-container p {
             margin: 0;
         }
@@ -160,15 +170,16 @@
             </div>
             <div class="modal-body">
                 <form action="/postbaiviet" method="post">
-                    <div class="form-group">
-                        <input type="text"
-                            style="width:300px; height: 200px; font-size: 20px; border: 0; margin: 0 auto " id="content"
-                            class="form-control" name="content" placeholder="bạn đang nghĩ gì?">
+                    <div class="modalbody">
+                        <input type="text" id="content" class="form-control" name="content" placeholder="bạn đang nghĩ gì?">
                     </div>
                     <div class="image-input-container">
                         <p>Thêm vào bài viết của bạn</p>
-                        <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg" alt="Choose Image" class="image-input-label" onclick="document.getElementById('images').click()">
-                        <input type="file" id="images" name="images" class="images" accept="image/*" onchange="previewImage()">
+                        <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
+                            alt="Choose Image" class="image-input-label"
+                            onclick="document.getElementById('images').click()">
+                        <input type="file" id="images" name="images" class="images" accept="image/*"
+                            onchange="previewImage()">
                     </div>
                     <div class="image-preview" id="imagePreview"></div>
                     <button
@@ -198,6 +209,7 @@
                 reader.onload = function (e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
+                    img.name = 'images'
                     preview.innerHTML = '';
                     preview.appendChild(img);
                 };
