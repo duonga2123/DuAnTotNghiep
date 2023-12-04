@@ -1450,17 +1450,10 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
-					openModal();
-					closeModal();
 					previewImage();
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-		 function openModal() {
-              $("#myModal").modal("show");
-        }
-
-
         function previewImage() {
             const input = document.getElementById('images');
             const preview = document.getElementById('imagePreview');
