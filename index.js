@@ -2750,15 +2750,53 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       phone: nhomdich.phone,
       isfollow:isFollow,
       follownumber:nhomdich.follownumber || 0,
-      manga: formatmanga,
-      manganumber:formatmanga.length
+      manganumber:formatmanga.length,
+      manga: formatmanga
     })
   } catch (error) {
     console.error('Lỗi khi lấy thông tin nhóm dịch:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
+app.post('/banking/:nhomdichId', async(req,res) =>{
+  try {
+    const nhomdichId=req.params.nhomdichId
+    const {phuongthuc,sotaikhoan} =req.body;
+    const nhomdich=await User.findById(nhomdichId)
+    if(!nhomdichId){
+      res.status(403).json({message: 'không tìm thấy nhóm dịch'})
+    }
+    nhomdich.banking.push({ phuongthuc, sotaikhoan });
+    await nhomdich.save();
 
+    res.json({ message: 'Cập nhật thông tin tài khoản ngân hàng thành công' });
+  } catch (error) {
+    console.error('Lỗi khi cập nhật thông tin tài khoản ngân hàng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thông tin tài khoản ngân hàng.' });
+  }
+})
+app.get('/bank/:nhomdichId', async(req,res) =>{
+  try {
+    const nhomdichId=req.params.nhomdichId
+    const nhomdich=await User.findById(nhomdichId)
+    if(!nhomdichId){
+      res.status(403).json({message: 'không tìm thấy nhóm dịch'})
+    }
+    const formatbank= nhomdich.banking.map(bank =>{
+      return{
+        phuongthuc:bank.phuongthuc || 'chưa tích hợp',
+        sotaikhoan:bank.sotaikhoan || 'chưa tích hợp'
+      }
+    })
+    res.json({
+      nhomdichname:nhomdich.username,
+      bank:formatbank
+    })
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.' });
+  }
+})
 
 app.listen(8080, () => {
   try {
