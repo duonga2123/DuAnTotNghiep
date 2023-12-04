@@ -51,51 +51,16 @@
             font-size: 16px;
         }
 
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            transform: translate(-50%, -50%);
-            padding: auto;
-        }
-
-        .modal-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #fff;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-        }
 
         .modal-header {
             display: flex;
             justify-content: flex-start;
             align-self: flex-start;
             margin-bottom: 10px;
-            /* Khoảng cách giữa ảnh và tiêu đề */
         }
 
         .header img {
             margin-right: 10px;
-            /* Khoảng cách giữa ảnh và tiêu đề */
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
         }
 
         .image-preview {
@@ -112,7 +77,7 @@
             display: none;
         }
 
-        .image-input-container {
+        .form-group {
             width: 300px;
             height: 50px;
             border-radius: 10px;
@@ -136,16 +101,6 @@
             height: 45px;
         }
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #000;
-        }
     </style>
 </head>
 
@@ -159,31 +114,35 @@
     </div>
     <!-- Modal -->
     <div class="modal" id="myModal" aria-hidden="true" role="dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <img style="border-radius: 50%; width: 50px; height: 50px;" src="data:image/jpeg;base64,{{user.avatar}}"
-                    alt="">
-                <h2>{{user.username}}</h2>
-                <button type="button" class="close-btn" onclick="closeModal()" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="/postbaiviet" method="post">
-                    <textarea style="width:300px; height: 200px; font-size: 20px; border: 0;" id="content"
-                        class="content" placeholder="bạn đang nghĩ gì?"></textarea>
-                    <div class="image-input-container">
-                        <p>Thêm vào bài viết của bạn</p>
-                        <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
-                            alt="Choose Image" class="image-input-label"
-                            onclick="document.getElementById('images').click()">
-                        <input type="file" id="images" class="images" accept="image/*" onchange="previewImage()">
-                    </div>
-                    <div class="image-preview" id="imagePreview"></div>
-                    <button
-                        style="width: 300px; height: 50px; background-color: rgb(0, 200, 255); color: #f4f4f4; border: 0; border-radius: 10px; font-size: 20px;"
-                        type="submit">Đăng</button>
-                </form>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img style="border-radius: 50%; width: 50px; height: 50px;"
+                        src="data:image/jpeg;base64,{{user.avatar}}" alt="">
+                    <h2>{{user.username}}</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/postbaiviet" method="post">
+                        <div class="form-group">
+                            <textarea style="width:300px; height: 200px; font-size: 20px; border: 0;" id="content"
+                                class="content" placeholder="bạn đang nghĩ gì?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <p>Thêm vào bài viết của bạn</p>
+                            <img src="https://png.pngtree.com/png-vector/20190916/ourlarge/pngtree-gallery-icon-for-your-project-png-image_1731100.jpg"
+                                alt="Choose Image" class="image-input-label"
+                                onclick="document.getElementById('images').click()">
+                            <input type="file" id="images" class="images" accept="image/*" onchange="previewImage()">
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
+                        <button
+                            style="width: 300px; height: 50px; background-color: rgb(0, 200, 255); color: #f4f4f4; border: 0; border-radius: 10px; font-size: 20px;"
+                            type="submit">Đăng</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
