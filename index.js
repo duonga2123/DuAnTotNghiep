@@ -564,6 +564,9 @@ app.get('/renderbaiviet',async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
   }
 })
+app.get('/baiviet',async(req,res)=>{
+  res.render("baiviet");
+})
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
