@@ -2743,6 +2743,14 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       totalChapters: manga.chapters.length,
       view: manga.view
     }))
+
+    const formatbank= nhomdich.banking.map(bank =>{
+      return{
+        hovaten:bank.hovaten || 'chưa tích hợp',
+        phuongthuc:bank.phuongthuc || 'chưa tích hợp',
+        sotaikhoan:bank.sotaikhoan || 'chưa tích hợp'
+      }
+    })
     res.json({
       userId: nhomdichId,
       username: nhomdich.username,
@@ -2750,6 +2758,7 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       phone: nhomdich.phone,
       isfollow:isFollow,
       follownumber:nhomdich.follownumber || 0,
+      bank:formatbank,
       manganumber:formatmanga.length,
       manga: formatmanga
     })
