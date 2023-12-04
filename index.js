@@ -294,7 +294,6 @@ app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
   }
 })
 
-
 app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -550,6 +549,21 @@ app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => 
     res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa comment.' });
   }
 });
+
+app.get('/renderbaiviet',async(req,res)=>{
+  try {
+    const userId=req.session.userId;
+    const user=await User.findById(userId);
+    if(!user){
+      res.status(403).json({message:'không tìm thấy user'})
+    }
+    const baiviet=await Baiviet.find(userId);
+    res.render("baiviet",{baiviet});
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách bài viêt:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
+  }
+})
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
