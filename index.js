@@ -155,7 +155,7 @@ app.post('/postbaiviet/:userId', upload.array('images', 10), async (req, res) =>
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
   }
 });
-app.post('/postbaiviet', upload.array('images', 3), async (req, res) => {
+app.post('/postbaiviet', upload.array('images', 10), async (req, res) => {
   try {
     const userId = req.session.userId;
     const { content } = req.body;
