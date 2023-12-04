@@ -45,7 +45,7 @@
     <div class="container">
         <h2>Đăng Bài Viết</h2>
         <div class="post-form" on>
-            <input onclick="openModal()" placeholder="Bạn đang nghĩ gì?" id="postContent" readonly>
+            <input placeholder="Bạn đang nghĩ gì?" id="postContent" readonly>
         </div>
     </div>
 
@@ -81,13 +81,12 @@
     </div>
     
     <script>
-        function openModal() {
-            $('#myModal').modal('show');
-        }
+        $(document).ready(function () {
+            $("#postContent").click(function () {
+                $("#myModal").modal("show");
+            });
 
-        function closeModal() {
-            $('#myModal').modal('hide');
-        }
+        });
     </script>
 
 </body>
