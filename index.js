@@ -581,7 +581,7 @@ app.get('/renderbaiviet', async (req, res) => {
     }
 
     const baiviet = await Baiviet.find({ userId });
-    res.render('baiviet', { baiviet }, { user });
+    res.render('baiviet', { baiviet,user });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách bài viết:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
