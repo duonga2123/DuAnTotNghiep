@@ -51,56 +51,6 @@
             font-size: 16px;
         }
 
-
-        .modal-header {
-            display: flex;
-            justify-content: flex-start;
-            align-self: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .header img {
-            margin-right: 10px;
-        }
-
-        .image-preview {
-            margin-top: 20px;
-        }
-
-        .image-preview img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        /* Input for image upload */
-        .images {
-            display: none;
-        }
-
-        .form-group {
-            width: 300px;
-            height: 50px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-input-container p {
-            margin: 0;
-        }
-
-        .image-input-label {
-            cursor: pointer;
-            margin-top: 2px;
-            display: inline-block;
-            margin-left: 10px;
-            width: 50px;
-            height: 45px;
-        }
-
     </style>
 </head>
 
@@ -109,7 +59,7 @@
     <div class="container">
         <h2>Đăng Bài Viết</h2>
         <div class="post-form">
-            <input onclick="openModal()" placeholder="Bạn đang nghĩ gì?" id="postContent" readonly>
+            <input placeholder="Bạn đang nghĩ gì?" id="postContent" class="post" readonly>
         </div>
     </div>
     <!-- Modal -->
@@ -147,13 +97,12 @@
     </div>
 
     <script>
-        function openModal() {
-            document.getElementById('myModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('myModal').style.display = 'none';
-        }
+       document.addEventListener('DOMContentLoaded', function () {
+        previewImage( )
+            $('.post').on('click', function () {
+                $('#myModal').modal('show');
+            });
+        })
 
         function previewImage() {
             const input = document.getElementById('images');

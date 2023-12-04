@@ -1457,12 +1457,9 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 		 function openModal() {
-            document.getElementById('myModal').style.display = 'flex';
+              $("#myModal").modal("show");
         }
 
-        function closeModal() {
-            document.getElementById('myModal').style.display = 'none';
-        }
 
         function previewImage() {
             const input = document.getElementById('images');
