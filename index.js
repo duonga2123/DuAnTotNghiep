@@ -2911,15 +2911,20 @@ app.post('/repass', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi mật khẩu' });
   }
 })
-app.post('/rename/:userId', async (req, res) => {
+app.post('/rename', async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.session.userId;
     const { username } = req.body
     const user = await User.findByIdAndUpdate(userId, { username }, { new: true })
     if (!user) {
       res.status(403).json({ message: 'không tìm thấy user' })
     }
-    res.status(200).json({ message: 'đổi tên thành công' });
+    if(user.role=== 'nhomdich'){
+      res.render("nhomdich",{user})
+    }
+    else{
+      res.render("admin",{user})
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });

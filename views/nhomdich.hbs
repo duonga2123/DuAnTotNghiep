@@ -1132,48 +1132,51 @@
 		});
 		function setting() {
 			$(document).ready(function () {
-            $("#avatar").click(function () {
-                $("#myModal").modal("show");
-            });
-            $("#repass").click(function () {
-                $("#mk").modal("show");
-            });
-            $("#mk form").submit(function (e) {
-                e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+				$("#avatar").click(function () {
+					$("#myModal").modal("show");
+				});
+				$("#repass").click(function () {
+					$("#mk").modal("show");
+				});
+				$("#rename").click(function () {
+					$("#modalusername").modal("show");
+				});
+				$("#mk form").submit(function (e) {
+					e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
 
-                // Lấy giá trị từ các trường nhập liệu
-                var passOld = $("#passOld").val();
-                var passNew = $("#passNew").val();
+					// Lấy giá trị từ các trường nhập liệu
+					var passOld = $("#passOld").val();
+					var passNew = $("#passNew").val();
 
-                // Gửi yêu cầu AJAX đến /repass
-                fetch("/repass", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        passOld: passOld,
-                        passNew: passNew,
-                    }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message) {
-                            alert(data.message); 
-                            $("#mk").modal("hide");
-                        }
-                    })
-                    .catch(error => {
-                        alert("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
-                    });
-            });
+					// Gửi yêu cầu AJAX đến /repass
+					fetch("/repass", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							passOld: passOld,
+							passNew: passNew,
+						}),
+					})
+						.then(response => response.json())
+						.then(data => {
+							if (data.message) {
+								alert(data.message);
+								$("#mk").modal("hide");
+							}
+						})
+						.catch(error => {
+							alert("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
+						});
+				});
 
-            
-            $("#saveButton").click(function () {
-                $("#mk form").submit();
-            });
 
-        });
+				$("#saveButton").click(function () {
+					$("#mk form").submit();
+				});
+
+			});
 		}
 	</script>
 </body>
