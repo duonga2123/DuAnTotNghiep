@@ -2930,6 +2930,27 @@ app.post('/rename', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
   }
 })
+app.post('/banking', async(req,res) =>{
+  try {
+    const nhomdichId=req.session.userId
+    const {phuongthuc,sotaikhoan,hovaten} =req.body;
+    const user=await User.findById(nhomdichId)
+    if(!nhomdichId){
+      res.status(403).json({message: 'không tìm thấy nhóm dịch'})
+    }
+    user.banking.push({hovaten, phuongthuc, sotaikhoan });
+    await user.save();
+    if(user.role=== 'nhomdich'){
+      res.render("successnhomdich",{message: 'Cập nhật thông tin tài khoản ngân hàng thành công'})
+    }
+    else{
+      res.render("successadmin",{message: 'Cập nhật thông tin tài khoản ngân hàng thành công'})
+    }
+  } catch (error) {
+    console.error('Lỗi khi cập nhật thông tin tài khoản ngân hàng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thông tin tài khoản ngân hàng.' });
+  }
+})
 
 app.listen(8080, () => {
   try {

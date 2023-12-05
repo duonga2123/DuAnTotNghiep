@@ -159,7 +159,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModal">Thêm bài viết</h5>
+                    <h5 class="modal-title" id="myModal">Reavatar</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -184,7 +184,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModal">Thêm bài viết</h5>
+                    <h5 class="modal-title" id="myModal">Repass</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -214,7 +214,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModal">Thêm bài viết</h5>
+                    <h5 class="modal-title" id="myModal">Rename</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -235,6 +235,40 @@
             </div>
         </div>
     </div>
+     <!-- Modal thêm tk ngân hàng -->
+    <div class="modal fade" id="modalbank" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Thêm tài khoản ngân hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/banking" method="post">
+                        <div class="form-group">
+                            <label for="phuongthuc">Phương thức:</label>
+                            <input type="text" class="form-control" id="phuongthuc" name="phuongthuc">
+                        </div>
+                          <div class="form-group">
+                            <label for="hovaten">Họ và tên:</label>
+                            <input type="text" class="form-control" id="hovaten" name="hovaten">
+                        </div>
+                         <div class="form-group">
+                            <label for="sotaikhoan">Số tài khoản:</label>
+                            <input type="text" class="form-control" id="sotaikhoan" name="sotaikhoan">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="savebankButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function () {
             $("#avatar").click(function () {
@@ -245,6 +279,9 @@
             });
              $("#rename").click(function () {
                 $("#modalusername").modal("show");
+            });
+             $("#banking").click(function () {
+                $("#modalbank").modal("show");
             });
             $("#mk form").submit(function (e) {
                 e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
