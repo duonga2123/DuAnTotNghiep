@@ -2322,8 +2322,8 @@ app.get('/paymentdetail/:userid', async (req, res) => {
 
 app.get('/getrevenue', async (req, res) => {
   try {
-    const startDate = req.query.startDate;
-    const endDate = req.query.endDate;
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
 
     // Thực hiện truy vấn dựa trên khoảng ngày
     const payments = await Payment.find({
