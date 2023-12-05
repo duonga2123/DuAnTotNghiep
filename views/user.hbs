@@ -48,7 +48,7 @@
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
                                         type="button" class="editCategoryButton">Edit</button>
                                 </form>
-                                <form style="margin-top: 10px;" action="/userdelete/{{this._id}}"
+                                <form style="margin-top: 10px;" action="/userdeleteweb/{{this._id}}"
                                     onclick="return confirm('Bạn có muốn xóa người dùng này?" method="post">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
@@ -76,7 +76,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form thêm thể loại -->
-                    <form id="addCategoryForm" method="post" action="/register">
+                    <form id="addCategoryForm" method="post" action="/registerweb">
                         <div class="form-group">
                             <label for="username">username:</label>
                             <input type="text" class="form-control" id="username" name="username">
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <!-- Modal Sửa thể loại -->
+    <!-- Modal Sửa user -->
     <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -116,15 +116,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Form sửa thể loại -->
                     <form id="editCategoryForm" method="post">
                         <div class="form-group">
                             <label for="editusername">username:</label>
                             <input type="text" class="form-control" id="editusername" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="editpassword">password:</label>
-                            <input type="text" class="form-control" id="editpassword" name="password">
                         </div>
                         <div class="form-group">
                             <label for="editrole">role:</label>
@@ -165,7 +160,7 @@
                 $("#editrole").val(role);
 
 
-                $("#editCategoryForm").attr("action", "/userput/" + id);
+                $("#editCategoryForm").attr("action", "/userputweb/" + id);
 
                 $("#editCategoryModal").modal("show");
             });

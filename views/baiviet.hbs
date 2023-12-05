@@ -68,12 +68,7 @@
                             <td style="text-align: center;" class="user-role">{{this.comment}}</td>
                             <td style="text-align: center;" class="user-coin">{{this.date}}</td>
                             <td>
-                                <form style="margin-top: 10px;" action="" method="get">
-                                    <button
-                                        style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
-                                        type="button" class="editCategoryButton">Edit</button>
-                                </form>
-                                <form style="margin-top: 10px;" action=""
+                                <form style="margin-top: 10px;" action="/deletebaiviet/{{this._id}}"
                                     onclick="return confirm('Bạn có muốn xóa người dùng này?" method="post">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"

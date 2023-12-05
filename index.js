@@ -93,32 +93,32 @@ const checkAuth = (req, res, next) => {
 };
 
 app.get("/admin", checkAuth, async (req, res) => {
-  const userId=req.session.userId;
-  const user=await User.findById(userId);
-  if(!user){
-  res.status(403).json({message:'không tìm thấy user'})  
+  const userId = req.session.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(403).json({ message: 'không tìm thấy user' })
   }
-  res.render("admin",{ user });
+  res.render("admin", { user });
 });
 app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
 });
 
 app.get('/nhomdich', checkAuth, async (req, res) => {
-  const userId=req.session.userId;
-  const user=await User.findById(userId);
-  if(!user){
-  res.status(403).json({message:'không tìm thấy user'})  
+  const userId = req.session.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(403).json({ message: 'không tìm thấy user' })
   }
-  res.render("nhomdich",{ user })
+  res.render("nhomdich", { user })
 })
 app.get('/setting', async (req, res) => {
-  const userId=req.session.userId;
-  const user=await User.findById(userId);
-  if(!user){
-  res.status(403).json({message:'không tìm thấy user'})  
+  const userId = req.session.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(403).json({ message: 'không tìm thấy user' })
   }
-  res.render("setting",{ user })
+  res.render("setting", { user })
 })
 
 //api get, post bài viết 
@@ -213,8 +213,13 @@ app.post('/postbaiviet', upload.array('images', 10), async (req, res) => {
 
     user.baiviet.push(baiviet._id);
     await user.save();
+    if (user.role === 'nhomdich') {
+      res.render("successnhomdich", { message: 'đăng bài viết thành công' })
+    }
+    else {
+      res.render("successadmin", { message: 'đăng bài viết thành công' })
+    }
 
-    return res.status(200).json({ message: 'Đăng bài viết thành công' });
   } catch (err) {
     console.error('Lỗi khi đăng bài viết:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đăng bài viết.' });
@@ -240,7 +245,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
-          role:usercmt.role,
+          role: usercmt.role,
           avatar: usercmt.avatar || '',
           date: formatdatecmt
         };
@@ -250,7 +255,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         _id: item._id,
         userId: item.userId._id,
         username: userbaiviet.username,
-        role:userbaiviet.role,
+        role: userbaiviet.role,
         avatar: userbaiviet.avatar || '',
         content: item.content,
         like: item.like,
@@ -502,6 +507,32 @@ app.post('/deletebaiviet/:baivietid/:userId', async (req, res) => {
     res.status(500).json({ error: "lỗi xóa bài viết" })
   }
 })
+app.post('/deletebaiviet/:baivietid', async (req, res) => {
+  try {
+    const baivietid = req.params.baivietid
+    const userId = req.session.userId
+    const baiviet = await Baiviet.findByIdAndDelete(baivietid)
+    await NotificationBaiviet.deleteMany({ baivietId: baivietid })
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json("không tìm thấy user")
+    }
+    const baivietIndex = user.baiviet.indexOf(baivietid);
+    if (baivietIndex !== -1) {
+      user.baiviet.splice(baivietIndex, 1);
+      await user.save();
+    }
+    if (user.role === 'nhomdich') {
+      res.render("successnhomdich", { message: 'xóa bài viết thành công' })
+    }
+    else {
+      res.render("successadmin", { message: 'xóa bài viết thành công' })
+    }
+  } catch (err) {
+    console.error('lỗi xóa bài viết', err)
+    res.status(500).json({ error: "lỗi xóa bài viết" })
+  }
+})
 
 app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
   try {
@@ -592,21 +623,41 @@ app.get('/renderbaiviet', async (req, res) => {
   try {
     const userId = req.session.userId;
     const user = await User.findById(userId);
-    
+
     if (!user) {
       res.status(403).json({ message: 'Không tìm thấy user' });
     }
-    const baiviet = await Baiviet.find({ userId });
-    const formattedBaiviet = baiviet.map(item => {
-      return {
+    if (user.role === "nhomdich") {
+      const baiviet = await Baiviet.find({ userId });
+      const formattedBaiviet = baiviet.map(item => {
+        return {
+          _id: item._id,
           content: item.content,
           like: item.like,
           comment: item.comment.length,
           date: moment(item.date).format('DD/MM/YYYY HH:mm:ss')
-      };
-  });
-    res.render('baiviet', { 
-      baiviet:formattedBaiviet,user });
+        };
+      });
+      res.render('baiviet', {
+        baiviet: formattedBaiviet, user
+      });
+    }
+    else {
+      const baiviet = await Baiviet.find();
+      const formattedBaiviet = baiviet.map(item => {
+        return {
+          _id: item._id,
+          content: item.content,
+          like: item.like,
+          comment: item.comment.length,
+          date: moment(item.date).format('DD/MM/YYYY HH:mm:ss')
+        };
+      });
+      res.render('baiviet', {
+        baiviet: formattedBaiviet, user
+      });
+    }
+
   } catch (error) {
     console.error('Lỗi khi lấy danh sách bài viết:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
@@ -640,8 +691,13 @@ app.get('/categorys', async (req, res) => {
 
 app.get('/categoryscreen', async (req, res) => {
   try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
     const category = await Category.find();
-    res.render("category", { category });
+    res.render("category", { category, user });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách thể loại:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách thể loại' });
@@ -650,10 +706,20 @@ app.get('/categoryscreen', async (req, res) => {
 
 app.post('/category', async (req, res) => {
   try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
     const { categoryname } = req.body;
     const category = new Category({ categoryname });
     await category.save();
-    res.status(201).json(category);
+    if (user.role === 'nhomdich') {
+      res.render("successnhomdich", { message: 'thêm thể loại thành công' })
+    }
+    else {
+      res.render("successadmin", { message: 'thêm thể loại thành công' })
+    }
   } catch (error) {
     console.error('Lỗi khi tạo thể loại:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tạo thể loại' });
@@ -663,6 +729,11 @@ app.post('/category', async (req, res) => {
 
 app.post('/categoryput/:id', async (req, res) => {
   try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
     const categoryId = req.params.id;
     const { categoryname } = req.body;
 
@@ -676,7 +747,12 @@ app.post('/categoryput/:id', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
     }
 
-    res.json(category);
+    if (user.role === 'nhomdich') {
+      res.render("successnhomdich", { message: 'sửa thể loại thành công' })
+    }
+    else {
+      res.render("successadmin", { message: 'sửa thể loại thành công' })
+    }
   } catch (error) {
     console.error('Lỗi khi cập nhật thể loại:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thể loại.' });
@@ -685,6 +761,11 @@ app.post('/categoryput/:id', async (req, res) => {
 
 app.post('/categorydelete/:_id', async (req, res) => {
   try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
     const categoryId = req.params._id;
 
 
@@ -693,7 +774,12 @@ app.post('/categorydelete/:_id', async (req, res) => {
     if (!deletedCategory) {
       return res.status(404).json({ message: 'thể loại không tồn tại.' });
     }
-    res.json({ message: 'thể loại đã được xóa thành công.' });
+    if (user.role === 'nhomdich') {
+      res.render("successnhomdich", { message: 'xóa thể loại thành công' })
+    }
+    else {
+      res.render("successadmin", { message: 'xóa thể loại thành công' })
+    }
   } catch (error) {
     console.error('Lỗi khi xóa thể loại:', error);
     res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa thể loại.' });
@@ -810,7 +896,7 @@ app.post('/huymanga/:mangaId/:id', async (req, res) => {
     });
     await newNotification.save();
 
-   return res.render('successadmin', { message: 'Hủy thêm truyện thành công' });
+    return res.render('successadmin', { message: 'Hủy thêm truyện thành công' });
   } catch (error) {
     console.error('Lỗi duyệt truyện', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi duyệt truyện' });
@@ -912,7 +998,7 @@ app.post('/delete-selected-notifications', async (req, res) => {
     // Xóa các thông báo có ID trong danh sách đã chọn
     await Notification.deleteMany({ _id: { $in: selectedIds } });
 
-   return res.render("nhomdich")
+    return res.render("nhomdich")
   } catch (error) {
     console.error('Lỗi khi xóa thông báo:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa thông báo.' });
@@ -1666,13 +1752,13 @@ app.post('/chapterput/:_id', async (req, res) => {
 
 app.post('/chapterdelete/:_id', async (req, res) => {
   try {
-    const userId=req.session.userId;
+    const userId = req.session.userId;
     const chapterId = req.params._id;
-    const user=await User.findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'user không tồn tại.' });
     }
-   
+
     const deletedChapter = await Chapter.findByIdAndRemove(chapterId);
 
     if (!deletedChapter) {
@@ -1686,10 +1772,10 @@ app.post('/chapterdelete/:_id', async (req, res) => {
       await manga.save();
     }
 
-    if(user.role === 'nhomdich'){
-      res.render('successnhomdich',{message:'Xóa chap thành công'});
-    }else{
-      res.render('successadmin',{message:'Xóa chap thành công'});
+    if (user.role === 'nhomdich') {
+      res.render('successnhomdich', { message: 'Xóa chap thành công' });
+    } else {
+      res.render('successadmin', { message: 'Xóa chap thành công' });
     }
   } catch (error) {
     console.error('Lỗi khi xóa chương:', error);
@@ -2316,6 +2402,34 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi.' });
   }
 });
+app.post('/registerweb', async (req, res) => {
+  try {
+    const { username, password, role, phone } = req.body;
+
+    // Kiểm tra số điện thoại
+    if (!phone || !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
+    }
+    const exitphone = await User.findOne({ phone });
+    if (exitphone) {
+      return res.status(400).json({ message: 'số điện thoại đã được đăng kí' });
+    }
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Tên người dùng đã tồn tại' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({ username, password: hashedPassword, role, coin: 0, phone });
+    await user.save();
+    res.render("successadmin", { message: `Thêm ${user.role} thành công ` })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi.' });
+  }
+});
 
 //api đăng nhập
 app.post('/login', async (req, res) => {
@@ -2438,6 +2552,41 @@ app.post('/userdelete/:_id', async (req, res) => {
   }
 });
 
+app.post('/userdeleteweb/:_id', async (req, res) => {
+  try {
+    const userId = req.params._id;
+
+    const hasUserCmtManga = await Manga.exists({ 'comment.userID': userId });
+    const hasUserBaiviet = await Baiviet.exists({ userId: userId });
+    const hasUserCommentsBaiviet = await Baiviet.exists({ 'comment.userID': userId });
+    const haspayment = await Payment.exists({ userID: userId })
+
+    if (!hasUserCmtManga && !hasUserBaiviet && !hasUserCommentsBaiviet && !haspayment) {
+      const deletedUser = await User.findByIdAndRemove(userId);
+      if (!deletedUser) {
+        return res.status(404).json({ message: 'Người dùng không tồn tại.' });
+      }
+
+      return res.json({ message: 'Người dùng đã được xóa thành công.' });
+    }
+
+    await Manga.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
+    await Baiviet.deleteMany({ userId: userId });
+    await Baiviet.updateMany({ 'comment.userID': userId }, { $pull: { comment: { userID: userId } } });
+    await Payment.deleteMany({ userID: userId });
+
+    const deletedUser = await User.findByIdAndRemove(userId);
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'Người dùng không tồn tại.' });
+    }
+
+    res.render("successadmin", { message: `xóa ${deletedUser.role} thành công ` })
+  } catch (error) {
+    console.error('Lỗi khi xóa người dùng:', error);
+    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa người dùng.' });
+  }
+});
+
 app.post('/userput/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -2463,6 +2612,36 @@ app.post('/userput/:id', async (req, res) => {
     }
 
     res.json(user);
+  } catch (error) {
+    console.error('Lỗi khi cập nhật user:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
+  }
+});
+app.post('/userputweb/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { username, password, role, phone } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!phone || !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        username,
+        password: hashedPassword,
+        role,
+        phone: phone.toString()
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy user.' });
+    }
+
+    res.render("successadmin", { message: `sửa thông tin ${deletedUser.role} thành công ` })
   } catch (error) {
     console.error('Lỗi khi cập nhật user:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
@@ -2658,7 +2837,7 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
     if (!manga) {
       res.status(404).json({ message: 'không tìm thấy manga' })
     }
-    const formatmanga=manga.map(manga =>({
+    const formatmanga = manga.map(manga => ({
       id: manga._id,
       manganame: manga.manganame,
       author: manga.author,
@@ -2672,7 +2851,7 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
       username: nhomdich.username,
       avatar: nhomdich.avatar || '',
       phone: nhomdich.phone,
-      follownumber:nhomdich.follownumber || 0,
+      follownumber: nhomdich.follownumber || 0,
       manga: formatmanga
     })
   } catch (error) {
@@ -2680,17 +2859,17 @@ app.get('/getnhomdich/:nhomdichId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
-app.post('/follow/:nhomdichId/:userId', async(req,res)=>{
+app.post('/follow/:nhomdichId/:userId', async (req, res) => {
   try {
-    const nhomdichId=req.params.nhomdichId
-    const userId=req.params.userId
-    const nhomdich=await User.findById(nhomdichId);
-    if(!nhomdich){
-      res.status(403).json({message:'nhóm dịch không tồn tại'})
+    const nhomdichId = req.params.nhomdichId
+    const userId = req.params.userId
+    const nhomdich = await User.findById(nhomdichId);
+    if (!nhomdich) {
+      res.status(403).json({ message: 'nhóm dịch không tồn tại' })
     }
-    const user= await User.findById(userId)
-    if(!user){
-      res.status(403).json({message:'user không tồn tại'})
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(403).json({ message: 'user không tồn tại' })
     }
     if (typeof nhomdich.follownumber !== 'number' || isNaN(nhomdich.follownumber)) {
       nhomdich.follownumber = 0;
@@ -2746,28 +2925,28 @@ app.get('/getfollow/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện yêu thích.' });
   }
 });
-app.post('/unfollow/:nhomdichId/:userId', async(req,res)=>{
+app.post('/unfollow/:nhomdichId/:userId', async (req, res) => {
   try {
-    const nhomdichId=req.params.nhomdichId
-    const userId=req.params.userId
-    const nhomdich=await User.findById(nhomdichId);
-    if(!nhomdich){
-      res.status(403).json({message:'nhóm dịch không tồn tại'})
+    const nhomdichId = req.params.nhomdichId
+    const userId = req.params.userId
+    const nhomdich = await User.findById(nhomdichId);
+    if (!nhomdich) {
+      res.status(403).json({ message: 'nhóm dịch không tồn tại' })
     }
-    const user= await User.findById(userId)
-    if(!user){
-      res.status(403).json({message:'user không tồn tại'})
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(403).json({ message: 'user không tồn tại' })
     }
-  
+
     if (!user.follow.some(nhomdich => nhomdich.nhomdichId.toString() === nhomdichId)) {
       return res.status(400).json({ message: 'Nhóm dịch không tồn tại trong danh sách follow.' });
     }
-   nhomdich.follownumber -= 1 ;
-   await nhomdich.save();
+    nhomdich.follownumber -= 1;
+    await nhomdich.save();
     user.follow = user.follow.filter(nhomdich => nhomdich.nhomdichId.toString() !== nhomdichId); // Xóa truyện yêu thích khỏi danh sách
 
     await user.save();
- 
+
     res.json({ message: `bạn đã unfollow nhóm dịch ${nhomdich.username}` });
 
   } catch (error) {
@@ -2778,7 +2957,7 @@ app.post('/unfollow/:nhomdichId/:userId', async(req,res)=>{
 app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
   try {
     const nhomdichId = req.params.nhomdichId;
-    const userId=req.params.userId
+    const userId = req.params.userId
     const nhomdich = await User.findById(nhomdichId);
     if (!nhomdich) {
       res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
@@ -2787,9 +2966,9 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
     if (!manga) {
       res.status(404).json({ message: 'không tìm thấy manga' })
     }
-    const user= await User.findById(userId)
-    if(!user){
-      res.status(403).json({message:'user không tồn tại'})
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(403).json({ message: 'user không tồn tại' })
     }
     let isFollow = false;
     user.follow.forEach(follow => {
@@ -2797,7 +2976,7 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
         isFollow = follow.isfollow;
       }
     });
-    const formatmanga=manga.map(manga =>({
+    const formatmanga = manga.map(manga => ({
       id: manga._id,
       manganame: manga.manganame,
       author: manga.author,
@@ -2807,11 +2986,11 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       view: manga.view
     }))
 
-    const formatbank= nhomdich.banking.map(bank =>{
-      return{
-        hovaten:bank.hovaten || 'chưa tích hợp',
-        phuongthuc:bank.phuongthuc || 'chưa tích hợp',
-        sotaikhoan:bank.sotaikhoan || 'chưa tích hợp'
+    const formatbank = nhomdich.banking.map(bank => {
+      return {
+        hovaten: bank.hovaten || 'chưa tích hợp',
+        phuongthuc: bank.phuongthuc || 'chưa tích hợp',
+        sotaikhoan: bank.sotaikhoan || 'chưa tích hợp'
       }
     })
     res.json({
@@ -2819,10 +2998,10 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
       username: nhomdich.username,
       avatar: nhomdich.avatar || '',
       phone: nhomdich.phone,
-      isfollow:isFollow,
-      follownumber:nhomdich.follownumber || 0,
-      bank:formatbank,
-      manganumber:formatmanga.length,
+      isfollow: isFollow,
+      follownumber: nhomdich.follownumber || 0,
+      bank: formatbank,
+      manganumber: formatmanga.length,
       manga: formatmanga
     })
   } catch (error) {
@@ -2830,15 +3009,15 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
-app.post('/banking/:nhomdichId', async(req,res) =>{
+app.post('/banking/:nhomdichId', async (req, res) => {
   try {
-    const nhomdichId=req.params.nhomdichId
-    const {phuongthuc,sotaikhoan,hovaten} =req.body;
-    const nhomdich=await User.findById(nhomdichId)
-    if(!nhomdichId){
-      res.status(403).json({message: 'không tìm thấy nhóm dịch'})
+    const nhomdichId = req.params.nhomdichId
+    const { phuongthuc, sotaikhoan, hovaten } = req.body;
+    const nhomdich = await User.findById(nhomdichId)
+    if (!nhomdichId) {
+      res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
     }
-    nhomdich.banking.push({hovaten, phuongthuc, sotaikhoan });
+    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan });
     await nhomdich.save();
 
     res.json({ message: 'Cập nhật thông tin tài khoản ngân hàng thành công' });
@@ -2847,18 +3026,18 @@ app.post('/banking/:nhomdichId', async(req,res) =>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thông tin tài khoản ngân hàng.' });
   }
 })
-app.get('/bank', async(req,res) =>{
+app.get('/bank', async (req, res) => {
   try {
-    const nhomdichId=req.session.userId
-    const nhomdich=await User.findById(nhomdichId)
-    if(!nhomdichId){
-      res.status(403).json({message: 'không tìm thấy nhóm dịch'})
+    const nhomdichId = req.session.userId
+    const nhomdich = await User.findById(nhomdichId)
+    if (!nhomdichId) {
+      res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
     }
-    const formatbank= nhomdich.banking.map(bank =>{
-      return{
-        hovaten:bank.hovaten || 'chưa tích hợp',
-        phuongthuc:bank.phuongthuc || 'chưa tích hợp',
-        sotaikhoan:bank.sotaikhoan || 'chưa tích hợp'
+    const formatbank = nhomdich.banking.map(bank => {
+      return {
+        hovaten: bank.hovaten || 'chưa tích hợp',
+        phuongthuc: bank.phuongthuc || 'chưa tích hợp',
+        sotaikhoan: bank.sotaikhoan || 'chưa tích hợp'
       }
     })
     res.json(formatbank)
@@ -2881,12 +3060,12 @@ app.post('/doiavatar', upload.single('avatar'), async (req, res) => {
     const avatar = req.file.buffer.toString('base64');
     user.avatar = avatar;
     await user.save();
-if(user.role === 'nhomdich'){
-  return res.render("nhomdich",{user})
-}
-if(user.role === 'admin'){
-  return res.render("admin",{user})
-}
+    if (user.role === 'nhomdich') {
+      return res.render("nhomdich", { user })
+    }
+    if (user.role === 'admin') {
+      return res.render("admin", { user })
+    }
   } catch (error) {
     console.error('Lỗi khi đổi avatar:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi avatar.' });
@@ -2923,36 +3102,56 @@ app.post('/rename', async (req, res) => {
     if (!user) {
       res.status(403).json({ message: 'không tìm thấy user' })
     }
-    if(user.role=== 'nhomdich'){
-      res.render("nhomdich",{user})
+    if (user.role === 'nhomdich') {
+      res.render("nhomdich", { user })
     }
-    else{
-      res.render("admin",{user})
+    else {
+      res.render("admin", { user })
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
   }
 })
-app.post('/banking', async(req,res) =>{
+app.post('/banking', async (req, res) => {
   try {
-    const nhomdichId=req.session.userId
-    const {phuongthuc,sotaikhoan,hovaten} =req.body;
-    const user=await User.findById(nhomdichId)
-    if(!nhomdichId){
-      res.status(403).json({message: 'không tìm thấy nhóm dịch'})
+    const nhomdichId = req.session.userId
+    const { phuongthuc, sotaikhoan, hovaten } = req.body;
+    const user = await User.findById(nhomdichId)
+    if (!nhomdichId) {
+      res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
     }
-    user.banking.push({hovaten, phuongthuc, sotaikhoan });
+    user.banking.push({ hovaten, phuongthuc, sotaikhoan });
     await user.save();
-    if(user.role=== 'nhomdich'){
-      res.render("successnhomdich",{message: 'Cập nhật thông tin tài khoản ngân hàng thành công'})
+    if (user.role === 'nhomdich') {
+      res.render("successnhomdich", { message: 'Cập nhật thông tin tài khoản ngân hàng thành công' })
     }
-    else{
-      res.render("successadmin",{message: 'Cập nhật thông tin tài khoản ngân hàng thành công'})
+    else {
+      res.render("successadmin", { message: 'Cập nhật thông tin tài khoản ngân hàng thành công' })
     }
   } catch (error) {
     console.error('Lỗi khi cập nhật thông tin tài khoản ngân hàng:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thông tin tài khoản ngân hàng.' });
+  }
+})
+app.get('/bank/:nhomdichId', async (req, res) => {
+  try {
+    const nhomdichId = req.params.nhomdichId;
+    const nhomdich = await User.findById(nhomdichId)
+    if (!nhomdichId) {
+      res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
+    }
+    const formatbank = nhomdich.banking.map(bank => {
+      return {
+        hovaten: bank.hovaten || 'chưa tích hợp',
+        phuongthuc: bank.phuongthuc || 'chưa tích hợp',
+        sotaikhoan: bank.sotaikhoan || 'chưa tích hợp'
+      }
+    })
+    res.json(formatbank)
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.' });
   }
 })
 
