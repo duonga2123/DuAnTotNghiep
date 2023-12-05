@@ -793,8 +793,19 @@ app.get("/add", async (req, res) => {
 
 app.get('/mangass', async (req, res) => {
   try {
-    const manga = await Manga.find({ isRead: true });
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
+    if(user.role==='nhomdich'){
+      const manga = await Manga.find({ isRead: true,userID:userId });
+      res.render("home", { manga });
+    }else{
+      const manga = await Manga.find({ isRead: true });
     res.render("home", { manga });
+    }
+    
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
@@ -1551,9 +1562,35 @@ app.get("/addchap", async (req, res) => {
 });
 
 app.get("/getchap", async (req, res) => {
-  const data = await Chapter.find({ isChap: true }).sort({ mangaName: 1 }).lean();
-  console.log("Session:", req.session);
-  res.render("chapter", { data, userId: req.session.userId });
+  try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(403).json({ message: 'Không tìm thấy user' });
+    }
+
+    let query = {};
+
+    if (user.role === 'admin') {
+      // Nếu là nhóm dịch hoặc admin, hiển thị tất cả các chap của các truyện
+      query = {};
+    } else {
+      // Nếu không phải nhóm dịch hoặc admin, chỉ hiển thị chap của các truyện mà user đã tạo
+      query = { userID: userId };
+    }
+
+    // Lấy danh sách truyện theo điều kiện query
+    const mangaList = await Manga.find(query).select('_id');
+
+    // Lấy danh sách chap theo các truyện trong mangaList
+    const data = await Chapter.find({ mangaName: { $in: mangaList } }).sort({ mangaName: 1 }).lean();
+
+    res.render("chapter", { data, userId: userId });
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách chap:', error);
+    return res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách chap.' });
+  }
 });
 
 app.get('/chap', async (req, res) => {
