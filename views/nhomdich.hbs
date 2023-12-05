@@ -1144,6 +1144,24 @@
 				$("#banking").click(function () {
 					$("#modalbank").modal("show");
 				});
+				$("#bankingmanage").click(function () {
+					$("#modalbankmanage").modal("show");
+					fetch("/bank")
+						.then(response => response.json())
+						.then(data => {
+							// Hiển thị danh sách tài khoản ngân hàng trong modal
+							const bankList = $("#bankList");
+							bankList.empty();
+							data.forEach(bank => {
+								const listItem = `<p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p><hr>`;
+								bankList.append(listItem);
+							});
+						})
+						.catch(error => {
+							console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+							alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
+						});
+				});
 				$("#mk form").submit(function (e) {
 					e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
 

@@ -2843,9 +2843,9 @@ app.post('/banking/:nhomdichId', async(req,res) =>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật thông tin tài khoản ngân hàng.' });
   }
 })
-app.get('/bank/:nhomdichId', async(req,res) =>{
+app.get('/bank', async(req,res) =>{
   try {
-    const nhomdichId=req.params.nhomdichId
+    const nhomdichId=req.session.userId
     const nhomdich=await User.findById(nhomdichId)
     if(!nhomdichId){
       res.status(403).json({message: 'không tìm thấy nhóm dịch'})

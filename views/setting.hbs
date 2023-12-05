@@ -152,6 +152,9 @@
         <div id="banking">
             <p>Tích hợp tài khoản ngân hàng</p>
         </div>
+        <div id="bankingmanage">
+            <p>Quản lí tài khoản ngân hàng</p>
+        </div>
 
     </div>
     <!-- Modal đổi avatar -->
@@ -209,7 +212,7 @@
             </div>
         </div>
     </div>
-     <!-- Modal đổi tên đăng nhập -->
+    <!-- Modal đổi tên đăng nhập -->
     <div class="modal fade" id="modalusername" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -235,7 +238,7 @@
             </div>
         </div>
     </div>
-     <!-- Modal thêm tk ngân hàng -->
+    <!-- Modal thêm tk ngân hàng -->
     <div class="modal fade" id="modalbank" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -251,11 +254,11 @@
                             <label for="phuongthuc">Phương thức:</label>
                             <input type="text" class="form-control" id="phuongthuc" name="phuongthuc">
                         </div>
-                          <div class="form-group">
+                        <div class="form-group">
                             <label for="hovaten">Họ và tên:</label>
                             <input type="text" class="form-control" id="hovaten" name="hovaten">
                         </div>
-                         <div class="form-group">
+                        <div class="form-group">
                             <label for="sotaikhoan">Số tài khoản:</label>
                             <input type="text" class="form-control" id="sotaikhoan" name="sotaikhoan">
                         </div>
@@ -269,6 +272,23 @@
             </div>
         </div>
     </div>
+    <!-- Modal quản lý tài khoản ngân hàng -->
+    <div class="modal fade" id="modalbankmanage" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Quản lý tài khoản ngân hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Hiển thị danh sách tài khoản ngân hàng ở đây -->
+                    <ul id="bankList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function () {
             $("#avatar").click(function () {
@@ -277,11 +297,29 @@
             $("#repass").click(function () {
                 $("#mk").modal("show");
             });
-             $("#rename").click(function () {
+            $("#rename").click(function () {
                 $("#modalusername").modal("show");
             });
-             $("#banking").click(function () {
+            $("#banking").click(function () {
                 $("#modalbank").modal("show");
+            });
+             $("#bankingmanage").click(function () {
+                $("#modalbankmanage").modal("show");
+                 fetch("/bank")
+                .then(response => response.json())
+                .then(data => {
+                    // Hiển thị danh sách tài khoản ngân hàng trong modal
+                    const bankList = $("#bankList");
+                    bankList.empty();
+                    data.forEach(bank => {
+                        const listItem = `<p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p><hr>`;
+                        bankList.append(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+                    alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
+                });
             });
             $("#mk form").submit(function (e) {
                 e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
@@ -304,7 +342,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.message) {
-                            alert(data.message); 
+                            alert(data.message);
                             $("#mk").modal("hide");
                         }
                     })
@@ -313,7 +351,7 @@
                     });
             });
 
-            
+
             $("#saveButton").click(function () {
                 $("#mk form").submit();
             });
