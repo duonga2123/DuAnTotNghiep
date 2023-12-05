@@ -2639,7 +2639,7 @@ app.post('/userputweb/:id', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy user.' });
     }
 
-    res.render("successadmin", { message: `sửa thông tin ${deletedUser.role} thành công ` })
+    res.render("successadmin", { message: `sửa thông tin ${user.role} thành công ` })
   } catch (error) {
     console.error('Lỗi khi cập nhật user:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi cập nhật user.' });
