@@ -286,6 +286,7 @@ app.get('/getbaiviet', async (req, res) => {
           userId: commentItem.userID,
           cmt: commentItem.cmt,
           username: usercmt.username,
+          role: usercmt.role,
           avatar: usercmt.avatar || '',
           date: formatdatecmt
         };
@@ -295,6 +296,7 @@ app.get('/getbaiviet', async (req, res) => {
         _id: item._id,
         userId: item.userId._id,
         username: user.username,
+        role: userbaiviet.role,
         avatar: user.avatar || '',
         content: item.content,
         like: item.like,
@@ -1569,24 +1571,14 @@ app.get("/getchap", async (req, res) => {
     if (!user) {
       return res.status(403).json({ message: 'Không tìm thấy user' });
     }
-
-    let query = {};
-
     if (user.role === 'admin') {
-      // Nếu là nhóm dịch hoặc admin, hiển thị tất cả các chap của các truyện
-      query = {};
+      const data = await Chapter.find({ isChap: true }).sort({ mangaName: 1 }).lean();
+      return res.render("chapter", { data, userId: userId });
     } else {
-      // Nếu không phải nhóm dịch hoặc admin, chỉ hiển thị chap của các truyện mà user đã tạo
-      query = { userID: userId };
+      const mangaList = await Manga.find({userID:userId});
+      const data = await Chapter.find({ isChap: true,mangaName:mangaList.manganame }).sort({ mangaName: 1 }).lean();
+      return res.render("chapter", { data, userId: userId });
     }
-
-    // Lấy danh sách truyện theo điều kiện query
-    const mangaList = await Manga.find(query).select('_id');
-
-    // Lấy danh sách chap theo các truyện trong mangaList
-    const data = await Chapter.find({ mangaName: { $in: mangaList } }).sort({ mangaName: 1 }).lean();
-
-    res.render("chapter", { data, userId: userId });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách chap:', error);
     return res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách chap.' });
