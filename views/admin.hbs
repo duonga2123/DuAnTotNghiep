@@ -1084,7 +1084,7 @@
 
 				$(".editCategoryButton").click(function () {
 
-				 var id = $(this).closest("tr").find(".user-id").text();
+				 var id = $(this).data("id");
                 var username = $(this).closest("tr").find(".user-username").text();
                 var phone = $(this).closest("tr").find(".user-phone").text();
                 var role = $(this).closest("tr").find(".user-role").text();
