@@ -30,9 +30,13 @@
         }
         #container img{
             border-radius: 50%;
-            width: 200px;
-            height: 200px;
+            width: 70px;
+            height: 70px;
             margin-right: 20px;
+        }
+         #container h3{
+           text-align: center;
+           margin-top: 10px;
         }
 
     </style>
@@ -41,7 +45,7 @@
 <body>
     <div id="container" class="jumbotron">
            <img src="data:image/jpeg;base64,{{user.avatar}}">
-           <h1>{{user.username}}</h1>
+           <h3 >{{user.username}}</h3>
         </div>
         
     <script>
