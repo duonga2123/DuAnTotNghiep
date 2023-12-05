@@ -948,14 +948,24 @@
 		});
 
 		const fetchRevenueData = async (startDate, endDate) => {
-			let url = '/getrevenue';
-			if (startDate && endDate) {
-				url += `?startDate=${startDate}&endDate=${endDate}`;
-			}
+			try {
+				let url = '/getrevenue';
 
-			const response = await fetch(url);
-			const data = await response.json();
-			return data;
+				// Chuyển đổi startDate và endDate thành đối tượng Date
+				const startDateObj = startDate ? new Date(startDate) : null;
+				const endDateObj = endDate ? new Date(endDate) : null;
+
+				if (startDateObj && endDateObj) {
+					url += `?startDate=${startDateObj.toISOString()}&endDate=${endDateObj.toISOString()}`;
+				}
+
+				const response = await fetch(url);
+				const data = await response.json();
+				return data;
+			} catch (error) {
+				console.error('Đã xảy ra lỗi khi fetch dữ liệu doanh thu:', error);
+				throw error;
+			}
 		};
 
 		const updateChart = async () => {
@@ -1084,14 +1094,14 @@
 
 				$(".editCategoryButton").click(function () {
 
-				 var id = $(this).data("id");
-                var username = $(this).closest("tr").find(".user-username").text();
-                var phone = $(this).closest("tr").find(".user-phone").text();
-                var role = $(this).closest("tr").find(".user-role").text();
+					var id = $(this).data("id");
+					var username = $(this).closest("tr").find(".user-username").text();
+					var phone = $(this).closest("tr").find(".user-phone").text();
+					var role = $(this).closest("tr").find(".user-role").text();
 
-                $("#editusername").val(username);
-                $("#editphone").val(phone);
-                $("#editrole").val(role);
+					$("#editusername").val(username);
+					$("#editphone").val(phone);
+					$("#editrole").val(role);
 
 					$("#editCategoryForm").attr("action", "/userputweb/" + id);
 
@@ -1400,15 +1410,15 @@
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-		 function setbaiviet(){
-			  $(document).ready(function () {
-            $("#postContent").click(function () {
-                $("#myModal").modal("show");
-            });
+		function setbaiviet() {
+			$(document).ready(function () {
+				$("#postContent").click(function () {
+					$("#myModal").modal("show");
+				});
 
-        });
-		 }
-		 const settingmanage = document.getElementById('setting');
+			});
+		}
+		const settingmanage = document.getElementById('setting');
 
 		settingmanage.addEventListener("click", function (event) {
 			event.preventDefault();
