@@ -678,6 +678,12 @@
 					<span class="text">Chapter Manager</span>
 				</a>
 			</li>
+			<li>
+				<a id="baivietManagerLink" href="#baivietManagerLink">
+					<i class='bx bx bxs-file'></i>
+					<span class="text">Baiviet Manager</span>
+				</a>
+			</li>
 		</ul>
 		<ul class="side-menu">
 			<li>
@@ -1089,6 +1095,27 @@
 				notificationSpan.innerText = data.unreadCount.toString();
 			})
 			.catch(error => console.error(error));
+
+		const baivietManagerLink = document.getElementById('baivietManagerLink');
+
+		baivietManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/renderbaiviet')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setbaiviet()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		function setbaiviet() {
+			$(document).ready(function () {
+				$("#postContent").click(function () {
+					$("#myModal").modal("show");
+				});
+
+			});
 	</script>
 </body>
 
