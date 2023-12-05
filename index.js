@@ -108,6 +108,14 @@ app.get('/nhomdich', checkAuth, async (req, res) => {
   }
   res.render("nhomdich",{ user })
 })
+app.get('/setting', async (req, res) => {
+  const userId=req.session.userId;
+  const user=await User.findById(userId);
+  if(!user){
+  res.status(403).json({message:'không tìm thấy user'})  
+  }
+  res.render("setting",{ user })
+})
 
 //api get, post bài viết 
 app.post('/postbaiviet/:userId', upload.array('images', 10), async (req, res) => {
