@@ -701,7 +701,7 @@
 		</ul>
 		<ul class="side-menu">
 			<li>
-				<a href="">
+				<a href="#" id="setting">
 					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
@@ -1437,6 +1437,88 @@
 
         });
 		 }
+		 const settingmanage = document.getElementById('setting');
+
+		settingmanage.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/setting')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setting()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		function setting() {
+			$(document).ready(function () {
+				$("#avatar").click(function () {
+					$("#myModal").modal("show");
+				});
+				$("#repass").click(function () {
+					$("#mk").modal("show");
+				});
+				$("#rename").click(function () {
+					$("#modalusername").modal("show");
+				});
+				$("#banking").click(function () {
+					$("#modalbank").modal("show");
+				});
+				$("#bankingmanage").click(function () {
+					$("#modalbankmanage").modal("show");
+					fetch("/bank")
+						.then(response => response.json())
+						.then(data => {
+							// Hiển thị danh sách tài khoản ngân hàng trong modal
+							const bankList = $("#bankList");
+							bankList.empty();
+							data.forEach(bank => {
+								const listItem = `<p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p><hr>`;
+								bankList.append(listItem);
+							});
+						})
+						.catch(error => {
+							console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+							alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
+						});
+				});
+				$("#mk form").submit(function (e) {
+					e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+
+					// Lấy giá trị từ các trường nhập liệu
+					var passOld = $("#passOld").val();
+					var passNew = $("#passNew").val();
+
+					// Gửi yêu cầu AJAX đến /repass
+					fetch("/repass", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							passOld: passOld,
+							passNew: passNew,
+						}),
+					})
+						.then(response => response.json())
+						.then(data => {
+							if (data.message) {
+								alert(data.message);
+								$("#mk").modal("hide");
+							}
+						})
+						.catch(error => {
+							alert("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
+						});
+				});
+
+
+				$("#saveButton").click(function () {
+					$("#mk form").submit();
+				});
+
+			});
+		}
 	</script>
 </body>
 
