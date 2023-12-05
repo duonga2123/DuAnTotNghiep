@@ -1576,7 +1576,9 @@ app.get("/getchap", async (req, res) => {
       return res.render("chapter", { data, userId: userId });
     } else {
       const mangaList = await Manga.find({userID:userId});
-      const data = await Chapter.find({ isChap: true,mangaName:mangaList.manganame }).sort({ mangaName: 1 }).lean();
+      const mangaNames = mangaList.map(manga => manga.manganame);
+
+      const data = await Chapter.find({ isChap: true, mangaName: { $in: mangaNames } }).sort({ mangaName: 1 }).lean();
       return res.render("chapter", { data, userId: userId });
     }
   } catch (error) {
