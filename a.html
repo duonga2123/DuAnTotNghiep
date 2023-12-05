@@ -28,39 +28,37 @@
             align-self: flex-start;
             display: flex;
         }
-
-        #container img {
+        #container img{
             border-radius: 50%;
             width: 150px;
             height: 150px;
             margin-right: 20px;
         }
-
-        #container h3 {
-            text-align: center;
-            margin-top: 10px;
+         #container h3{
+           text-align: center;
+           margin-top: 10px;
         }
-
-        #container p {
-            margin-top: 5px;
+        #container p{
+           margin-top: 5px;
         }
-
         #header {
-            margin-top: 20px;
+margin-top: 20px;
         }
+        
+
     </style>
 </head>
 
 <body>
     <div id="container" class="jumbotron">
-        <img src="data:image/jpeg;base64,{{user.avatar}}">
-        <div id="header">
-            <h2>{{user.username}}</h2>
-            <p>Số điện thoại: {{user.phone}}</p>
-            <h6>{{user.follownumber}} người theo dõi</h4>
+           <img src="data:image/jpeg;base64,{{user.avatar}}">
+           <div id="header">
+           <h2>{{user.username}}</h2>
+           <p>Số điện thoại: {{user.phone}}</p>
+           <h6>{{user.follownumber}} người theo dõi</h4>
+           </div>
         </div>
-    </div>
-
+        
     <script>
     </script>
 
