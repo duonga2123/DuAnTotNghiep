@@ -1126,9 +1126,18 @@
 				.then(data => {
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
+					setting()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
+	function setting() {
+			$(document).ready(function () {
+				$("#avatar").click(function () {
+					$("#myModal").modal("show");
+				});
+
+			});
+		}
 	</script>
 </body>
 

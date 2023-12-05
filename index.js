@@ -2862,6 +2862,31 @@ app.get('/bank/:nhomdichId', async(req,res) =>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.' });
   }
 })
+app.post('/doiavatar', upload.single('avatar'), async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: 'Vui lòng chọn một file ảnh.' });
+    }
+
+    const avatar = req.file.buffer.toString('base64');
+    user.avatar = avatar;
+    await user.save();
+if(user.role === 'nhomdich'){
+  return res.render("nhomdich",{user})
+}
+if(user.role === 'admin'){
+  return res.render("admin",{user})
+}
+  } catch (error) {
+    console.error('Lỗi khi đổi avatar:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi avatar.' });
+  }
+})
 
 app.listen(8080, () => {
   try {
