@@ -581,7 +581,16 @@ app.get('/renderbaiviet', async (req, res) => {
       res.status(403).json({ message: 'Không tìm thấy user' });
     }
     const baiviet = await Baiviet.find({ userId });
-    res.render('baiviet', { baiviet,user });
+    const formattedBaiviet = baiviet.map(item => {
+      return {
+          content: item.content,
+          like: item.like,
+          comment: item.comment.length,
+          date: moment(item.date).format('DD/MM/YYYY HH:mm:ss')
+      };
+  });
+    res.render('baiviet', { 
+      baiviet:formattedBaiviet,user });
   } catch (error) {
     console.error('Lỗi khi lấy danh sách bài viết:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
