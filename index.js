@@ -224,6 +224,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           userId: commentItem.userID._id,
           cmt: commentItem.cmt,
           username: usercmt.username,
+          role:usercmt.role,
           avatar: usercmt.avatar || '',
           date: formatdatecmt
         };
@@ -233,6 +234,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
         _id: item._id,
         userId: item.userId._id,
         username: userbaiviet.username,
+        role:userbaiviet.role,
         avatar: userbaiviet.avatar || '',
         content: item.content,
         like: item.like,
