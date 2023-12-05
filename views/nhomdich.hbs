@@ -1117,9 +1117,9 @@
 
 			});
 		}
-		const setting = document.getElementById('setting');
+		const settingmanage = document.getElementById('setting');
 
-		setting.addEventListener("click", function (event) {
+		settingmanage.addEventListener("click", function (event) {
 			event.preventDefault();
 			fetch('/setting')
 				.then(response => response.text())
@@ -1130,7 +1130,7 @@
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-	function setting() {
+		function setting() {
 			$(document).ready(function () {
 				$("#avatar").click(function () {
 					$("#myModal").modal("show");
