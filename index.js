@@ -93,8 +93,12 @@ const checkAuth = (req, res, next) => {
 };
 
 app.get("/admin", checkAuth, async (req, res) => {
-  console.log("Session:", req.session);
-  res.render("admin");
+  const userId=req.session.userId;
+  const user=await User.findById(userId);
+  if(!user){
+  res.status(403).json({message:'không tìm thấy user'})  
+  }
+  res.render("admin",{ user });
 });
 app.get("/logout", async (req, res) => {
   res.redirect('/loginadmin');
