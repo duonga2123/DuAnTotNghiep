@@ -26,27 +26,16 @@
             margin-top: 20px;
             justify-content: flex-start;
             align-self: flex-start;
-        }
-
-        .post-form {
             display: flex;
-            flex-direction: column;
         }
 
-        .post-form input {
-            resize: none;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            font-size: 16px;
-        }
     </style>
 </head>
 
 <body>
     <div id="container" class="jumbotron">
            <img src="data:image/jpeg;base64,{{user.avatar}}">
+           <h2>{{user.username}}</h2>
         </div>
         
     <script>
