@@ -1662,6 +1662,7 @@ app.post('/chapterput/:_id', async (req, res) => {
 
 app.post('/chapterdelete/:_id', async (req, res) => {
   try {
+    const userId=req.session.userId;
     const chapterId = req.params._id;
     const user=await User.findById(userId);
     if (!user) {
