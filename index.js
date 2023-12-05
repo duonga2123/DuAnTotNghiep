@@ -2620,8 +2620,7 @@ app.post('/userput/:id', async (req, res) => {
 app.post('/userputweb/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-    const { username, password, role, phone } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { username, role, phone } = req.body;
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
@@ -2630,7 +2629,6 @@ app.post('/userputweb/:id', async (req, res) => {
       userId,
       {
         username,
-        password: hashedPassword,
         role,
         phone: phone.toString()
       },
