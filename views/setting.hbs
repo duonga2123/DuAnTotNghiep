@@ -28,6 +28,12 @@
             align-self: flex-start;
             display: flex;
         }
+        #container img{
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            margin-right: 20px;
+        }
 
     </style>
 </head>
@@ -35,7 +41,7 @@
 <body>
     <div id="container" class="jumbotron">
            <img src="data:image/jpeg;base64,{{user.avatar}}">
-           <h2>{{user.username}}</h2>
+           <h1>{{user.username}}</h1>
         </div>
         
     <script>
