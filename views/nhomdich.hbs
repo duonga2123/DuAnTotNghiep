@@ -1132,11 +1132,51 @@
 		});
 		function setting() {
 			$(document).ready(function () {
-				$("#avatar").click(function () {
-					$("#myModal").modal("show");
-				});
+            $("#avatar").click(function () {
+                $("#myModal").modal("show");
+            });
+             $("#repass").click(function () {
+                $("#mk").modal("show");
+            });
+              $("#mk form").submit(function (e) {
+            e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
 
-			});
+            // Lấy giá trị từ các trường nhập liệu
+            var passOld = $("#passOld").val();
+            var passNew = $("#passNew").val();
+
+            // Gửi yêu cầu AJAX đến /repass
+            $.ajax({
+                type: "POST",
+                url: "/repass",
+                data: {
+                    passOld: passOld,
+                    passNew: passNew
+                },
+                success: function (data) {
+                    // Kiểm tra xem phản hồi có chứa thông báo thành công không
+                    if (data.message) {
+                        alert(data.message); // Hiển thị thông báo thành công
+                        $("#mk").modal("hide"); // Đóng modal sau khi thành công
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Kiểm tra xem phản hồi có chứa thông báo lỗi không
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        alert(xhr.responseJSON.message); // Hiển thị thông báo lỗi
+                    } else {
+                        alert("Đã xảy ra lỗi khi đổi mật khẩu"); // Thông báo lỗi mặc định
+                    }
+                }
+            });
+        });
+
+        // Bắt sự kiện khi nút "Lưu" trong modal được bấm
+        $("#saveCategoryButton").click(function () {
+            $("#mk form").submit(); // Gửi form khi nút "Lưu" được bấm
+        });
+
+        });
 		}
 	</script>
 </body>

@@ -2888,6 +2888,43 @@ if(user.role === 'admin'){
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi avatar.' });
   }
 })
+app.post('/repass', async (req, res) => {
+  try {
+    const { passOld, passNew } = req.body
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+    const hashedPassword = await bcrypt.hash(passNew, 10);
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
+    const isPasswordMatch = await bcrypt.compare(passOld, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(403).json({ message: 'Mật khẩu cũ của bạn không đúng' });
+    }
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi mật khẩu' });
+  }
+})
+app.post('/rename/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { username } = req.body
+    const user = await User.findByIdAndUpdate(userId, { username }, { new: true })
+    if (!user) {
+      res.status(403).json({ message: 'không tìm thấy user' })
+    }
+    res.status(200).json({ message: 'đổi tên thành công' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
+  }
+})
 
 app.listen(8080, () => {
   try {

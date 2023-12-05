@@ -177,11 +177,81 @@
             </div>
         </div>
     </div>
+    <!-- Modal đổi mật khẩu -->
+<div class="modal fade" id="mk" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Thêm bài viết</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/repass" method="post" >
+                    <div class="form-group">
+                            <label for="passOld">passOld:</label>
+                            <input type="text" class="form-control" id="passOld" name="passOld">
+                        </div>
+                        <div class="form-group">
+                            <label for="passNew">passNew:</label>
+                            <input type="text" class="form-control" id="passNew" name="passNew">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="saveCategoryButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <script>
           $(document).ready(function () {
             $("#avatar").click(function () {
                 $("#myModal").modal("show");
             });
+             $("#repass").click(function () {
+                $("#mk").modal("show");
+            });
+              $("#mk form").submit(function (e) {
+            e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+
+            // Lấy giá trị từ các trường nhập liệu
+            var passOld = $("#passOld").val();
+            var passNew = $("#passNew").val();
+
+            // Gửi yêu cầu AJAX đến /repass
+            $.ajax({
+                type: "POST",
+                url: "/repass",
+                data: {
+                    passOld: passOld,
+                    passNew: passNew
+                },
+                success: function (data) {
+                    // Kiểm tra xem phản hồi có chứa thông báo thành công không
+                    if (data.message) {
+                        alert(data.message); // Hiển thị thông báo thành công
+                        $("#mk").modal("hide"); // Đóng modal sau khi thành công
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Kiểm tra xem phản hồi có chứa thông báo lỗi không
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        alert(xhr.responseJSON.message); // Hiển thị thông báo lỗi
+                    } else {
+                        alert("Đã xảy ra lỗi khi đổi mật khẩu"); // Thông báo lỗi mặc định
+                    }
+                }
+            });
+        });
+
+        // Bắt sự kiện khi nút "Lưu" trong modal được bấm
+        $("#saveCategoryButton").click(function () {
+            $("#mk form").submit(); // Gửi form khi nút "Lưu" được bấm
+        });
 
         });
     </script>
