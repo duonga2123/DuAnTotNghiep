@@ -2242,7 +2242,7 @@ app.get('/success/:id', async (req, res) => {
           { new: true }
         );
 
-        res.status(200).json({ totalAmount, message: 'Thanh toán thành công!' });
+        res.render("successthanhtoan",{ message: 'Thanh toán thành công!' });
       }
     });
   }
