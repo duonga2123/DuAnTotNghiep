@@ -101,8 +101,12 @@ app.get("/logout", async (req, res) => {
 });
 
 app.get('/nhomdich', checkAuth, async (req, res) => {
-  console.log("Session:", req.session);
-  res.render("nhomdich", { userId: req.session.userId })
+  const userId=req.session.userId;
+  const user=await User.findById(userId);
+  if(!user){
+  res.status(403).json({message:'không tìm thấy user'})  
+  }
+  res.render("nhomdich",{ user })
 })
 
 //api get, post bài viết 
