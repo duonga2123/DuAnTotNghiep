@@ -65,7 +65,8 @@
         }
 
         #avatar {
-            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;            background-color: #f4f4f4;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
             border-radius: 20px;
             height: 40px;
             width: 100%;
@@ -80,7 +81,8 @@
         #repass {
 
             margin-top: 5px;
-            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;            background-color: #f4f4f4;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
             border-radius: 20px;
             height: 40px;
             width: 100%;
@@ -94,7 +96,7 @@
 
         #rename {
             margin-top: 5px;
-            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             background-color: #f4f4f4;
             border-radius: 20px;
             height: 40px;
@@ -109,7 +111,7 @@
 
         #banking {
             margin-top: 5px;
-            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             background-color: #f4f4f4;
             border-radius: 20px;
             height: 40px;
@@ -152,8 +154,8 @@
         </div>
 
     </div>
-<!-- Modal đổi avatar -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+    <!-- Modal đổi avatar -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -178,7 +180,7 @@
         </div>
     </div>
     <!-- Modal đổi mật khẩu -->
-<div class="modal fade" id="mk" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+    <div class="modal fade" id="mk" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -188,8 +190,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/repass" method="post" >
-                    <div class="form-group">
+                    <form action="/repass" method="post">
+                        <div class="form-group">
                             <label for="passOld">passOld:</label>
                             <input type="text" class="form-control" id="passOld" name="passOld">
                         </div>
@@ -208,50 +210,47 @@
         </div>
     </div>
     <script>
-          $(document).ready(function () {
+        $(document).ready(function () {
             $("#avatar").click(function () {
                 $("#myModal").modal("show");
             });
-             $("#repass").click(function () {
+            $("#repass").click(function () {
                 $("#mk").modal("show");
             });
-              $("#mk form").submit(function (e) {
-            e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+            $("#mk form").submit(function (e) {
+                e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
 
-            // Lấy giá trị từ các trường nhập liệu
-            var passOld = $("#passOld").val();
-            var passNew = $("#passNew").val();
+                // Lấy giá trị từ các trường nhập liệu
+                var passOld = $("#passOld").val();
+                var passNew = $("#passNew").val();
 
-            // Gửi yêu cầu AJAX đến /repass
-            $.ajax({
-                type: "POST",
-                url: "/repass",
-                data: {
-                    passOld: passOld,
-                    passNew: passNew
-                },
-                success: function (data) {
-                    // Kiểm tra xem phản hồi có chứa thông báo thành công không
-                    if (data.message) {
-                        alert(data.message); // Hiển thị thông báo thành công
-                        $("#mk").modal("hide"); // Đóng modal sau khi thành công
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Kiểm tra xem phản hồi có chứa thông báo lỗi không
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        alert(xhr.responseJSON.message); // Hiển thị thông báo lỗi
-                    } else {
-                        alert("Đã xảy ra lỗi khi đổi mật khẩu"); // Thông báo lỗi mặc định
-                    }
-                }
+                // Gửi yêu cầu AJAX đến /repass
+                fetch("/repass", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        passOld: passOld,
+                        passNew: passNew,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert(data.message); 
+                            $("#mk").modal("hide");
+                        }
+                    })
+                    .catch(error => {
+                        alert("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
+                    });
             });
-        });
 
-        // Bắt sự kiện khi nút "Lưu" trong modal được bấm
-        $("#saveButton").click(function () {
-            $("#mk form").submit(); // Gửi form khi nút "Lưu" được bấm
-        });
+            
+            $("#saveButton").click(function () {
+                $("#mk form").submit();
+            });
 
         });
     </script>
