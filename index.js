@@ -356,7 +356,7 @@ app.get('/getbaiviet', async (req, res) => {
           images: item.images
         };
       } else {
-        console.error(`Không tìm thấy thông tin user ${usersWithRoleNotVip} cho bài viết ${item._id}`);
+        res.json(usersWithRoleNotVip)
         return null;
       }
     }));
