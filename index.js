@@ -309,7 +309,7 @@ app.get('/getbaiviet', async (req, res) => {
       })
     );
     const usersWithRoleVip = extendedTopUsers.slice(0,3).map(user => ({  
-      userId:user._id, 
+      userId:user.userID, 
       username:user.username,
       role:user.role,
       avatar:user.avatar, 
