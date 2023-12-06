@@ -299,13 +299,13 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       });
 
     const userId = req.params.userId;
-    const user = await User.findById(userId)
-    if (!user) {
+    const currentUser = await User.findById(userId)
+    if (!currentUser) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
     const baiviet = await Baiviet.find({}).sort({ date: -1 }).populate("userId", "username")
     const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
-      const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
+      const isLiked = currentUser.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
         const usercmt = userRoles[commentItem.userID.toString()];
