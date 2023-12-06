@@ -318,7 +318,7 @@ app.get('/getbaiviet', async (req, res) => {
   
       // Xử lý rolevip cho top users
       extendedTopUsers.forEach(user => {
-        userRoles[user.userID] = { 
+        userRoles[user.userID.toString()] = { 
           userId:user.userID, 
           username:user.username,
           role:user.role,
@@ -328,15 +328,15 @@ app.get('/getbaiviet', async (req, res) => {
   
       // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
       allUsers.forEach(user => {
-        if (!topUserIds.has(user._id) && user.role !== 'admin' && user.role !== 'nhomdich') {
-          userRoles[user._id] = { 
+        if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+          userRoles[user._id.toString()] = { 
             userId:user._id, 
             username:user.username,
             role:user.role,
             avatar:user.avatar, rolevip: 'notvip' };
         }
-        if((topUserIds.has(user._id) && user.role === 'user') || user.role === 'admin' || user.role === 'nhomdich'){
-          userRoles[user._id] = { 
+        if(topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich'){
+          userRoles[user._id.toString()] = { 
             userId:user._id, 
             username:user.username,
             role:user.role,
@@ -361,7 +361,7 @@ app.get('/getbaiviet', async (req, res) => {
           date: formatdatecmt
         };
       }));
-      const user = userRoles[item.userId._id];
+      const user = userRoles[item.userId._id.toString()];
         return {
           _id: item._id,
           userId: item.userId._id,
