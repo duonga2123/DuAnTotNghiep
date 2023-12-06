@@ -296,7 +296,7 @@ app.get('/getbaiviet', async (req, res) => {
         _id: item._id,
         userId: item.userId._id,
         username: user.username,
-        role: userbaiviet.role,
+        role: user.role,
         avatar: user.avatar || '',
         content: item.content,
         like: item.like,
