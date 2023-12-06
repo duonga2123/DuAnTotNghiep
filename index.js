@@ -308,14 +308,19 @@ app.get('/getbaiviet', async (req, res) => {
         };
       })
     );
-    const usersWithRoleVip = extendedTopUsers.slice(0,3).map(user => ({ ...user, rolevip: 'vip' }));
+    const usersWithRoleVip = extendedTopUsers.slice(0,3).map(user => ({  
+      userId:user._id, 
+      username:user.username,
+      role:user.role,
+      avatar:user.avatar, 
+      rolevip: 'vip' }));
 
     // Lấy danh sách tất cả các người dùng
     const allUsers = await User.find();
     
     // Thêm rolevip là 'notvip' cho những người dùng không phải admin, nhomdich và top users
     const usersWithRoleNotVip = allUsers.map(user => {
-      if (user.role === 'admin' || user.role === 'nhomdich' || (usersWithRoleVip.find(u => u.userID === user._id) && user.role === 'user')) {
+      if (user.role === 'admin' || user.role === 'nhomdich' || usersWithRoleVip.find(u => u.userId === user._id)) {
         return { 
           userId:user._id, 
           username:user.username,
