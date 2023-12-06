@@ -322,7 +322,8 @@ app.get('/getbaiviet', async (req, res) => {
           userId:user.userID, 
           username:user.username,
           role:user.role,
-          avatar:user.avatar, rolevip: 'vip' };
+          avatar:user.avatar, 
+          rolevip: 'vip' };
       });
   
       // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
@@ -334,7 +335,7 @@ app.get('/getbaiviet', async (req, res) => {
             role:user.role,
             avatar:user.avatar, rolevip: 'notvip' };
         }
-        if(topUserIds.has(user._id) || user.role === 'admin' || user.role === 'nhomdich'){
+        if((topUserIds.has(user._id) && user.role === 'user') || user.role === 'admin' || user.role === 'nhomdich'){
           userRoles[user._id] = { 
             userId:user._id, 
             username:user.username,
