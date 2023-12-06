@@ -360,7 +360,7 @@ app.get('/getbaiviet', async (req, res) => {
         return null;
       }
     }));
-    res.json(usersWithRoleNotVip);
+    res.json(usersWithRoleVip);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
