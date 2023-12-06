@@ -339,21 +339,26 @@ app.get('/getbaiviet', async (req, res) => {
         };
       }));
       const user = usersWithRoleNotVip.find(u =>u && u._id && u._id.toString() === item.userId._id.toString());
-      return {
-        _id: item._id,
-        userId: item.userId._id,
-        username: user.username,
-        role: user.role,
-        avatar: user.avatar || '',
-        rolevip:user.rolevip,
-        content: item.content,
-        like: item.like,
-        isLiked: item.isLiked,
-        date: formattedDate,
-        comment: comments,
-        commentCount: item.comment.length,
-        images: item.images
-      };
+      if (user) {
+        return {
+          _id: item._id,
+          userId: item.userId._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar || '',
+          rolevip: user.rolevip,
+          content: item.content,
+          like: item.like,
+          isLiked: item.isLiked,
+          date: formattedDate,
+          comment: comments,
+          commentCount: item.comment.length,
+          images: item.images
+        };
+      } else {
+        console.error(`Không tìm thấy thông tin user cho bài viết ${item._id}`);
+        return null;
+      }
     }));
     res.json(formattedBaiviet);
   } catch (err) {
