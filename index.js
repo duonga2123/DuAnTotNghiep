@@ -315,7 +315,7 @@ app.get('/getbaiviet', async (req, res) => {
     
     // Thêm rolevip là 'notvip' cho những người dùng không phải admin, nhomdich và top users
     const usersWithRoleNotVip = allUsers.map(user => {
-      if (user.role === 'admin' || user.role === 'nhomdich' || usersWithRoleVip.find(u => u.userID === user._id)) {
+      if (user.role === 'admin' || user.role === 'nhomdich' || (usersWithRoleVip.find(u => u.userID === user._id) && user.role === 'user')) {
         return { 
           userId:user._id, 
           username:user.username,
