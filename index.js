@@ -318,16 +318,29 @@ app.get('/getbaiviet', async (req, res) => {
   
       // Xử lý rolevip cho top users
       extendedTopUsers.forEach(user => {
-        userRoles[user.userID] = { role: user.role, rolevip: 'vip' };
+        userRoles[user.userID] = { 
+          userId:user.userID, 
+          username:user.username,
+          role:user.role,
+          avatar:user.avatar, rolevip: 'vip' };
       });
   
       // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
       allUsers.forEach(user => {
         if (!topUserIds.has(user._id) && user.role !== 'admin' && user.role !== 'nhomdich') {
-          userRoles[user._id] = { role: user.role, rolevip: 'notvip' };
+          userRoles[user._id] = { 
+            userId:user._id, 
+            username:user.username,
+            role:user.role,
+            avatar:user.avatar, rolevip: 'notvip' };
         }
         else{
-          userRoles[user._id] = { role: user.role, rolevip: 'vip' };
+          userRoles[user._id] = { 
+            userId:user._id, 
+            username:user.username,
+            role:user.role,
+            avatar:user.avatar, 
+            rolevip: 'vip' };
         }
       });
 
