@@ -275,6 +275,53 @@ app.get('/getbaiviet/:userId', async (req, res) => {
 
 app.get('/getbaiviet', async (req, res) => {
   try {
+    const topUsers = await Payment.aggregate([
+      {
+        $match: { success: 'thanh toán thành công' },
+      },
+      {
+        $group: {
+          _id: '$userID',
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $sort: { totalAmount: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const extendedTopUsers = await Promise.all(
+      topUsers.map(async (user) => {
+        const userInfo = await User.findById(user._id).select('username role avatar');
+
+        return {
+          userID: user._id,
+          username: userInfo.username,
+          role: userInfo.role,
+          avatar: userInfo.avatar || '',
+          totalAmount: user.totalAmount,
+          coin: user.totalAmount * 10,
+          rolevip: 'vip'
+        };
+      })
+    );
+    const usersWithRoleVip = extendedTopUsers.slice(0,3).map(user => ({ ...user, rolevip: 'vip' }));
+
+    // Lấy danh sách tất cả các người dùng
+    const allUsers = await User.find().select('username role avatar');
+    
+    // Thêm rolevip là 'notvip' cho những người dùng không phải admin, nhomdich và top users
+    const usersWithRoleNotVip = allUsers.map(user => {
+      if (user.role === 'admin' || user.role === 'nhomdich' || usersWithRoleVip.find(u => u.userID === user._id)) {
+        return { ...user, rolevip: 'vip' };
+      } else {
+        return { ...user, rolevip: 'notvip' };
+      }
+    });
+
     const baiviet = await Baiviet.find({}).sort({ date: -1 }).populate("userId", "username")
     const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
@@ -291,13 +338,14 @@ app.get('/getbaiviet', async (req, res) => {
           date: formatdatecmt
         };
       }));
-      const user = await User.findById(item.userId);
+      const user = usersWithRoleNotVip.find(u => u._id.toString() === item.userId.toString());
       return {
         _id: item._id,
         userId: item.userId._id,
         username: user.username,
         role: user.role,
         avatar: user.avatar || '',
+        rolevip:user.rolevip,
         content: item.content,
         like: item.like,
         isLiked: item.isLiked,
