@@ -315,7 +315,6 @@ app.get('/getbaiviet', async (req, res) => {
     
     // Thêm rolevip là 'notvip' cho những người dùng không phải admin, nhomdich và top users
     const usersWithRoleNotVip = allUsers.map(user => {
-
       if (user.role === 'admin' || user.role === 'nhomdich' || usersWithRoleVip.find(u => u.userID === user._id)) {
         return { ...user, rolevip: 'vip' };
       } else {
@@ -357,10 +356,11 @@ app.get('/getbaiviet', async (req, res) => {
           images: item.images
         };
       } else {
-        res.json(usersWithRoleNotVip)
+        console.error(`Không tìm thấy thông tin user cho bài viết ${item._id}`);
+        return null;
       }
     }));
-    res.json(formattedBaiviet);
+    res.json(usersWithRoleNotVip);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
