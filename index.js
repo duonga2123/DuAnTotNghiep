@@ -228,6 +228,76 @@ app.post('/postbaiviet', upload.array('images', 10), async (req, res) => {
 
 app.get('/getbaiviet/:userId', async (req, res) => {
   try {
+    const topUsers = await Payment.aggregate([
+      {
+        $match: { success: 'thanh toán thành công' },
+      },
+      {
+        $group: {
+          _id: '$userID',
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $sort: { totalAmount: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const extendedTopUsers = await Promise.all(
+      topUsers.map(async (user) => {
+        const userInfo = await User.findById(user._id).select('username role avatar');
+
+        return {
+          userID: user._id,
+          username: userInfo.username,
+          role: userInfo.role,
+          avatar: userInfo.avatar || '',
+          totalAmount: user.totalAmount,
+          coin: user.totalAmount * 10,
+          rolevip: 'vip'
+        };
+      })
+    );
+
+    const allUsers = await User.find();
+
+      const topUserIds = new Set(extendedTopUsers.slice(0,3).map(user => user.userID));
+
+      // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
+      const userRoles = {};
+  
+      // Xử lý rolevip cho top users
+      extendedTopUsers.forEach(user => {
+        userRoles[user.userID.toString()] = { 
+          userId:user.userID, 
+          username:user.username,
+          role:user.role,
+          avatar:user.avatar, 
+          rolevip: 'vip' };
+      });
+  
+      // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
+      allUsers.forEach(user => {
+        if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+          userRoles[user._id.toString()] = { 
+            userId:user._id, 
+            username:user.username,
+            role:user.role,
+            avatar:user.avatar, rolevip: 'notvip' };
+        }
+        if(topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich'){
+          userRoles[user._id.toString()] = { 
+            userId:user._id, 
+            username:user.username,
+            role:user.role,
+            avatar:user.avatar, 
+            rolevip: 'vip' };
+        }
+      });
+
     const userId = req.params.userId;
     const user = await User.findById(userId)
     if (!user) {
@@ -238,7 +308,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === item._id.toString());
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
-        const usercmt = await User.findById(commentItem.userID);
+        const usercmt = userRoles[commentItem.userID.toString()];
         const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
@@ -247,16 +317,18 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           username: usercmt.username,
           role: usercmt.role,
           avatar: usercmt.avatar || '',
+          rolevip: usercmt.rolevip,
           date: formatdatecmt
         };
       }));
-      const userbaiviet = await User.findById(item.userId);
+       const user = userRoles[item.userId._id.toString()];
       return {
         _id: item._id,
         userId: item.userId._id,
         username: userbaiviet.username,
         role: userbaiviet.role,
         avatar: userbaiviet.avatar || '',
+        rolevip: user.rolevip,
         content: item.content,
         like: item.like,
         isLiked: isLiked,
@@ -349,7 +421,7 @@ app.get('/getbaiviet', async (req, res) => {
     const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
       const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
       const comments = await Promise.all(item.comment.map(async (commentItem) => {
-        const usercmt = await User.findById(commentItem.userID);
+        const usercmt = userRoles[commentItem.userID.toString()];
         const formatdatecmt = moment(commentItem.date).format('DD/MM/YYYY HH:mm:ss')
         return {
           _id: commentItem._id,
@@ -358,6 +430,7 @@ app.get('/getbaiviet', async (req, res) => {
           username: usercmt.username,
           role: usercmt.role,
           avatar: usercmt.avatar || '',
+          rolevip:usercmt.rolevip,
           date: formatdatecmt
         };
       }));
