@@ -325,9 +325,9 @@ app.get('/getbaiviet/:userId', async (req, res) => {
       return {
         _id: item._id,
         userId: item.userId._id,
-        username: userbaiviet.username,
-        role: userbaiviet.role,
-        avatar: userbaiviet.avatar || '',
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar || '',
         rolevip: user.rolevip,
         content: item.content,
         like: item.like,
