@@ -334,7 +334,7 @@ app.get('/getbaiviet', async (req, res) => {
             role:user.role,
             avatar:user.avatar, rolevip: 'notvip' };
         }
-        if(topUserIds.has(user._id) || user.role == 'admin' || user.role == 'nhomdich'){
+        if(topUserIds.has(user._id) || user.role === 'admin' || user.role === 'nhomdich'){
           userRoles[user._id] = { 
             userId:user._id, 
             username:user.username,
