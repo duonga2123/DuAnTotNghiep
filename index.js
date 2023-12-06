@@ -311,14 +311,23 @@ app.get('/getbaiviet', async (req, res) => {
     const usersWithRoleVip = extendedTopUsers.slice(0,3).map(user => ({ ...user, rolevip: 'vip' }));
 
     // Lấy danh sách tất cả các người dùng
-    const allUsers = await User.find().select('username role avatar');
+    const allUsers = await User.find();
     
     // Thêm rolevip là 'notvip' cho những người dùng không phải admin, nhomdich và top users
     const usersWithRoleNotVip = allUsers.map(user => {
       if (user.role === 'admin' || user.role === 'nhomdich' || usersWithRoleVip.find(u => u.userID === user._id)) {
-        return { ...user, rolevip: 'vip' };
+        return { 
+          userId:user._id, 
+          username:user.username,
+          role:user.role,
+          avatar:user.avatar,
+          rolevip: 'vip' };
       } else {
-        return { ...user, rolevip: 'notvip' };
+        return { userId:user._id, 
+          username:user.username,
+          role:user.role,
+          avatar:user.avatar,
+           rolevip: 'notvip' };
       }
     });
 
@@ -338,8 +347,7 @@ app.get('/getbaiviet', async (req, res) => {
           date: formatdatecmt
         };
       }));
-      const user = usersWithRoleNotVip.find(u => u._id === item.userId._id);
-      if (user) {
+      const user = usersWithRoleNotVip.find(u => u.userId.toString() === item.userId._id.toString());
         return {
           _id: item._id,
           userId: item.userId._id,
@@ -355,12 +363,8 @@ app.get('/getbaiviet', async (req, res) => {
           commentCount: item.comment.length,
           images: item.images
         };
-      } else {
-        console.error(`Không tìm thấy thông tin user cho bài viết ${item._id}`);
-        return null;
-      }
     }));
-    res.json(usersWithRoleVip);
+    res.json(formattedBaiviet);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin bài viết' });
