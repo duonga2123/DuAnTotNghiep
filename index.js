@@ -356,7 +356,7 @@ app.get('/getbaiviet', async (req, res) => {
           images: item.images
         };
       } else {
-        console.error(`Không tìm thấy thông tin user cho bài viết ${item._id}`);
+        console.error(`Không tìm thấy thông tin user ${user._id} cho bài viết ${item._id}`);
         return null;
       }
     }));
