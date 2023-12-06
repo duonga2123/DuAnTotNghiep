@@ -338,7 +338,7 @@ app.get('/getbaiviet', async (req, res) => {
           date: formatdatecmt
         };
       }));
-      const user = usersWithRoleNotVip.find(u =>u && u._id && u._id.toString() === item.userId._id.toString());
+      const user = usersWithRoleNotVip.find(u => u._id.toString() === item.userId._id.toString());
       if (user) {
         return {
           _id: item._id,
