@@ -3022,12 +3022,85 @@ app.get('/user/:userId', async (req, res) => {
     if (!user) {
       res.status(404).json({ message: 'user không tồn tại' })
     }
+    const topUsers = await Payment.aggregate([
+      {
+        $match: { success: 'thanh toán thành công' },
+      },
+      {
+        $group: {
+          _id: '$userID',
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $sort: { totalAmount: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const extendedTopUsers = await Promise.all(
+      topUsers.map(async (user) => {
+        const userInfo = await User.findById(user._id).select('username role avatar');
+
+        return {
+          userID: user._id,
+          username: userInfo.username,
+          role: userInfo.role,
+          avatar: userInfo.avatar || '',
+          totalAmount: user.totalAmount,
+          coin: user.totalAmount * 10,
+          rolevip: 'vip'
+        };
+      })
+    );
+
+    const allUsers = await User.find();
+
+    const topUserIds = new Set(extendedTopUsers.slice(0, 3).map(user => user.userID));
+
+    // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
+    const userRoles = {};
+
+    // Xử lý rolevip cho top users
+    extendedTopUsers.forEach(user => {
+      userRoles[user.userID.toString()] = {
+        userId: user.userID,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'vip'
+      };
+    });
+
+    // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
+    allUsers.forEach(user => {
+      if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar, rolevip: 'notvip'
+        };
+      }
+      if (topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar,
+          rolevip: 'vip'
+        };
+      }
+    });
+    const detailuser=userRoles[user._id.toString()]
     res.json({
-      userId: userId,
-      username: user.username,
-      role: user.role,
+      userId: detailuser.userId,
+      username: detailuser.username,
+      role: detailuser.role,
       coin: user.coin,
-      avatar: user.avatar || ''
+      avatar: detailuser.avatar || ''
     })
   } catch (err) {
     console.error('Lỗi khi tìm user:', err);
