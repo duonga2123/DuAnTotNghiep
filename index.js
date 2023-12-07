@@ -3304,8 +3304,7 @@ app.post('/banking',upload.single('maQR'), async (req, res) => {
     }
 
     const maQR = req.file.buffer.toString('base64');
-    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan,maQR });
-    user.banking.push({ hovaten, phuongthuc, sotaikhoan });
+    user.banking.push({ hovaten, phuongthuc, sotaikhoan,maQR });
     await user.save();
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'Cập nhật thông tin tài khoản ngân hàng thành công' })
