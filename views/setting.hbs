@@ -123,6 +123,7 @@
             margin-left: 20px;
             font-size: 25px;
         }
+
         #bankingmanage {
             margin-top: 5px;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
@@ -140,6 +141,22 @@
 
         #body div p {
             margin-top: 10px;
+        }
+
+        .bank-item {
+            display: flex;
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .qr-code {
+            margin-left: 10px;
+        }
+        #imgQR{
+            width: 100px;
+            height: 100px;
         }
     </style>
 </head>
@@ -257,7 +274,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModal">Thêm tài khoản ngân hàng</h5>
+                    <h5 class="modal-title" id="myModal">Thêm tài khoản ngân
+                        hàng</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -276,6 +294,10 @@
                             <label for="sotaikhoan">Số tài khoản:</label>
                             <input type="text" class="form-control" id="sotaikhoan" name="sotaikhoan">
                         </div>
+                        <div class="form-group">
+                            <label for="maQR">Mã QR:</label>
+                            <input type="file" class="form-control" id="maQR" name="maQR">
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                             <button type="submit" class="btn btn-primary" id="savebankButton">Lưu</button>
@@ -287,11 +309,13 @@
         </div>
     </div>
     <!-- Modal quản lý tài khoản ngân hàng -->
-    <div class="modal fade" id="modalbankmanage" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+    <div class="modal fade" id="modalbankmanage" tabindex="-1" role="dialog" aria-labelledby="myModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModal">Quản lý tài khoản ngân hàng</h5>
+                    <h5 class="modal-title" id="myModal">Quản lý tài khoản
+                        ngân hàng</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -317,23 +341,23 @@
             $("#banking").click(function () {
                 $("#modalbank").modal("show");
             });
-             $("#bankingmanage").click(function () {
+            $("#bankingmanage").click(function () {
                 $("#modalbankmanage").modal("show");
-                 fetch("/bank")
-                .then(response => response.json())
-                .then(data => {
-                    // Hiển thị danh sách tài khoản ngân hàng trong modal
-                    const bankList = $("#bankList");
-                    bankList.empty();
-                    data.forEach(bank => {
-                        const listItem = `<p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p><hr>`;
-                        bankList.append(listItem);
+                fetch("/bank")
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hiển thị danh sách tài khoản ngân hàng trong modal
+                        const bankList = $("#bankList");
+                        bankList.empty();
+                        data.forEach(bank => {
+                            const listItem = `<div class="bank-item"><div class="info"><p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p></div><div class="qr-code"><img id="imgQR" src="data:image/jpeg;base64,${bank.maQR}"></div></div><hr>`;
+                            bankList.append(listItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+                        alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
                     });
-                })
-                .catch(error => {
-                    console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
-                    alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
-                });
             });
             $("#mk form").submit(function (e) {
                 e.preventDefault(); // Ngăn chặn sự kiện mặc định của form

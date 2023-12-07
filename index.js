@@ -3182,7 +3182,7 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
-app.post('/banking/:nhomdichId', async (req, res) => {
+app.post('/banking/:nhomdichId', upload.single('maQR'),async (req, res) => {
   try {
     const nhomdichId = req.params.nhomdichId
     const { phuongthuc, sotaikhoan, hovaten } = req.body;
@@ -3190,7 +3190,12 @@ app.post('/banking/:nhomdichId', async (req, res) => {
     if (!nhomdichId) {
       res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
     }
-    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan });
+    if (!req.file) {
+      return res.status(400).json({ message: 'Vui lòng chọn một file ảnh.' });
+    }
+
+    const maQR = req.file.buffer.toString('base64');
+    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan,maQR });
     await nhomdich.save();
 
     res.json({ message: 'Cập nhật thông tin tài khoản ngân hàng thành công' });
@@ -3286,7 +3291,7 @@ app.post('/rename', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
   }
 })
-app.post('/banking', async (req, res) => {
+app.post('/banking',upload.single('maQR'), async (req, res) => {
   try {
     const nhomdichId = req.session.userId
     const { phuongthuc, sotaikhoan, hovaten } = req.body;
@@ -3294,6 +3299,12 @@ app.post('/banking', async (req, res) => {
     if (!nhomdichId) {
       res.status(403).json({ message: 'không tìm thấy nhóm dịch' })
     }
+    if (!req.file) {
+      return res.status(400).json({ message: 'Vui lòng chọn một file ảnh.' });
+    }
+
+    const maQR = req.file.buffer.toString('base64');
+    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan,maQR });
     user.banking.push({ hovaten, phuongthuc, sotaikhoan });
     await user.save();
     if (user.role === 'nhomdich') {
