@@ -3099,6 +3099,7 @@ app.get('/user/:userId', async (req, res) => {
       userId: detailuser.userId,
       username: detailuser.username,
       role: detailuser.role,
+      rolevip:detailuser.rolevip,
       coin: user.coin,
       avatar: detailuser.avatar || ''
     })
