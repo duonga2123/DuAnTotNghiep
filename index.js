@@ -1604,6 +1604,78 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
     }
+    const topUsers = await Payment.aggregate([
+      {
+        $match: { success: 'thanh toán thành công' },
+      },
+      {
+        $group: {
+          _id: '$userID',
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $sort: { totalAmount: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const extendedTopUsers = await Promise.all(
+      topUsers.map(async (user) => {
+        const userInfo = await User.findById(user._id).select('username role avatar');
+
+        return {
+          userID: user._id,
+          username: userInfo.username,
+          role: userInfo.role,
+          avatar: userInfo.avatar || '',
+          totalAmount: user.totalAmount,
+          coin: user.totalAmount * 10,
+          rolevip: 'vip'
+        };
+      })
+    );
+
+    const allUsers = await User.find();
+
+    const topUserIds = new Set(extendedTopUsers.slice(0, 3).map(user => user.userID));
+
+    // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
+    const userRoles = {};
+
+    // Xử lý rolevip cho top users
+    extendedTopUsers.forEach(user => {
+      userRoles[user.userID.toString()] = {
+        userId: user.userID,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'vip'
+      };
+    });
+
+    // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
+    allUsers.forEach(user => {
+      if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar, rolevip: 'notvip'
+        };
+      }
+      if (topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar,
+          rolevip: 'vip'
+        };
+      }
+    });
 
     const { manganame, author, content, image, category, view, like, chapters, comment, link, userID } = manga;
 
@@ -1638,13 +1710,15 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
     const allComments = [];
     for (const com of comment) {
       const formatdatecmt = moment(com.date).format('DD/MM/YYYY HH:mm:ss')
-      const userComment = await User.findById(com.userID);
+      const userComment = userRoles[com.userID.toString()];
       const username = userComment.username;
       const commentInfo = {
         cmt_id: com._id,
         userID: com.userID,
         username: username,
         avatar: userComment.avatar || '',
+        role:userComment.role,
+        rolevip:userComment.rolevip,
         cmt: com.cmt,
         date: formatdatecmt
       };
@@ -3260,6 +3334,7 @@ app.post('/doiavatar/:userId', upload.single('avatar'), async (req, res) => {
 })
 app.get('/getnhomdich/:nhomdichId', async (req, res) => {
   try {
+
     const nhomdichId = req.params.nhomdichId;
     const nhomdich = await User.findById(nhomdichId);
     if (!nhomdich) {
