@@ -548,8 +548,10 @@ app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
         _id: item._id,
         userId: item.userID,
         cmt: item.cmt,
-        username: user.username,
-        avatar: user.avatar || '',
+        username: usercmt.username,
+        avatar: usercmt.avatar || '',
+        role:usercmt.role,
+        rolevip:usercmt.rolevip,
         date: formatdatecmt
       };
     }))
@@ -708,7 +710,11 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       })
     );
 
+    const allUsers = await User.find();
+
     const topUserIds = new Set(extendedTopUsers.slice(0, 3).map(user => user.userID));
+
+    // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
     const userRoles = {};
 
     // Xử lý rolevip cho top users
@@ -722,26 +728,25 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       };
     });
 
-    // Xử lý rolevip cho người dùng duy nhất
-    const userIdString = user._id.toString();
-    if (!topUserIds.has(userIdString) && user.role !== 'admin' && user.role !== 'nhomdich') {
-      userRoles[userIdString] = {
-        userId: user._id,
-        username: user.username,
-        role: user.role,
-        avatar: user.avatar,
-        rolevip: 'notvip'
-      };
-    }
-    if (topUserIds.has(userIdString) || user.role === 'admin' || user.role === 'nhomdich') {
-      userRoles[userIdString] = {
-        userId: user._id,
-        username: user.username,
-        role: user.role,
-        avatar: user.avatar,
-        rolevip: 'vip'
-      };
-    }
+    allUsers.forEach(user => {
+      if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar, rolevip: 'notvip'
+        };
+      }
+      if (topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar,
+          rolevip: 'vip'
+        };
+      }
+    });
     const formattedDate = baiviet.date ? moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định';
     const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === baivietId.toString());
     const cmt = await Promise.all(baiviet.comment.map(async (item) => {
