@@ -21,6 +21,13 @@
             overflow-y: auto;
             /* Cho phép scroll nếu nội dung quá lớn */
         }
+        td {
+            text-align: center;
+            max-width: 200px; /* Đặt giới hạn độ dài tối đa cho nội dung trong thẻ th */
+            overflow: hidden;
+            white-space: nowrap; /* Ngăn chặn ngắn xếp hàng dọc khi văn bản dài */
+            text-overflow: ellipsis; /* Hiển thị dấu elipsis (dấu ba chấm) khi văn bản bị cắt bớt */
+        }
     </style>
 </head>
 
@@ -32,8 +39,8 @@
         <div class="table-data">
             <div class="order">
 
-                <table>
-                    <thead>
+                <table class="table">
+                    <thead class="thead-dark">
                         <tr>
                             <th style="text-align: center;">title</th>
                             <th style="text-align: center;">content</th>
