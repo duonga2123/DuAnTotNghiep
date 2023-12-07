@@ -3215,7 +3215,8 @@ app.get('/bank', async (req, res) => {
       return {
         hovaten: bank.hovaten || 'chưa tích hợp',
         phuongthuc: bank.phuongthuc || 'chưa tích hợp',
-        sotaikhoan: bank.sotaikhoan || 'chưa tích hợp'
+        sotaikhoan: bank.sotaikhoan || 'chưa tích hợp',
+        maQR:bank.maQR || 'chưa tích hợp'
       }
     })
     res.json(formatbank)
