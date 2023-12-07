@@ -264,39 +264,42 @@ app.get('/getbaiviet/:userId', async (req, res) => {
 
     const allUsers = await User.find();
 
-      const topUserIds = new Set(extendedTopUsers.slice(0,3).map(user => user.userID));
+    const topUserIds = new Set(extendedTopUsers.slice(0, 3).map(user => user.userID));
 
-      // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
-      const userRoles = {};
-  
-      // Xử lý rolevip cho top users
-      extendedTopUsers.forEach(user => {
-        userRoles[user.userID.toString()] = { 
-          userId:user.userID, 
-          username:user.username,
-          role:user.role,
-          avatar:user.avatar, 
-          rolevip: 'vip' };
-      });
-  
-      // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
-      allUsers.forEach(user => {
-        if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
-          userRoles[user._id.toString()] = { 
-            userId:user._id, 
-            username:user.username,
-            role:user.role,
-            avatar:user.avatar, rolevip: 'notvip' };
-        }
-        if(topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich'){
-          userRoles[user._id.toString()] = { 
-            userId:user._id, 
-            username:user.username,
-            role:user.role,
-            avatar:user.avatar, 
-            rolevip: 'vip' };
-        }
-      });
+    // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
+    const userRoles = {};
+
+    // Xử lý rolevip cho top users
+    extendedTopUsers.forEach(user => {
+      userRoles[user.userID.toString()] = {
+        userId: user.userID,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'vip'
+      };
+    });
+
+    // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
+    allUsers.forEach(user => {
+      if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar, rolevip: 'notvip'
+        };
+      }
+      if (topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar,
+          rolevip: 'vip'
+        };
+      }
+    });
 
     const userId = req.params.userId;
     const currentUser = await User.findById(userId)
@@ -321,7 +324,7 @@ app.get('/getbaiviet/:userId', async (req, res) => {
           date: formatdatecmt
         };
       }));
-       const user = userRoles[item.userId._id.toString()];
+      const user = userRoles[item.userId._id.toString()];
       return {
         _id: item._id,
         userId: item.userId._id,
@@ -383,39 +386,42 @@ app.get('/getbaiviet', async (req, res) => {
 
     const allUsers = await User.find();
 
-      const topUserIds = new Set(extendedTopUsers.slice(0,3).map(user => user.userID));
+    const topUserIds = new Set(extendedTopUsers.slice(0, 3).map(user => user.userID));
 
-      // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
-      const userRoles = {};
-  
-      // Xử lý rolevip cho top users
-      extendedTopUsers.forEach(user => {
-        userRoles[user.userID.toString()] = { 
-          userId:user.userID, 
-          username:user.username,
-          role:user.role,
-          avatar:user.avatar, 
-          rolevip: 'vip' };
-      });
-  
-      // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
-      allUsers.forEach(user => {
-        if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
-          userRoles[user._id.toString()] = { 
-            userId:user._id, 
-            username:user.username,
-            role:user.role,
-            avatar:user.avatar, rolevip: 'notvip' };
-        }
-        if(topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich'){
-          userRoles[user._id.toString()] = { 
-            userId:user._id, 
-            username:user.username,
-            role:user.role,
-            avatar:user.avatar, 
-            rolevip: 'vip' };
-        }
-      });
+    // Tạo một đối tượng để lưu trữ thông tin role và rolevip của mỗi người dùng
+    const userRoles = {};
+
+    // Xử lý rolevip cho top users
+    extendedTopUsers.forEach(user => {
+      userRoles[user.userID.toString()] = {
+        userId: user.userID,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'vip'
+      };
+    });
+
+    // Xử lý rolevip cho những người dùng không phải top users, admin, và nhomdich
+    allUsers.forEach(user => {
+      if (!topUserIds.has(user._id.toString()) && user.role !== 'admin' && user.role !== 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar, rolevip: 'notvip'
+        };
+      }
+      if (topUserIds.has(user._id.toString()) || user.role === 'admin' || user.role === 'nhomdich') {
+        userRoles[user._id.toString()] = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar,
+          rolevip: 'vip'
+        };
+      }
+    });
 
     const baiviet = await Baiviet.find({}).sort({ date: -1 }).populate("userId", "username")
     const formattedBaiviet = await Promise.all(baiviet.map(async (item) => {
@@ -430,26 +436,26 @@ app.get('/getbaiviet', async (req, res) => {
           username: usercmt.username,
           role: usercmt.role,
           avatar: usercmt.avatar || '',
-          rolevip:usercmt.rolevip,
+          rolevip: usercmt.rolevip,
           date: formatdatecmt
         };
       }));
       const user = userRoles[item.userId._id.toString()];
-        return {
-          _id: item._id,
-          userId: item.userId._id,
-          username: user.username,
-          role: user.role,
-          avatar: user.avatar || '',
-          rolevip: user.rolevip,
-          content: item.content,
-          like: item.like,
-          isLiked: item.isLiked,
-          date: formattedDate,
-          comment: comments,
-          commentCount: item.comment.length,
-          images: item.images
-        };
+      return {
+        _id: item._id,
+        userId: item.userId._id,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar || '',
+        rolevip: user.rolevip,
+        content: item.content,
+        like: item.like,
+        isLiked: item.isLiked,
+        date: formattedDate,
+        comment: comments,
+        commentCount: item.comment.length,
+        images: item.images
+      };
     }));
     res.json(formattedBaiviet);
   } catch (err) {
@@ -597,11 +603,78 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
     if (!baiviet) {
       res.status(403).json({ message: 'bài viết không tồn tại' })
     }
+    const topUsers = await Payment.aggregate([
+      {
+        $match: { success: 'thanh toán thành công' },
+      },
+      {
+        $group: {
+          _id: '$userID',
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $sort: { totalAmount: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const extendedTopUsers = await Promise.all(
+      topUsers.map(async (user) => {
+        const userInfo = await User.findById(user._id).select('username role avatar');
+
+        return {
+          userID: user._id,
+          username: userInfo.username,
+          role: userInfo.role,
+          avatar: userInfo.avatar || '',
+          totalAmount: user.totalAmount,
+          coin: user.totalAmount * 10,
+          rolevip: 'vip'
+        };
+      })
+    );
+
+    const topUserIds = new Set(extendedTopUsers.slice(0, 3).map(user => user.userID));
+    const userRoles = {};
+
+    // Xử lý rolevip cho top users
+    extendedTopUsers.forEach(user => {
+      userRoles[user.userID.toString()] = {
+        userId: user.userID,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'vip'
+      };
+    });
+
+    // Xử lý rolevip cho người dùng duy nhất
+    const userIdString = user._id.toString();
+    if (!topUserIds.has(userIdString) && user.role !== 'admin' && user.role !== 'nhomdich') {
+      userRoles[userIdString] = {
+        userId: user._id,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'notvip'
+      };
+    }
+    if (topUserIds.has(userIdString) || user.role === 'admin' || user.role === 'nhomdich') {
+      userRoles[userIdString] = {
+        userId: user._id,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        rolevip: 'vip'
+      };
+    }
     const formattedDate = baiviet.date ? moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định';
     const isLiked = user.favoriteBaiviet.some(favorite => favorite.baivietId.toString() === baivietId.toString());
     const cmt = await Promise.all(baiviet.comment.map(async (item) => {
-      const userbaiviet = await User.findById(item.userID)
-
+      const userbaiviet = userRoles[commentItem.userID.toString()];
       const formatdatecmt = item.date ? moment(item.date).format('DD/MM/YYYY HH:mm:ss') : 'Ngày không xác định'
       return {
         _id: item._id,
@@ -609,15 +682,18 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
         cmt: item.cmt,
         username: userbaiviet.username,
         avatar: userbaiviet.avatar || '',
+        rolevip: userbaiviet.rolevip,
         date: formatdatecmt
       };
     }))
-
+    const userbv = userRoles[baiviet.userId.toString()];
     res.json({
       _id: baivietId,
       userId: userId,
-      username: user.username,
-      avatar: user.avatar || '',
+      username: userbv.username,
+      avatar: userbv.avatar || '',
+      role: userbv.role,
+      rolevip: userbv.rolevip,
       content: baiviet.content,
       image: baiviet.images,
       like: baiviet.like,
@@ -764,9 +840,9 @@ app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => 
     res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa comment.' });
   }
 });
-app.post('/report/:baivietId/:userId',async(req,res)=>{
+app.post('/report/:baivietId/:userId', async (req, res) => {
   try {
-    const {reason}=req.body
+    const { reason } = req.body
     const baivietId = req.params.baivietId;
     const userId = req.params.userId
 
@@ -779,7 +855,7 @@ app.post('/report/:baivietId/:userId',async(req,res)=>{
     if (!baiviet) {
       res.status(404).json({ message: 'không tìm thấy bài viết này' });
     }
-    const userbaiviet=await User.findById(baiviet.userId);
+    const userbaiviet = await User.findById(baiviet.userId);
     if (!userbaiviet) {
       res.status(404).json({ message: 'không tìm thấy user' })
     }
@@ -791,7 +867,7 @@ app.post('/report/:baivietId/:userId',async(req,res)=>{
       mangaId: baiviet._id
     });
     await notification.save()
-    res.status(200).json({message:'report bài viết thành công'})
+    res.status(200).json({ message: 'report bài viết thành công' })
 
   } catch (error) {
     console.error('Lỗi report bài viết:', error);
@@ -977,14 +1053,14 @@ app.get('/mangass', async (req, res) => {
     if (!user) {
       res.status(403).json({ message: 'không tìm thấy user' })
     }
-    if(user.role==='nhomdich'){
-      const manga = await Manga.find({ isRead: true,userID:userId });
+    if (user.role === 'nhomdich') {
+      const manga = await Manga.find({ isRead: true, userID: userId });
       res.render("home", { manga });
-    }else{
+    } else {
       const manga = await Manga.find({ isRead: true });
-    res.render("home", { manga });
+      res.render("home", { manga });
     }
-    
+
   } catch (error) {
     console.error('Lỗi khi lấy danh sách truyện:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách truyện' });
@@ -1752,7 +1828,7 @@ app.get("/getchap", async (req, res) => {
       const data = await Chapter.find({ isChap: true }).sort({ mangaName: 1 }).lean();
       return res.render("chapter", { data, userId: userId });
     } else {
-      const mangaList = await Manga.find({userID:userId});
+      const mangaList = await Manga.find({ userID: userId });
       const mangaNames = mangaList.map(manga => manga.manganame);
 
       const data = await Chapter.find({ isChap: true, mangaName: { $in: mangaNames } }).sort({ mangaName: 1 }).lean();
@@ -2450,7 +2526,7 @@ app.get('/success/:id', async (req, res) => {
           { new: true }
         );
 
-        res.render("successthanhtoan",{ message: 'Thanh toán thành công mời quay trở lại app!' });
+        res.render("successthanhtoan", { message: 'Thanh toán thành công mời quay trở lại app!' });
       }
     });
   }
@@ -3197,7 +3273,7 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
         hovaten: bank.hovaten || 'chưa tích hợp',
         phuongthuc: bank.phuongthuc || 'chưa tích hợp',
         sotaikhoan: bank.sotaikhoan || 'chưa tích hợp',
-        maQR:bank.maQR || 'chưa tích hợp'
+        maQR: bank.maQR || 'chưa tích hợp'
 
       }
     })
@@ -3217,7 +3293,7 @@ app.get('/getnhomdich/:nhomdichId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy thông tin nhóm dịch.' });
   }
 })
-app.post('/banking/:nhomdichId', upload.single('maQR'),async (req, res) => {
+app.post('/banking/:nhomdichId', upload.single('maQR'), async (req, res) => {
   try {
     const nhomdichId = req.params.nhomdichId
     const { phuongthuc, sotaikhoan, hovaten } = req.body;
@@ -3230,7 +3306,7 @@ app.post('/banking/:nhomdichId', upload.single('maQR'),async (req, res) => {
     }
 
     const maQR = req.file.buffer.toString('base64');
-    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan,maQR });
+    nhomdich.banking.push({ hovaten, phuongthuc, sotaikhoan, maQR });
     await nhomdich.save();
 
     res.json({ message: 'Cập nhật thông tin tài khoản ngân hàng thành công' });
@@ -3251,7 +3327,7 @@ app.get('/bank', async (req, res) => {
         hovaten: bank.hovaten || 'chưa tích hợp',
         phuongthuc: bank.phuongthuc || 'chưa tích hợp',
         sotaikhoan: bank.sotaikhoan || 'chưa tích hợp',
-        maQR:bank.maQR || 'chưa tích hợp'
+        maQR: bank.maQR || 'chưa tích hợp'
       }
     })
     res.json(formatbank)
@@ -3327,7 +3403,7 @@ app.post('/rename', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi đổi tên' });
   }
 })
-app.post('/banking',upload.single('maQR'), async (req, res) => {
+app.post('/banking', upload.single('maQR'), async (req, res) => {
   try {
     const nhomdichId = req.session.userId
     const { phuongthuc, sotaikhoan, hovaten } = req.body;
@@ -3340,7 +3416,7 @@ app.post('/banking',upload.single('maQR'), async (req, res) => {
     }
 
     const maQR = req.file.buffer.toString('base64');
-    user.banking.push({ hovaten, phuongthuc, sotaikhoan,maQR });
+    user.banking.push({ hovaten, phuongthuc, sotaikhoan, maQR });
     await user.save();
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'Cập nhật thông tin tài khoản ngân hàng thành công' })
@@ -3365,7 +3441,7 @@ app.get('/bank/:nhomdichId', async (req, res) => {
         hovaten: bank.hovaten || 'chưa tích hợp',
         phuongthuc: bank.phuongthuc || 'chưa tích hợp',
         sotaikhoan: bank.sotaikhoan || 'chưa tích hợp',
-        maQR:bank.maQR || 'chưa tích hợp'
+        maQR: bank.maQR || 'chưa tích hợp'
       }
     })
     res.json(formatbank)
