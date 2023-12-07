@@ -1194,6 +1194,9 @@
 			const huychapButton = document.querySelectorAll('.huychapButton');
 			const huysuachapButton = document.querySelectorAll('.huysuachapButton');
 			const huysuamangaButton = document.querySelectorAll('.huysuamangaButton');
+			const report = document.querySelectorAll('.report');
+			const huyreport = document.querySelectorAll('.huyreport');
+			const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
 			approveMangaButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
@@ -1272,6 +1275,24 @@
 			huychapButton.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
 				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
+					button.style.display = 'none';
+				}
+			});
+			report.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Duyệt thêm chap') {
+					button.style.display = 'none';
+				}
+			});
+			huyreport.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Duyệt thêm chap') {
+					button.style.display = 'none';
+				}
+			});
+			reportdetailbutton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Duyệt thêm chap') {
 					button.style.display = 'none';
 				}
 			});
