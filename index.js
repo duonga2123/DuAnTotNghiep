@@ -764,7 +764,40 @@ app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => 
     res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa comment.' });
   }
 });
+app.post('/report/:baivietId/:userId',async(req,res)=>{
+  try {
+    const {reason}=req.body
+    const baivietId = req.params.baivietId;
+    const userId = req.params.userId
 
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' })
+    }
+
+    const baiviet = await Baiviet.findById(baivietId)
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết này' });
+    }
+    const userbaiviet=await User.findById(baiviet.userId);
+    if (!userbaiviet) {
+      res.status(404).json({ message: 'không tìm thấy user' })
+    }
+    const notification = new Notification({
+      adminId: '653a20c611295a22062661f9',
+      title: 'Report',
+      content: `${user.username} đã report bài viết ${baiviet.content} của ${userbaiviet.username} lí do: ${reason} `,
+      userId: userId,
+      mangaId: baiviet._id
+    });
+    await notification.save()
+    res.status(200).json({message:'report bài viết thành công'})
+
+  } catch (error) {
+    console.error('Lỗi report bài viết:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
+  }
+})
 app.get('/renderbaiviet', async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -1132,7 +1165,7 @@ app.post('/mangapost', async (req, res) => {
 });
 
 app.get('/rendernotifi', async (req, res) => {
-  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap/ } });
+  const notification = await Notification.find({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap|Report/ } });
   res.render('notification', { notification });
 });
 app.get('/rendernotifinhomdich', async (req, res) => {
@@ -3339,6 +3372,7 @@ app.get('/bank/:nhomdichId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.' });
   }
 })
+
 
 app.listen(8080, () => {
   try {
