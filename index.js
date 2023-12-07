@@ -1387,7 +1387,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
 app.get('/unread-count', async (req, res) => {
   try {
     // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap/ } });
+    const unreadCount = await Notification.countDocuments({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap|Report/ } });
 
     res.json({ unreadCount });
   } catch (error) {
