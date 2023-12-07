@@ -1124,7 +1124,17 @@
 							const bankList = $("#bankList");
 							bankList.empty();
 							data.forEach(bank => {
-								const listItem = `<p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p><hr>`;
+								const listItem = `<div class="bank-item">
+            <div class="info">
+              <p>Họ và tên: ${bank.hovaten}</p>
+              <p>Phương thức: ${bank.phuongthuc}</p>
+              <p>Số tài khoản: ${bank.sotaikhoan}</p>
+            </div>
+            <div class="qr-code">
+              <img id="imgQR" src="data:image/jpeg;base64,${bank.maQR}">
+            </div>
+          </div>
+          <hr>`;
 								bankList.append(listItem);
 							});
 						})
