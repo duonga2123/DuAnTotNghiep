@@ -765,7 +765,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
     const userbv = userRoles[baiviet.userId.toString()];
     res.json({
       _id: baivietId,
-      userId: userId,
+      userId: userbv.userId,
       username: userbv.username,
       avatar: userbv.avatar || '',
       role: userbv.role,
