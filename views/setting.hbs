@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng bài</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        #container {
+            width: 60%;
+            margin: auto;
+            margin-top: 20px;
+            justify-content: flex-start;
+            align-self: flex-start;
+            display: flex;
+        }
+
+        #container img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
+        }
+
+        #container h3 {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #container p {
+            margin-top: 5px;
+        }
+
+        #header {
+            margin-top: 20px;
+        }
+
+        #body {
+            width: 60%;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        #body div:hover {
+            background-color: #ddd;
+            /* Màu nền thay đổi khi di chuột vào */
+            cursor: pointer;
+            /* Con trỏ chuột thành bàn tay khi di chuột vào */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* Đổ bóng khi di chuột vào */
+        }
+
+        #avatar {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
+            border-radius: 20px;
+            height: 40px;
+            width: 100%;
+        }
+
+        #avatar p {
+            text-align: center;
+            margin-left: 20px;
+            font-size: 25px;
+        }
+
+        #repass {
+
+            margin-top: 5px;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
+            border-radius: 20px;
+            height: 40px;
+            width: 100%;
+        }
+
+        #repass p {
+            text-align: center;
+            margin-left: 20px;
+            font-size: 25px;
+        }
+
+        #rename {
+            margin-top: 5px;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
+            border-radius: 20px;
+            height: 40px;
+            width: 100%;
+        }
+
+        #rename p {
+            text-align: center;
+            margin-left: 20px;
+            font-size: 25px;
+        }
+
+        #banking {
+            margin-top: 5px;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
+            border-radius: 20px;
+            height: 40px;
+            width: 100%;
+        }
+
+        #banking p {
+            text-align: center;
+            margin-left: 20px;
+            font-size: 25px;
+        }
+
+        #bankingmanage {
+            margin-top: 5px;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            background-color: #f4f4f4;
+            border-radius: 20px;
+            height: 40px;
+            width: 100%;
+        }
+
+        #bankingmanage p {
+            text-align: center;
+            margin-left: 20px;
+            font-size: 25px;
+        }
+
+        #body div p {
+            margin-top: 10px;
+        }
+
+        .bank-item {
+            display: flex;
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .qr-code {
+            margin-left: 10px;
+        }
+        #imgQR{
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" class="jumbotron">
+        <img src="data:image/jpeg;base64,{{user.avatar}}">
+        <div id="header">
+            <h2>{{user.username}}</h2>
+            <p>Số điện thoại: {{user.phone}}</p>
+            <h6>{{user.follownumber}} người theo dõi</h4>
+        </div>
+    </div>
+    <div id="body" class="jumbotron">
+        <div id="avatar">
+            <p> Đổi avatar</p>
+        </div>
+        <div id="repass">
+            <p> Đổi mật khẩu</p>
+        </div>
+        <div id="rename">
+            <p>Đổi tên đăng nhập</p>
+        </div>
+        <div id="banking">
+            <p>Tích hợp tài khoản ngân hàng</p>
+        </div>
+        <div id="bankingmanage">
+            <p>Quản lí tài khoản ngân hàng</p>
+        </div>
+
+    </div>
+    <!-- Modal đổi avatar -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Reavatar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/doiavatar" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <input type="file" class="form-control" id="avatar" name="avatar" multiple>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="saveavatarButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal đổi mật khẩu -->
+    <div class="modal fade" id="mk" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Repass</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/repass" method="post">
+                        <div class="form-group">
+                            <label for="passOld">passOld:</label>
+                            <input type="text" class="form-control" id="passOld" name="passOld">
+                        </div>
+                        <div class="form-group">
+                            <label for="passNew">passNew:</label>
+                            <input type="text" class="form-control" id="passNew" name="passNew">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="saveButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal đổi tên đăng nhập -->
+    <div class="modal fade" id="modalusername" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Rename</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/rename" method="post">
+                        <div class="form-group">
+                            <label for="username">username:</label>
+                            <input type="text" class="form-control" id="username" name="username">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="savenameButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal thêm tk ngân hàng -->
+    <div class="modal fade" id="modalbank" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Thêm tài khoản ngân
+                        hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/banking" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="phuongthuc">Phương thức:</label>
+                            <input type="text" class="form-control" id="phuongthuc" name="phuongthuc">
+                        </div>
+                        <div class="form-group">
+                            <label for="hovaten">Họ và tên:</label>
+                            <input type="text" class="form-control" id="hovaten" name="hovaten">
+                        </div>
+                        <div class="form-group">
+                            <label for="sotaikhoan">Số tài khoản:</label>
+                            <input type="text" class="form-control" id="sotaikhoan" name="sotaikhoan">
+                        </div>
+                        <div class="form-group">
+                            <label for="maQR">Mã QR:</label>
+                            <input type="file" class="form-control" id="maQR" name="maQR" multiple>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary" id="savebankButton">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal quản lý tài khoản ngân hàng -->
+    <div class="modal fade" id="modalbankmanage" tabindex="-1" role="dialog" aria-labelledby="myModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModal">Quản lý tài khoản
+                        ngân hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Hiển thị danh sách tài khoản ngân hàng ở đây -->
+                    <ul id="bankList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#avatar").click(function () {
+                $("#myModal").modal("show");
+            });
+            $("#repass").click(function () {
+                $("#mk").modal("show");
+            });
+            $("#rename").click(function () {
+                $("#modalusername").modal("show");
+            });
+            $("#banking").click(function () {
+                $("#modalbank").modal("show");
+            });
+            $("#bankingmanage").click(function () {
+                $("#modalbankmanage").modal("show");
+                fetch("/bank")
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hiển thị danh sách tài khoản ngân hàng trong modal
+                        const bankList = $("#bankList");
+                        bankList.empty();
+                        data.forEach(bank => {
+                            const listItem = `<div class="bank-item"><div class="info"><p>Họ và tên: ${bank.hovaten}</p><p>Phương thức: ${bank.phuongthuc}</p><p>Số tài khoản: ${bank.sotaikhoan}</p></div><div class="qr-code"><img id="imgQR" src="data:image/jpeg;base64,${bank.maQR}"></div></div><hr>`;
+                            bankList.append(listItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+                        alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
+                    });
+            });
+            $("#mk form").submit(function (e) {
+                e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+
+                // Lấy giá trị từ các trường nhập liệu
+                var passOld = $("#passOld").val();
+                var passNew = $("#passNew").val();
+
+                // Gửi yêu cầu AJAX đến /repass
+                fetch("/repass", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        passOld: passOld,
+                        passNew: passNew,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert(data.message);
+                            $("#mk").modal("hide");
+                        }
+                    })
+                    .catch(error => {
+                        alert("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
+                    });
+            });
+
+
+            $("#saveButton").click(function () {
+                $("#mk form").submit();
+            });
+
+        });
+    </script>
+</body>
+
+</html>

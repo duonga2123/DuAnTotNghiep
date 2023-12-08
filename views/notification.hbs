@@ -21,6 +21,12 @@
             overflow-y: auto;
             /* Cho phép scroll nếu nội dung quá lớn */
         }
+
+        td {
+            text-align: center;
+            max-width: 200px;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -32,8 +38,8 @@
         <div class="table-data">
             <div class="order">
 
-                <table>
-                    <thead>
+                <table class="table">
+                    <thead class="thead-dark">
                         <tr>
                             <th style="text-align: center;">title</th>
                             <th style="text-align: center;">content</th>
@@ -181,7 +187,8 @@
                                             </div>
 
                                             <div class="modal-body">
-                                                <form id="huymangaForm" method="post" action="/huychap/{{this.mangaId}}/{{this._id}}">
+                                                <form id="huymangaForm" method="post"
+                                                    action="/huychap/{{this.mangaId}}/{{this._id}}">
                                                     <div class="form-group">
                                                         <label for="reason">Lí do:</label>
                                                         <input type="text" class="form-control" id="reason"
@@ -209,7 +216,8 @@
                                             </div>
 
                                             <div class="modal-body">
-                                                <form id="huymangaForm" method="post" action="/huychapput/{{this.mangaId}}/{{this._id}}">
+                                                <form id="huymangaForm" method="post"
+                                                    action="/huychapput/{{this.mangaId}}/{{this._id}}">
                                                     <div class="form-group">
                                                         <label for="reason">Lí do:</label>
                                                         <input type="text" class="form-control" id="reason"
@@ -233,6 +241,9 @@
                                     tiết</button>
                                 <!-- NÚT CHI TIẾT SỬA CHAP -->
                                 <button class="btn btn-info chapsua-detail-button" data-manga-id="{{this.mangaId}}">Chi
+                                    tiết</button>
+                                     <!-- NÚT CHI TIẾT REPORT -->
+                                <button class="btn btn-info report-detail-button" data-manga-id="{{this.mangaId}}">Chi
                                     tiết</button>
                             </td>
                             <td>
@@ -281,6 +292,18 @@
                                     style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                     type="button">Hủy</button>
 
+                                <form style="margin-top: 10dp; text-align: center;"
+                                    action=""
+                                    onclick="return confirm('Report ?')" method="post">
+                                    <button class="btn btn-info report"
+                                        style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                        type="submit">Report</button>
+                                </form>
+
+                                <button class="btn btn-info huyreport"
+                                    style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                    type="button">Xóa</button>
+
                                 <script>
                                     $(document).ready(function () {
                                         $('.huymangaButton').click(function () {
@@ -310,84 +333,105 @@
                                     const huychapButton = document.querySelectorAll('.huychapButton');
                                     const huysuachapButton = document.querySelectorAll('.huysuachapButton');
                                     const huysuamangaButton = document.querySelectorAll('.huysuamangaButton');
+                                     const report = document.querySelectorAll('.report');
+                                    const huyreport = document.querySelectorAll('.huyreport');
+                                    const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
                                     approveMangaButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     approveChapButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     approvesuatruyen.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
                                     approvesuachap.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     mangaSuaDetailButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     mangaDetailButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
                                     chapSuaDetailButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     chapDetailButtons.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     huysuamangaButton.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     huymangaButton.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
                                     huysuachapButton.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Report') {
                                             button.style.display = 'none';
                                         }
                                     });
 
                                     huychapButton.forEach((button, index) => {
                                         const title = titleCells[index].textContent.trim();
-                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+                                    report.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Duyệt thêm chap') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+                                    huyreport.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Duyệt thêm chap') {
+                                            button.style.display = 'none';
+                                        }
+                                    });
+                                    reportdetailbutton.forEach((button, index) => {
+                                        const title = titleCells[index].textContent.trim();
+                                        if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Duyệt thêm chap') {
                                             button.style.display = 'none';
                                         }
                                     });

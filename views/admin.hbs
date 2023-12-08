@@ -686,6 +686,12 @@
 				</a>
 			</li>
 			<li>
+				<a id="baivietManagerLink" href="#baivietManagerLink">
+					<i class='bx bxs-receipt'></i>
+					<span class="text">Baiviet Manager</span>
+				</a>
+			</li>
+			<li>
 				<a href="" id="revenueManagerLink">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
@@ -695,7 +701,7 @@
 		</ul>
 		<ul class="side-menu">
 			<li>
-				<a href="">
+				<a href="#" id="setting">
 					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
@@ -731,7 +737,7 @@
 				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
-				<img src="https://lmhoptacxatthue.com.vn/wp-content/uploads/2023/05/anh-con-cho-ngao-10.jpg">
+				<img src="data:image/jpeg;base64,{{user.avatar}}">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -753,35 +759,10 @@
 				</div>
 			</div>
 
-			<ul class="box-info">
-				<li>
-					<i class='bx bxs-calendar-check'></i>
-					<span class="text">
-						<h3>1020</h3>
-						<p>New Order</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-group'></i>
-					<span class="text">
-						<h3>2834</h3>
-						<p>Visitors</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-dollar-circle'></i>
-					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Sales</p>
-					</span>
-				</li>
-			</ul>
-
-
 			<div class="table-data">
 				<div class="order">
 					<div class="head">
-						<h3>Top5</h3>
+						<h3>Top 5 truyện nhiều lượt xem nhất</h3>
 						<i class='bx bx-search'></i>
 						<i class='bx bx-filter'></i>
 					</div>
@@ -798,35 +779,6 @@
 
 						</tbody>
 					</table>
-				</div>
-				<div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus'></i>
-						<i class='bx bx-filter'></i>
-					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-					</ul>
 				</div>
 			</div>
 		</main>
@@ -1132,22 +1084,307 @@
 
 				$(".editCategoryButton").click(function () {
 
-                var id = $(this).closest("tr").find("td:first").text();
-                var username = $(this).closest("tr").find("td:nth-child(2)").text();
-                var password = $(this).closest("tr").find("td:nth-child(3)").text();
-                var role = $(this).closest("tr").find("td:nth-child(4)").text();
+				 var id = $(this).closest("tr").find(".user-id").text();
+                var username = $(this).closest("tr").find(".user-username").text();
+                var phone = $(this).closest("tr").find(".user-phone").text();
+                var role = $(this).closest("tr").find(".user-role").text();
 
                 $("#editusername").val(username);
-                $("#editpassword").val(username);
+                $("#editphone").val(phone);
                 $("#editrole").val(role);
 
-
-                $("#editCategoryForm").attr("action", "/userput/" + id);
+					$("#editCategoryForm").attr("action", "/userput/" + id);
 
 					$("#editCategoryModal").modal("show");
 				});
 
         });
+		}
+
+		const notificationManagerLink = document.getElementById('notification');
+		notificationManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/rendernotifi')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setupMangaPage()
+					mangasua()
+					annut()
+					chapDetail()
+					chapDetailsua()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+
+
+		fetch('/unread-count')
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
+				const notificationSpan = document.querySelector('.num');
+				notificationSpan.innerText = data.unreadCount.toString();
+			})
+			.catch(error => console.error(error));
+
+		function setupMangaPage() {
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+
+			mangaDetailButtons.forEach(button => {
+
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifi/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+						});
+				});
+			});
+		}
+		function annut() {
+			$(document).ready(function () {
+				$('.huymangaButton').click(function () {
+					$('#huymangaModal').modal('show');
+				});
+				$('.huysuamangaButton').click(function () {
+					$('#huysuamangaModal').modal('show');
+				});
+				$('.huychapButton').click(function () {
+					$('#huychapModal').modal('show');
+				});
+				$('.huysuachapButton').click(function () {
+					$('#huysuachapModal').modal('show');
+				});
+			})
+
+			const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
+			const approveChapButtons = document.querySelectorAll('.approveChapButton');
+			const approvesuatruyen = document.querySelectorAll('.approvesuatruyen');
+			const approvesuachap = document.querySelectorAll('.approvesuachap');
+			const titleCells = document.querySelectorAll('.titleCell');
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+			const chapSuaDetailButtons = document.querySelectorAll('.chapsua-detail-button');
+			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+			const huymangaButton = document.querySelectorAll('.huymangaButton');
+			const huychapButton = document.querySelectorAll('.huychapButton');
+			const huysuachapButton = document.querySelectorAll('.huysuachapButton');
+			const huysuamangaButton = document.querySelectorAll('.huysuamangaButton');
+
+			approveMangaButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			approveChapButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			approvesuatruyen.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			approvesuachap.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			mangaSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			mangaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			chapSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			chapDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			huysuamangaButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			huymangaButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			huysuachapButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			huychapButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+		}
+
+		function mangasua() {
+
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+
+			mangaSuaDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifysua/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết sửa truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả : ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết sửa cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết sửa truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết sửa truyện.');
+						});
+				});
+			});
+		}
+
+		function chapDetail() {
+			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+
+			chapDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/chapternotify/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết chap trong modal mới
+								document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
+								document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
+								const imagesContainer = document.getElementById('chapDetailImages');
+								imagesContainer.innerHTML = ""; // Xóa nội dung cũ
+								data.images.forEach(imageSrc => {
+									const imgElement = document.createElement('img');
+									imgElement.src = imageSrc;
+									imgElement.style.width = '500px'; // Đảm bảo chiều rộng không vượt quá 100%
+									imgElement.style.height = '500px';
+									imgElement.style.borderRadius = '0';
+									imgElement.style.margin = '0 auto'
+									imgElement.style.maxWidth = '100%'
+									imagesContainer.appendChild(imgElement);
+								});
+								// Kích hoạt modal mới
+								$('#chapDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho chap này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết chap:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
+						});
+				});
+			});
+		}
+		function chapDetailsua() {
+			const chapDetailButtons = document.querySelectorAll('.chapsua-detail-button');
+
+			chapDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/chapternotifysua/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết chap trong modal mới
+								document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
+								document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
+								const imagesContainer = document.getElementById('chapDetailImages');
+								imagesContainer.innerHTML = ""; // Xóa nội dung cũ
+								data.images.forEach(imageSrc => {
+									const imgElement = document.createElement('img');
+									imgElement.src = imageSrc;
+									imgElement.style.width = '500px'; // Đảm bảo chiều rộng không vượt quá 100%
+									imgElement.style.height = '500px';
+									imgElement.style.borderRadius = '0';
+									imgElement.style.margin = '0 auto'
+									imgElement.style.maxWidth = '100%'
+									imagesContainer.appendChild(imgElement);
+								});
+								// Kích hoạt modal mới
+								$('#chapDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho chap này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết chap:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
+						});
+				});
+			});
 		}
 	</script>
 </body>
